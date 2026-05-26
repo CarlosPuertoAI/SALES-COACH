@@ -354,9 +354,77 @@ input[type="text"]:focus {
 
 /* Onboarding Specifics */
 .onboarding-card {
-    max-width: 650px;
+    max-width: 900px;
     margin: 40px auto;
     padding: 40px;
+}
+
+/* Onboarding Step 1 Grid Layout */
+.onboarding-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+}
+
+.onboarding-hero-side {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.onboarding-hero-image {
+    width: 100%;
+    max-width: 360px;
+    height: auto;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(79, 172, 254, 0.2);
+    animation: float 6s ease-in-out infinite;
+    transition: var(--transition-smooth);
+}
+
+.onboarding-hero-image:hover {
+    transform: scale(1.03) translateY(-4px);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.6), 0 0 40px rgba(79, 172, 254, 0.35);
+}
+
+.onboarding-content-side {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: left;
+}
+
+.onboarding-content-side h2 {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1.25;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #ffffff 40%, var(--primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.onboarding-welcome-text {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+/* Limit inner width of steps 2, 3, 4 to keep them centered and compact */
+#ob-step-2, #ob-step-3, #ob-step-4 {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.wizard-actions {
+    max-width: 600px;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 100%;
 }
 
 .onboarding-header {
@@ -1420,5 +1488,36 @@ input[type="text"]:focus {
     
     .nav-item span {
         display: none; /* Hide nav label texts on mobile screens, icons are enough */
+    }
+}
+
+/* Onboarding Step 1 Responsive Tweaks */
+@media (max-width: 768px) {
+    .onboarding-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        text-align: center;
+    }
+    
+    .onboarding-content-side {
+        text-align: center;
+    }
+    
+    .onboarding-content-side h2 {
+        font-size: 26px;
+        text-align: center;
+    }
+    
+    .onboarding-welcome-text {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .onboarding-hero-image {
+        max-width: 240px;
+    }
+    
+    .wizard-actions {
+        margin-top: 24px;
     }
 }
