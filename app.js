@@ -508,40 +508,40 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 const SALES_QUOTES = [
-    { text: "No vendas. Ayuda.", author: "Zig Ziglar" },
-    { text: "A la gente no le gusta que le vendan, pero les encanta comprar.", author: "Jeffrey Gitomer" },
-    { text: "Puedes conseguir todo lo que quieres en la vida si ayudas a suficientes personas a conseguir lo que ellas quieren.", author: "Zig Ziglar" },
-    { text: "Enfoca cada cliente con la idea de ayudarle a resolver un problema o alcanzar una meta, no de venderle un producto.", author: "Brian Tracy" },
-    { text: "La gente no compra por razones lógicas. Compra por razones emocionales.", author: "Zig Ziglar" },
-    { text: "Cuando trates con personas, recuerda que no tratas con criaturas de lógica, sino con criaturas de emoción.", author: "Dale Carnegie" },
-    { text: "La venta es esencialmente una transferencia de sentimientos.", author: "Zig Ziglar" },
-    { text: "Si le agradas a la gente, te escucharán. Si confían en ti, harán negocios contigo.", author: "Zig Ziglar" },
-    { text: "Demuestra que tu producto es la mejor opción para tu cliente, no el precio más bajo.", author: "Brian Tracy" },
-    { text: "Como regla general, la persona que hace las preguntas tiene el control.", author: "Brian Tracy" },
-    { text: "Cada objeción no es un rechazo, es una petición de más información.", author: "Zig Ziglar" },
-    { text: "Haz un cliente, no una venta.", author: "Katherine Barchetti" },
-    { text: "Si no estás cuidando a tu cliente, tu competencia lo hará.", author: "Bob Hooey" },
-    { text: "Las ventas dependen de la actitud del vendedor, no de la actitud del cliente.", author: "W. Clement Stone" },
-    { text: "El seguimiento no es una fase del proceso de ventas, es el proceso en sí.", author: "Jeffrey Gitomer" },
-    { text: "Nunca bajes tu meta; aumenta tus acciones.", author: "Grant Cardone" },
-    { text: "Nunca bajes tu precio, añade valor.", author: "Grant Cardone" },
-    { text: "Las ventas son la transferencia de emoción. Y la emoción que transfieres es la de certeza.", author: "Jordan Belfort" },
-    { text: "La mejor forma de vender algo es no vender nada. Gana primero el respeto y la confianza de tu prospecto.", author: "Jordan Belfort" },
-    { text: "Si le das a la gente un 'por qué' lo suficientemente bueno, siempre encontrarán el 'cómo'.", author: "Jordan Belfort" },
-    { text: "La negociación no es un acto de batalla, es un proceso de descubrimiento.", author: "Chris Voss" },
-    { text: "Las personas parecen estar más motivadas por la idea de perder algo que por la idea de ganar algo de igual valor.", author: "Robert Cialdini" },
-    { text: "Cada vez que decepcionas a un prospecto, decepcionas a 250 potenciales recomendados más.", author: "Joe Girard" },
-    { text: "El obstáculo es lo que ves cuando apartas los ojos de tu objetivo.", author: "Henry Ford" },
-    { text: "No vendas un producto, vende soluciones a problemas reales.", author: "Mark Cuban" },
-    { text: "A los clientes no les importa tu producto, les importan sus propios problemas.", author: "Jill Konrath" },
-    { text: "El consumidor no es tonto; respeta su inteligencia y dile la verdad.", author: "David Ogilvy" },
-    { text: "Presta atención a cada persona; todos llevan un cartel invisible que dice: Hazme sentir importante.", author: "Mary Kay Ash" },
-    { text: "Quien aprende a estar en desacuerdo sin ser desagradable descubre el gran secreto de la negociación.", author: "Chris Voss" },
-    { text: "En una llamada o contacto inicial no vendes tu producto; estás vendiendo una conversación.", author: "Art Sobczak" },
-    { text: "No celebres el cierre de una venta; celebra la apertura de una relación comercial.", author: "Patricia Fripp" },
-    { text: "El éxito en las ventas viene de hacer preguntas correctas, no de tener todas las respuestas.", author: "Neil Rackham" },
-    { text: "La regla de oro de las ventas: habla menos y escucha más.", author: "Brian Tracy" },
-    { text: "Tus clientes más descontentos son tu mayor fuente de aprendizaje.", author: "Bill Gates" }
+    { text: "No vendas. Ayuda.", author: "Leyenda del Cierre" },
+    { text: "A la gente no le gusta que le vendan, pero les encanta comprar.", author: "Experto en Confianza" },
+    { text: "Puedes conseguir todo lo que quieres en la vida si ayudas a suficientes personas a conseguir lo que ellas quieren.", author: "Leyenda del Cierre" },
+    { text: "Enfoca cada cliente con la idea de ayudarle a resolver un problema o alcanzar una meta, no de venderle un producto.", author: "Mentor Consultivo" },
+    { text: "La gente no compra por razones lógicas. Compra por razones emocionales.", author: "Leyenda del Cierre" },
+    { text: "Cuando trates con personas, recuerda que no tratas con criaturas de lógica, sino con criaturas de emoción.", author: "Líder en Relaciones Humanas" },
+    { text: "La venta es esencialmente una transferencia de sentimientos.", author: "Leyenda del Cierre" },
+    { text: "Si le agradas a la gente, te escucharán. Si confían en ti, harán negocios contigo.", author: "Leyenda del Cierre" },
+    { text: "Demuestra que tu producto es la mejor opción para tu cliente, no el precio más bajo.", author: "Mentor Consultivo" },
+    { text: "Como regla general, la persona que hace las preguntas tiene el control.", author: "Mentor Consultivo" },
+    { text: "Cada objeción no es un rechazo, es una petición de más información.", author: "Leyenda del Cierre" },
+    { text: "Haz un cliente, no una venta.", author: "Maestra del Servicio" },
+    { text: "Si no estás cuidando a tu cliente, tu competencia lo hará.", author: "Consultor de Retención" },
+    { text: "Las ventas dependen de la actitud del vendedor, no de la actitud del cliente.", author: "Estratega de Actitud Mental" },
+    { text: "El seguimiento no es una fase del proceso de ventas, es el proceso en sí.", author: "Experto en Confianza" },
+    { text: "Nunca bajes tu meta; aumenta tus acciones.", author: "Mentor de Urgencia" },
+    { text: "Nunca bajes tu precio, añade valor.", author: "Mentor de Urgencia" },
+    { text: "Las ventas son la transferencia de emoción. Y la emoción que transfieres es la de certeza.", author: "Estratega de la Persuasión" },
+    { text: "La mejor forma de vender algo es no vender nada. Gana primero el respeto y la confianza de tu prospecto.", author: "Estratega de la Persuasión" },
+    { text: "Si le das a la gente un 'por qué' lo suficientemente bueno, siempre encontrarán el 'cómo'.", author: "Estratega de la Persuasión" },
+    { text: "La negociación no es un acto de batalla, es un proceso de descubrimiento.", author: "Negociador del FBI" },
+    { text: "Las personas parecen estar más motivadas por la idea de perder algo que por la idea de ganar algo de igual valor.", author: "Científico de la Influencia" },
+    { text: "Cada vez que decepcionas a un prospecto, decepcionas a 250 potenciales recomendados más.", author: "Cerrador de Récord Mundial" },
+    { text: "El obstáculo es lo que ves cuando apartas los ojos de tu objetivo.", author: "Líder Industrial" },
+    { text: "No vendas un producto, vende soluciones a problemas reales.", author: "Estratega de Negocios" },
+    { text: "A los clientes no les importa tu producto, les importan sus propios problemas.", author: "Mentora de Ventas Complejas" },
+    { text: "El consumidor no es tonto; respeta su inteligencia y dile la verdad.", author: "Padre de la Publicidad" },
+    { text: "Presta atención a cada persona; todos llevan un cartel invisible que dice: Hazme sentir importante.", author: "Líder de Motivación Humana" },
+    { text: "Quien aprende a estar en desacuerdo sin ser desagradable descubre el gran secreto de la negociación.", author: "Negociador del FBI" },
+    { text: "En una llamada o contacto inicial no vendes tu producto; estás vendiendo una conversación.", author: "Maestro del Contacto Frío" },
+    { text: "No celebres el cierre de una venta; celebra la apertura de una relación comercial.", author: "Consultora de Comunicación" },
+    { text: "El éxito en las ventas viene de hacer preguntas correctas, no de tener todas las respuestas.", author: "Creador del Modelo SPIN" },
+    { text: "La regla de oro de las ventas: habla menos y escucha más.", author: "Mentor Consultivo" },
+    { text: "Tus clientes más descontentos son tu mayor fuente de aprendizaje.", author: "Fundador de Software" }
 ];
 
 function startQuoteRotation() {
@@ -1103,14 +1103,14 @@ function renderRoadmap() {
 }
 
 const REPETITION_QUOTES = [
-    { text: "La repetición es la madre de la maestría.", author: "Tony Robbins" },
-    { text: "Somos lo que hacemos repetidamente. La excelencia, entonces, no es un acto, sino un hábito.", author: "Aristóteles" },
-    { text: "No temo al hombre que ha practicado 10,000 patadas una vez, sino al que ha practicado una patada 10,000 veces.", author: "Bruce Lee" },
-    { text: "La repetición es la madre del aprendizaje, el padre de la acción, lo que la convierte en el arquitecto del éxito.", author: "Zig Ziglar" },
-    { text: "Cualquier cosa que practiques repetidamente se convertirá en un nuevo hábito de pensamiento y acción.", author: "Brian Tracy" },
-    { text: "La clave para dominar cualquier habilidad es la repetición constante hasta que se convierta en una segunda naturaleza.", author: "Joe Girard" },
-    { text: "La práctica no hace la perfección. Solo la práctica perfecta hace la perfección.", author: "Vince Lombardi" },
-    { text: "El conocimiento no es poder hasta que se aplica y se practica repetidamente.", author: "Dale Carnegie" }
+    { text: "La repetición es la madre de la maestría.", author: "Mentor de Crecimiento" },
+    { text: "Somos lo que hacemos repetidamente. La excelencia, entonces, no es un acto, sino un hábito.", author: "Filósofo Clásico" },
+    { text: "No temo al hombre que ha practicado 10,000 patadas una vez, sino al que ha practicado una patada 10,000 veces.", author: "Maestro del Enfoque" },
+    { text: "La repetición es la madre del aprendizaje, el padre de la acción, lo que la convierte en el arquitecto del éxito.", author: "Leyenda del Cierre" },
+    { text: "Cualquier cosa que practiques repetidamente se convertirá en un nuevo hábito de pensamiento y acción.", author: "Mentor Consultivo" },
+    { text: "La clave para dominar cualquier habilidad es la repetición constante hasta que se convierta en una segunda naturaleza.", author: "Cerrador de Récord Mundial" },
+    { text: "La práctica no hace la perfección. Solo la práctica perfecta hace la perfección.", author: "Líder de Consistencia y Esfuerzo" },
+    { text: "El conocimiento no es poder hasta que se aplica y se practica repetidamente.", author: "Líder en Relaciones Humanas" }
 ];
 
 // Action: Interactive Mini-challenges for roadmap exploration
@@ -1365,41 +1365,98 @@ function getMentorWisdom(tab, objectionTitle) {
     switch(tab) {
         case "agresivo":
             if (isPrice) {
-                return `<strong>💥 Grant Cardone (Regla 10X):</strong> "¡Nunca rebajes el precio! Si dicen que es caro, multiplícales el valor en su mente. Muéstrales que el coste real de no resolver su problema hoy es 10 veces mayor que el precio de tu producto."<br><br><strong>🐺 Jordan Belfort (Línea Recta):</strong> "Utiliza el tono de certeza absoluta. Un cliente te dirá que no tiene presupuesto para probar tu resolución, pero si le demuestras certeza absoluta en el producto y en ti, el dinero aparecerá mágicamente."`;
+                return `<strong>💥 Mentor de Cierre Directo:</strong> "¡Nunca rebajes el precio! Si dicen que es caro, multiplícales el valor en su mente. Muéstrales que el coste real de no resolver su problema hoy es 10 veces mayor que el precio de tu producto."<br><br><strong>🐺 Experto en Persuasión Rápida:</strong> "Utiliza el tono de certeza absoluta. Un cliente te dirá que no tiene presupuesto para probar tu resolución, pero si le demuestras certeza absoluta en el producto y en ti, el dinero aparecerá mágicamente."`;
             }
             if (isTimeOrDecision) {
-                return `<strong>💥 Grant Cardone:</strong> "Quien te pide tiempo te está regalando una excusa. El tiempo es el cementerio de las ventas. Compromételos a decidir hoy haciendo ver que posponer la decisión es un gasto innecesario."<br><br><strong>🐺 Jordan Belfort:</strong> "Si dicen que deben consultarlo, es porque no confían en ti al 100%. Vuelve a la línea recta, genera más certeza y di: 'Entiendo perfectamente, pero déjeme decirle por qué esto tiene sentido ahora mismo'."`;
+                return `<strong>💥 Mentor de Cierre Directo:</strong> "Quien te pide tiempo te está regalando una excusa. El tiempo es el cementerio de las ventas. Compromételos a decidir hoy haciendo ver que posponer la decisión es un gasto innecesario."<br><br><strong>🐺 Experto en Persuasión Rápida:</strong> "Si dicen que deben consultarlo, es porque no confían en ti al 100%. Vuelve a la línea recta, genera más certeza y di: 'Entiendo perfectamente, pero déjeme decirle por qué esto tiene sentido ahora mismo'."`;
             }
-            return `<strong>💥 Grant Cardone:</strong> "El éxito es tu deber, tu obligación y tu responsabilidad. Si crees en tu producto al 100%, es tu obligación moral insistir y empujar al cliente a tomar la decisión de compra correcta."<br><br><strong>🐺 Jordan Belfort:</strong> "Cada objeción es una oportunidad para reencuadrar la certeza del cliente. Controla la conversación y llévalos paso a paso por la línea recta hacia el cierre."`;
+            return `<strong>💥 Mentor de Cierre Directo:</strong> "El éxito es tu deber, tu obligación y tu responsabilidad. Si crees en tu producto al 100%, es tu obligación moral insistir y empujar al cliente a tomar la decisión de compra correcta."<br><br><strong>🐺 Experto en Persuasión Rápida:</strong> "Cada objeción es una oportunidad para reencuadrar la certeza del cliente. Controla la conversación y llévalos paso a paso por la línea recta hacia el cierre."`;
             
         case "emocional":
             if (isPrice) {
-                return `<strong>🧡 Tony Robbins:</strong> "El dinero solo representa seguridad o estatus. Descubre qué necesidad humana está insatisfecha. Transmite absoluta paz mental y hazles ver que esta compra es su mayor alivio financiero."<br><br><strong>🤝 Dale Carnegie:</strong> "Elogia su prudencia. Di: 'Aprecio enormemente que vigile tanto sus finanzas. Precisamente por esa mentalidad analítica y cuidadosa, este producto es idóneo para usted porque le evitará pérdidas'."`;
+                return `<strong>🧡 Mentor de Alineación Emocional:</strong> "El dinero solo representa seguridad o estatus. Descubre qué necesidad humana está insatisfecha. Transmite absoluta paz mental y hazles ver que esta compra es su mayor alivio financiero."<br><br><strong>🤝 Líder de Relaciones Humanas:</strong> "Elogia su prudencia. Di: 'Aprecio enormemente que vigile tanto sus finanzas. Precisamente por esa mentalidad analítica y cuidadosa, este producto es idóneo para usted porque le evitará pérdidas'."`;
             }
             if (isTimeOrDecision) {
-                return `<strong>🧡 Tony Robbins:</strong> "La indecisión es el resultado del miedo al fracaso o al dolor. Cambia su enfoque mental de 'qué pasa si me equivoco' a 'cuánto sufriré si me quedo igual'. Guíalos con calma hacia su futuro deseado."<br><br><strong>🤝 Dale Carnegie:</strong> "Consigue que digan 'sí, sí' desde el principio. Busca puntos comunes de acuerdo y evita discutir. Haz que sientan que la idea de tomar acción hoy ha nacido de ellos."`;
+                return `<strong>🧡 Mentor de Alineación Emocional:</strong> "La indecisión es el resultado del miedo al fracaso o al dolor. Cambia su enfoque mental de 'qué pasa si me equivoco' a 'cuánto sufriré si me quedo igual'. Guíalos con calma hacia su futuro deseado."<br><br><strong>🤝 Líder de Relaciones Humanas:</strong> "Consigue que digan 'sí, sí' desde el principio. Busca puntos comunes de acuerdo y evita discutir. Haz que sientan que la idea de tomar acción hoy ha nacido de ellos."`;
             }
-            return `<strong>🧡 Tony Robbins:</strong> "Para influir en alguien, debes saber qué es lo que ya influye en ellos. Adáptate a su mapa del mundo, iguala su ritmo y responde desde el amor y el deseo genuino de ayudar."<br><br><strong>🤝 Dale Carnegie:</strong> "La única manera de ganar una discusión es evitándola. Escucha con respeto total, muestra empatía táctica y haz que la otra persona se sienta valorada e importante."`;
+            return `<strong>🧡 Mentor de Alineación Emocional:</strong> "Para influir en alguien, debes saber qué es lo que ya influye en ellos. Adáptate a su mapa del mundo, iguala su ritmo y responde desde el amor y el deseo genuino de ayudar."<br><br><strong>🤝 Líder de Relaciones Humanas:</strong> "La única manera de ganar una discusión es evitándola. Escucha con respeto total, muestra empatía táctica y haz que la otra persona se sienta valorada e importante."`;
 
         case "analitico":
             if (isPrice) {
-                return `<strong>📊 Alex Hormozi ($100M Offers):</strong> "Si el precio es un problema, tu oferta no tiene suficiente valor. Aumenta drásticamente los bonus, reduce su esfuerzo de implementación y garantiza el resultado por contrato. Haz que decir no sea una tontería."<br><br><strong>📋 Neil Rackham (SPIN Selling):</strong> "Usa preguntas de Implicación. No justifiques el precio lógicamente. Haz preguntas como: ¿Cuánto presupuesto estimas que se está fugando mensualmente si sigues con el sistema actual? Deja que el cliente haga los cálculos."`;
+                return `<strong>📊 Arquitecto de Ofertas Irresistibles:</strong> "Si el precio es un problema, tu oferta no tiene suficiente valor. Aumenta drásticamente los bonus, reduce su esfuerzo de implementación y garantiza el resultado por contrato. Haz que decir no sea una tontería."<br><br><strong>📋 Experto en Consultoría Lógica:</strong> "Usa preguntas de Implicación. No justifiques el precio lógicamente. Haz preguntas como: ¿Cuánto presupuesto estimas que se está fugando mensualmente si sigues con el sistema actual? Deja que el cliente haga los cálculos."`;
             }
             if (isTimeOrDecision) {
-                return `<strong>📊 Alex Hormozi:</strong> "El coste de oportunidad es lo que arruina a las empresas. Demuéstrales que esperar 3 meses para implementar esto les costará el triple en pérdidas de productividad. La inacción tiene un precio exacto."<br><br><strong>📋 Neil Rackham:</strong> "Haz preguntas de Necesidad de Recompensa. ¿Cómo afectaría a tu reporte de final de trimestre si automatizas este flujo hoy en lugar de postergarlo? Permite que visualicen el retorno de la inversión de inmediato."`;
+                return `<strong>📊 Arquitecto de Ofertas Irresistibles:</strong> "El coste de oportunidad es lo que arruina a las empresas. Demuéstrales que esperar 3 meses para implementar esto les costará el triple en pérdidas de productividad. La inacción tiene un precio exacto."<br><br><strong>📋 Experto en Consultoría Lógica:</strong> "Haz preguntas de Necesidad de Recompensa. ¿Cómo afectaría a tu reporte de final de trimestre si automatizas este flujo hoy en lugar de postergarlo? Permite que visualicen el retorno de la inversión de inmediato."`;
             }
-            return `<strong>📊 Alex Hormozi:</strong> "La fricción mata los negocios. Diseña una garantía de inversión o un periodo de prueba tan sólido que el cliente sientan que todo el riesgo lo asumes tú. El riesgo percibido debe ser cero."<br><br><strong>📋 Neil Rackham:</strong> "Los compradores lógicos odian las tácticas de venta agresivas. Usa preguntas de Situación y de Problema para que ellos solos lleguen a la conclusión racional de que te necesitan."`;
+            return `<strong>📊 Arquitecto de Ofertas Irresistibles:</strong> "La fricción mata los negocios. Diseña una garantía de inversión o un periodo de prueba tan sólido que el cliente sienta que todo el riesgo lo asumes tú. El riesgo percibido debe ser cero."<br><br><strong>📋 Experto en Consultoría Lógica:</strong> "Los compradores lógicos odian las tácticas de venta agresivas. Usa preguntas de Situación y de Problema para que ellos solos lleguen a la conclusión racional de que te necesitan."`;
 
         case "solucionador":
             if (isPrice) {
-                return `<strong>🐍 Kobe Bryant (Mamba Mentality):</strong> "La objeción del coste es solo un obstáculo en tu camino al campeonato. No te frustres, estúdiala. Busca el ángulo donde la inversión elimine su dolor y ejecuta sin titubeos."<br><br><strong>🛠️ Brian Tracy:</strong> "Conviértete en un consultor de negocios y un solucionador de problemas. Si tu cliente entiende que tu producto es la cura exacta a su dolor operativo principal, el precio se vuelve secundario."`;
+                return `<strong>🐍 Campeón de Mentalidad Implacable:</strong> "La objeción del coste es solo un obstáculo en tu camino al campeonato. No te frustres, estúdiala. Busca el ángulo donde la inversión elimine su dolor y ejecuta sin titubeos."<br><br><strong>🛠️ Mentor de Venta Consultiva:</strong> "Conviértete en un consultor de negocios y un solucionador de problemas. Si tu cliente entiende que tu producto es la cura exacta a su dolor operativo principal, el precio se vuelve secundario."`;
             }
             if (isTimeOrDecision) {
-                return `<strong>🏀 Michael Jordan:</strong> "He fallado más de 9000 tiros en mi carrera y por eso he tenido éxito. No tomar una decisión por miedo a fallar es el verdadero fracaso. Empuja al cliente a dar el tiro ganador hoy."<br><br><strong>🏈 Vince Lombardi:</strong> "El compromiso individual es lo que hace funcionar a un equipo. Mantén un seguimiento implacable y consistente. La disciplina y la entrega al detalle cierran contratos."`;
+                return `<strong>🏀 Estratega de Resiliencia Deportiva:</strong> "He fallado más de 9000 tiros en mi carrera y por eso he tenido éxito. No tomar una decisión por miedo a fallar es el verdadero fracaso. Empuja al cliente a dar el tiro ganador hoy."<br><br><strong>🏈 Líder de Consistencia y Esfuerzo:</strong> "El compromiso individual es lo que hace funcionar a un equipo. Mantén un seguimiento implacable y consistente. La disciplina y la entrega al detalle cierran contratos."`;
             }
-            return `<strong>🐍 Kobe Bryant:</strong> "Mamba Mentality es preparación obsesiva. Si estudias a tu cliente y sus debilidades operativas antes de la llamada, ninguna objeción te pillará desprevenido. Sabrás exactamente qué recetar."<br><br><strong>🛠️ Brian Tracy:</strong> "No vendas un producto, vende una nueva perspectiva y un futuro mejor. Escucha el 70% del tiempo con curiosidad genuina, diagnostica el problema y ofrece la solución óptima."`;
+            return `<strong>🐍 Campeón de Mentalidad Implacable:</strong> "Mamba Mentality es preparación obsesiva. Si estudias a tu cliente y sus debilidades operativas antes de la llamada, ninguna objeción te pillará desprevenido. Sabrás exactamente qué recetar."<br><br><strong>🛠️ Mentor de Venta Consultiva:</strong> "No vendas un producto, vende una nueva perspectiva y un futuro mejor. Escucha el 70% del tiempo con curiosidad genuina, diagnostica el problema y ofrece la solución óptima."`;
     }
     return "Selecciona una objeción para ver la sabiduría de los mentores.";
+}
+
+function getEmpathyRadar(tab, objectionTitle) {
+    const title = (objectionTitle || "").toLowerCase();
+    
+    // Categorize objection by keywords
+    const isPrice = title.includes("caro") || title.includes("presupuesto") || title.includes("dinero") || title.includes("cuota") || title.includes("precio") || title.includes("gastar") || title.includes("gastas") || title.includes("coste") || title.includes("euros");
+    const isTimeOrDecision = title.includes("tiempo") || title.includes("pareja") || title.includes("socio") || title.includes("mirar") || title.includes("hoy") || title.includes("decidir") || title.includes("momento") || title.includes("esperar");
+    
+    let subEmotion = "";
+    let mentalThought = "";
+    let emotionalLever = "";
+
+    if (isPrice) {
+        subEmotion = "Miedo a la pérdida financiera y arrepentimiento de compra.";
+        mentalThought = '"No quiero tirar el dinero ni parecer tonto si esto no funciona. ¿De verdad vale lo que me están cobrando o me están estafando?"';
+        if (tab === "agresivo") {
+            emotionalLever = "Usa su instinto de estatus. Demuestra que no tomar la decisión es la verdadera pérdida de dinero, convirtiendo el precio en una insignificancia en comparación con el coste de su inacción.";
+        } else if (tab === "emocional") {
+            emotionalLever = "Valida su prudencia para desactivar sus defensas. Muéstrale que esta inversión es, en realidad, el camino seguro para lograr la paz mental y la protección de su negocio/familia.";
+        } else if (tab === "analitico") {
+            emotionalLever = "Satisface su necesidad de certeza lógica. Desglosa los números objetivamente para demostrar el retorno de inversión (ROI) y traslada todo el riesgo hacia ti con garantías sólidas.";
+        } else {
+            emotionalLever = "Enfócate en el dolor del cuello de botella actual. Si demuestras que tu solución erradica por completo su principal problema operativo, el precio pasará a ser una decisión secundaria.";
+        }
+    } else if (isTimeOrDecision) {
+        subEmotion = "Abrumamiento operativo y miedo al cambio o al conflicto interpersonal.";
+        mentalThought = '"Estoy saturado y no tengo energía para implementar algo nuevo. Además, si a mi socio/pareja no le gusta, tendré problemas."';
+        if (tab === "agresivo") {
+            emotionalLever = "Corta la procrastinación con urgencia. Hazle ver que posponer la decisión es una decisión activa de seguir perdiendo tiempo y que nunca habrá un momento ideal.";
+        } else if (tab === "emocional") {
+            emotionalLever = "Reduce el estrés y el miedo al cambio ofreciéndote como su aliado. Haz que se visualice acompañado y apoyado personalmente durante todo el proceso.";
+        } else if (tab === "analitico") {
+            emotionalLever = "Demuestra matemáticamente el coste de oportunidad diario de seguir igual. Convierte la indecisión en una pérdida de capital medible para forzar el análisis racional.";
+        } else {
+            emotionalLever = "Diagnostica su cansancio. Ofrece un plan de implementación ultrarrápido y asume el trabajo pesado para demostrar que comprar esto liberará su tiempo de inmediato.";
+        }
+    } else {
+        // Technical, Trust or Quality
+        subEmotion = "Escepticismo defensivo y desconfianza en las promesas comerciales.";
+        mentalThought = '"Ya he oído promesas similares antes y terminaron fallando. ¿Qué me garantiza que esta vez será diferente o que funcionará con mis sistemas?"';
+        if (tab === "agresivo") {
+            emotionalLever = "Muestra una seguridad arrolladora. Desafía sus prejuicios con asertividad y demuéstrale que la complacencia con sistemas obsoletos es más peligrosa que dar el paso.";
+        } else if (tab === "emocional") {
+            emotionalLever = "Crea un espacio seguro de validación. Escucha sus malas experiencias anteriores, empatiza profundamente con su desconfianza y construye un puente de lealtad personal.";
+        } else if (tab === "analitico") {
+            emotionalLever = "Utiliza especificaciones, datos duros y certificaciones. Permite que audite tu solución y neutraliza su desconfianza mediante hechos fríos y demostraciones objetivas.";
+        } else {
+            emotionalLever = "Actúa como un médico especialista. Haz preguntas profundas para diagnosticar la incompatibilidad exacta y prescribe la integración a medida como la cura definitiva.";
+        }
+    }
+
+    return `
+        <strong>⚡ Emoción Subyacente:</strong> ${subEmotion}<br>
+        <strong>💭 Pensamiento Interno:</strong> ${mentalThought}<br>
+        <strong>🎯 Palanca de Cierre:</strong> ${emotionalLever}
+    `;
 }
 
 function updateActiveObjectionDisplay() {
@@ -1430,6 +1487,17 @@ function updateActiveObjectionDisplay() {
     if (scriptEmocional) scriptEmocional.innerText = compile(obj.emocional);
     if (scriptAnalitico) scriptAnalitico.innerText = compile(obj.analitico);
     if (scriptSolucionador) scriptSolucionador.innerText = compile(obj.solucionador);
+
+    // Update Empathy Radar
+    const radarAgresivo = document.getElementById("empathy-radar-agresivo-text");
+    const radarEmocional = document.getElementById("empathy-radar-emocional-text");
+    const radarAnalitico = document.getElementById("empathy-radar-analitico-text");
+    const radarSolucionador = document.getElementById("empathy-radar-solucionador-text");
+
+    if (radarAgresivo) radarAgresivo.innerHTML = getEmpathyRadar("agresivo", obj.title);
+    if (radarEmocional) radarEmocional.innerHTML = getEmpathyRadar("emocional", obj.title);
+    if (radarAnalitico) radarAnalitico.innerHTML = getEmpathyRadar("analitico", obj.title);
+    if (radarSolucionador) radarSolucionador.innerHTML = getEmpathyRadar("solucionador", obj.title);
 
     // Update Mentor Wisdom
     const wisdomAgresivo = document.getElementById("mentor-wisdom-agresivo-text");
