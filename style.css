@@ -920,7 +920,7 @@ input[type="text"]:focus {
     font-size: 16px;
     line-height: 1.6;
     color: var(--text-main);
-    padding-right: 70px; /* Space for copy button */
+    padding-right: 280px; /* Space for the three top-right action buttons */
 }
 
 .action-buttons {
@@ -929,6 +929,48 @@ input[type="text"]:focus {
     right: 20px;
     display: flex;
     gap: 8px;
+    align-items: center;
+}
+
+.btn-generate-ai {
+    background: linear-gradient(135deg, var(--accent-neon), #8b5cf6);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #0d0e12;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: var(--transition-smooth);
+    box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
+}
+
+.btn-generate-ai:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(0, 242, 254, 0.4), 0 0 5px rgba(139, 92, 246, 0.3);
+    filter: brightness(1.1);
+}
+
+.btn-generate-ai:active {
+    transform: translateY(0);
+}
+
+.btn-generate-ai.loading {
+    pointer-events: none;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    color: var(--text-muted);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: none;
+    animation: pulse-bg 1.5s infinite;
+}
+
+@keyframes pulse-bg {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
 }
 
 .btn-copy, .btn-speak {
@@ -1722,6 +1764,17 @@ input[type="text"]:focus {
 @media (max-width: 600px) {
     .app-container {
         padding: 10px 10px 90px 10px;
+    }
+
+    .action-buttons {
+        position: static !important;
+        margin-top: 16px !important;
+        justify-content: flex-start !important;
+        flex-wrap: wrap !important;
+    }
+
+    .script-box p {
+        padding-right: 0 !important;
     }
 
     .app-header {

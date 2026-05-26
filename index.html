@@ -225,6 +225,11 @@
                                 <button type="button" id="copilot-lead-warm" class="toggle-btn" style="background: none; border: none; border-radius: 6px; color: var(--text-muted); padding: 6px 12px; font-size: 12px; font-weight: 600; cursor: pointer; transition: var(--transition-smooth);">🔥 Caliente</button>
                             </div>
                         </div>
+                        <!-- Gemini API Key Input -->
+                        <div class="form-group-inline" style="display: flex; align-items: center; gap: 8px;">
+                            <label style="font-size: 13px; color: var(--text-muted); font-weight: 500;">Clave Gemini:</label>
+                            <input type="password" id="gemini-api-key-input" placeholder="Introduce tu API Key..." style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--text-main); padding: 8px 12px; font-size: 13px; width: 180px; outline: none; transition: var(--transition-smooth);" />
+                        </div>
                     </div>
                 </div>
 
@@ -276,6 +281,9 @@
                                 <div class="script-box">
                                     <p id="script-agresivo-text">Selecciona una objeción para ver la respuesta.</p>
                                     <div class="action-buttons">
+                                        <button class="btn-generate-ai" id="btn-gen-ai-agresivo" onclick="app.generateAI('agresivo')" title="Generar con Inteligencia Artificial">
+                                            <span>Generar con IA 🔮</span>
+                                        </button>
                                         <button class="btn-speak" onclick="app.speakText('script-agresivo-text')" title="Escuchar Respuesta">
                                             <svg class="icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
                                         </button>
@@ -307,6 +315,9 @@
                                 <div class="script-box">
                                     <p id="script-emocional-text">Selecciona una objeción para ver la respuesta.</p>
                                     <div class="action-buttons">
+                                        <button class="btn-generate-ai" id="btn-gen-ai-emocional" onclick="app.generateAI('emocional')" title="Generar con Inteligencia Artificial">
+                                            <span>Generar con IA 🔮</span>
+                                        </button>
                                         <button class="btn-speak" onclick="app.speakText('script-emocional-text')" title="Escuchar Respuesta">
                                             <svg class="icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
                                         </button>
@@ -338,6 +349,9 @@
                                 <div class="script-box">
                                     <p id="script-analitico-text">Selecciona una objeción para ver la respuesta.</p>
                                     <div class="action-buttons">
+                                        <button class="btn-generate-ai" id="btn-gen-ai-analitico" onclick="app.generateAI('analitico')" title="Generar con Inteligencia Artificial">
+                                            <span>Generar con IA 🔮</span>
+                                        </button>
                                         <button class="btn-speak" onclick="app.speakText('script-analitico-text')" title="Escuchar Respuesta">
                                             <svg class="icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
                                         </button>
@@ -369,6 +383,9 @@
                                 <div class="script-box">
                                     <p id="script-solucionador-text">Selecciona una objeción para ver la respuesta.</p>
                                     <div class="action-buttons">
+                                        <button class="btn-generate-ai" id="btn-gen-ai-solucionador" onclick="app.generateAI('solucionador')" title="Generar con Inteligencia Artificial">
+                                            <span>Generar con IA 🔮</span>
+                                        </button>
                                         <button class="btn-speak" onclick="app.speakText('script-solucionador-text')" title="Escuchar Respuesta">
                                             <svg class="icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
                                         </button>
