@@ -58,32 +58,10 @@
 
                     <form id="onboarding-form" class="interactive-form">
                         
-                        <!-- STEP 1: Product Name -->
+                        <!-- STEP 1: Lead Temperature -->
                         <div class="onboarding-step-slide" id="ob-step-1">
-                            <div class="onboarding-grid">
-                                <!-- Columna Izquierda: Imagen Hero -->
-                                <div class="onboarding-hero-side">
-                                    <img src="sales_hero.png" alt="SalesQuest Rocket" class="onboarding-hero-image">
-                                </div>
-                                <!-- Columna Derecha: Contenido y Formulario -->
-                                <div class="onboarding-content-side">
-                                    <span class="badge-promo">Paso 1 de 4</span>
-                                    <h2>Domina tus Ventas con Inteligencia Emocional</h2>
-                                    <p class="onboarding-welcome-text">Diseña tu ruta de aprendizaje de ventas personalizada. Resuelve objeciones al instante, perfila a tus prospectos y genera cierres de alto impacto emocional.</p>
-                                    
-                                    <div class="form-group" style="margin-top: 24px;">
-                                        <label for="product-name" style="font-family: var(--font-display); font-weight: 600; font-size: 15px; margin-bottom: 8px; display: block; color: var(--text-main);">¿Qué producto o servicio vendes?</label>
-                                        <input type="text" id="product-name" placeholder="Ej. CRM para PYMES, Apartamentos en la playa, Seguros de vida..." required autocomplete="off">
-                                        <span class="input-helper">Introduce el nombre de tu producto o servicio principal.</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- STEP 2: Lead Temperature -->
-                        <div class="onboarding-step-slide hidden" id="ob-step-2">
                             <div class="onboarding-header">
-                                <span class="badge-promo">Paso 2 de 4</span>
+                                <span class="badge-promo">Paso 1 de 4</span>
                                 <h2>¿Cuál es la temperatura de tu venta?</h2>
                                 <p>El origen de tu cliente determina el tipo de objeciones a superar.</p>
                             </div>
@@ -101,10 +79,46 @@
                             </div>
                         </div>
 
-                        <!-- STEP 3: Previous Filters (Only shown if Lead Warm selected) -->
-                        <div class="onboarding-step-slide hidden" id="ob-step-3">
+                        <!-- STEP 2: Sector Selection -->
+                        <div class="onboarding-step-slide hidden" id="ob-step-2">
                             <div class="onboarding-header">
-                                <span class="badge-promo">Paso 3 de 4</span>
+                                <span class="badge-promo">Paso 2 de 4</span>
+                                <h2>¿Cuál es tu sector comercial?</h2>
+                                <p>Cargaremos las objeciones y cierres específicos para tu industria.</p>
+                            </div>
+                            <div class="form-group">
+                                <div class="sector-grid" id="sector-grid">
+                                    <!-- Sectors injected here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- STEP 3: Product Name -->
+                        <div class="onboarding-step-slide hidden" id="ob-step-3">
+                            <div class="onboarding-grid">
+                                <!-- Columna Izquierda: Imagen Hero -->
+                                <div class="onboarding-hero-side">
+                                    <img src="sales_hero.png" alt="SalesQuest Rocket" class="onboarding-hero-image">
+                                </div>
+                                <!-- Columna Derecha: Contenido y Formulario -->
+                                <div class="onboarding-content-side">
+                                    <span class="badge-promo">Paso 3 de 4</span>
+                                    <h2>Domina tus Ventas con Inteligencia Emocional</h2>
+                                    <p class="onboarding-welcome-text">Diseña tu ruta de aprendizaje de ventas personalizada. Resuelve objeciones al instante, perfila a tus prospectos y genera cierres de alto impacto emocional.</p>
+                                    
+                                    <div class="form-group" style="margin-top: 24px;">
+                                        <label for="product-name" style="font-family: var(--font-display); font-weight: 600; font-size: 15px; margin-bottom: 8px; display: block; color: var(--text-main);">¿Qué producto o servicio vendes?</label>
+                                        <input type="text" id="product-name" placeholder="Ej. CRM para PYMES, Apartamentos en la playa, Seguros de vida..." required autocomplete="off">
+                                        <span class="input-helper">Introduce el nombre de tu producto o servicio principal.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- STEP 4: Previous Filters (Only shown if Lead Warm selected) -->
+                        <div class="onboarding-step-slide hidden" id="ob-step-4">
+                            <div class="onboarding-header">
+                                <span class="badge-promo">Paso 4 de 4</span>
                                 <h2>¿Por qué filtros previos pasó este lead?</h2>
                                 <p>Selecciona todos los puntos de contacto previos (puedes elegir varios o pulsar Siguiente).</p>
                             </div>
@@ -120,20 +134,6 @@
                                 </div>
                                 <div class="quiz-option" data-val="referral" style="cursor: pointer; display: flex; align-items: center; gap: 10px;">
                                     <span>🤝</span> Vino recomendado por un cliente existente
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- STEP 4: Sector Selection -->
-                        <div class="onboarding-step-slide hidden" id="ob-step-4">
-                            <div class="onboarding-header">
-                                <span class="badge-promo">Paso 4 de 4</span>
-                                <h2>¿Cuál es tu sector comercial?</h2>
-                                <p>Cargaremos las objeciones y cierres específicos para tu industria.</p>
-                            </div>
-                            <div class="form-group">
-                                <div class="sector-grid" id="sector-grid">
-                                    <!-- Sectors injected here -->
                                 </div>
                             </div>
                         </div>

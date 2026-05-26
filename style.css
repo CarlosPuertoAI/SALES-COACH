@@ -414,8 +414,8 @@ input[type="text"]:focus {
     margin-bottom: 24px;
 }
 
-/* Limit inner width of steps 2, 3, 4 to keep them centered and compact */
-#ob-step-2, #ob-step-3, #ob-step-4 {
+/* Limit inner width of steps 1, 2, 4 to keep them centered and compact */
+#ob-step-1, #ob-step-2, #ob-step-4 {
     max-width: 600px;
     margin: 0 auto;
 }

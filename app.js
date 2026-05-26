@@ -358,12 +358,24 @@ function updateWizardUI() {
     
     // Show current slide
     const currentSlide = document.getElementById(`ob-step-${step}`);
-    if (currentSlide) currentSlide.classList.remove("hidden");
+    if (currentSlide) {
+        currentSlide.classList.remove("hidden");
+        
+        // Update badge text dynamically based on leadType
+        const badge = currentSlide.querySelector(".badge-promo");
+        if (badge) {
+            const total = app.state.leadType === "cold" ? 3 : 4;
+            badge.textContent = `Paso ${step} de ${total}`;
+        }
+    }
     
     // Update progress bar
     const progress = document.getElementById("onboarding-progress");
     if (progress) {
-        const pct = (step / 4) * 100;
+        let pct = (step / 4) * 100;
+        if (app.state.leadType === "cold") {
+            pct = (step / 3) * 100;
+        }
         progress.style.width = `${pct}%`;
     }
     
@@ -380,7 +392,7 @@ function updateWizardUI() {
     }
     
     if (nextBtn) {
-        if (step === 4) {
+        if (step === 4 || (step === 3 && app.state.leadType === "cold")) {
             nextBtn.innerHTML = `<span>Comenzar mi Ruta 🚀</span>`;
         } else {
             nextBtn.innerHTML = `<span>Siguiente</span><svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`;
@@ -409,6 +421,10 @@ function resetOnboardingWizardUI() {
     
     document.querySelectorAll("#filters-options-container .quiz-option").forEach(opt => {
         opt.classList.remove("selected");
+    });
+    
+    document.querySelectorAll("#sector-grid .sector-card").forEach(card => {
+        card.classList.remove("selected");
     });
     
     const prevBtn = document.getElementById("ob-prev-btn");
@@ -567,40 +583,7 @@ function setupEventListeners() {
         nextBtn.addEventListener("click", () => {
             const step = app.state.onboardingStep;
             
-            if (step === 1) {
-                const productInput = document.getElementById("product-name");
-                if (!productInput.value.trim()) {
-                    alert("Por favor, escribe el nombre de tu producto o servicio.");
-                    return;
-                }
-                app.state.productName = productInput.value.trim();
-                app.state.onboardingStep = 2;
-                updateWizardUI();
-            } 
-            else if (step === 2) {
-                if (!app.state.leadType) {
-                    alert("Por favor, selecciona si es un Lead Frío o Caliente.");
-                    return;
-                }
-                // Si es frío, saltamos el paso 3 y vamos al 4 directo
-                if (app.state.leadType === "cold") {
-                    app.state.onboardingStep = 4;
-                } else {
-                    app.state.onboardingStep = 3;
-                }
-                updateWizardUI();
-            } 
-            else if (step === 3) {
-                app.state.onboardingStep = 4;
-                updateWizardUI();
-            } 
-            else if (step === 4) {
-                if (!app.state.sectorId) {
-                    alert("Por favor, selecciona un sector comercial.");
-                    return;
-                }
-                
-                // Complete Onboarding Wizard
+            const completeOnboarding = () => {
                 app.state.completedStages = ["stage-1"]; // Desbloquear stage 1
                 app.addXP(20);
                 
@@ -615,6 +598,43 @@ function setupEventListeners() {
                 );
                 
                 navigateTo("roadmap");
+            };
+            
+            if (step === 1) {
+                if (!app.state.leadType) {
+                    alert("Por favor, selecciona si es un Lead Frío o Caliente.");
+                    return;
+                }
+                app.state.onboardingStep = 2;
+                updateWizardUI();
+            } 
+            else if (step === 2) {
+                if (!app.state.sectorId) {
+                    alert("Por favor, selecciona un sector comercial.");
+                    return;
+                }
+                app.state.onboardingStep = 3;
+                updateWizardUI();
+            } 
+            else if (step === 3) {
+                const productInput = document.getElementById("product-name");
+                if (!productInput.value.trim()) {
+                    alert("Por favor, escribe el nombre de tu producto o servicio.");
+                    return;
+                }
+                app.state.productName = productInput.value.trim();
+                
+                // Si es frío, completamos aquí la ruta
+                if (app.state.leadType === "cold") {
+                    completeOnboarding();
+                } else {
+                    app.state.onboardingStep = 4;
+                    updateWizardUI();
+                }
+            } 
+            else if (step === 4) {
+                // Si es caliente, completamos aquí la ruta
+                completeOnboarding();
             }
         });
     }
@@ -622,17 +642,8 @@ function setupEventListeners() {
     if (prevBtn) {
         prevBtn.addEventListener("click", () => {
             const step = app.state.onboardingStep;
-            if (step === 4) {
-                // Si es frío, volvemos al paso 2 directo
-                if (app.state.leadType === "cold") {
-                    app.state.onboardingStep = 2;
-                } else {
-                    app.state.onboardingStep = 3;
-                }
-            } else if (step === 3) {
-                app.state.onboardingStep = 2;
-            } else if (step === 2) {
-                app.state.onboardingStep = 1;
+            if (step > 1) {
+                app.state.onboardingStep = step - 1;
             }
             updateWizardUI();
         });
