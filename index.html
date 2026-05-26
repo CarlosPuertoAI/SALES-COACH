@@ -21,6 +21,9 @@
         <!-- APP HEADER (Hidden during onboarding) -->
         <header id="app-header" class="app-header hidden">
             <div class="header-left">
+                <button id="back-to-onboarding-btn" class="header-back-btn" title="Volver al inicio / Cambiar configuración">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                </button>
                 <div class="app-logo">
                     <span class="logo-emoji">🎯</span>
                     <div class="logo-text">
@@ -58,69 +61,72 @@
 
                     <form id="onboarding-form" class="interactive-form">
                         
-                        <!-- STEP 1: Sector Selection -->
+                        <!-- STEP 1: Welcome Screen (centered layout with image) -->
                         <div class="onboarding-step-slide" id="ob-step-1">
-                            <input type="hidden" id="product-name" value="tu producto">
-                            <div class="onboarding-grid">
-                                <!-- Columna Izquierda: Imagen Hero -->
-                                <div class="onboarding-hero-side">
-                                    <img src="sales_hero.png" alt="SalesQuest Rocket" class="onboarding-hero-image">
-                                </div>
-                                <!-- Columna Derecha: Contenido y Sectores -->
-                                <div class="onboarding-content-side">
-                                    <span class="badge-promo">Paso 1 de 3</span>
-                                    <h2>Domina tus Ventas con Inteligencia Emocional</h2>
-                                    <p class="onboarding-welcome-text">Diseña tu ruta de aprendizaje de ventas personalizada. Resuelve objeciones al instante, perfila a tus prospectos y genera cierres de alto impacto emocional.</p>
-                                    
-                                    <div class="form-group" style="margin-top: 12px;">
-                                        <label style="font-family: var(--font-display); font-weight: 600; font-size: 15px; margin-bottom: 12px; display: block; color: var(--text-main);">¿Cuál es tu sector comercial?</label>
-                                        <div class="sector-grid" id="sector-grid" style="grid-template-columns: 1fr 1fr;">
-                                            <!-- Sectors injected here -->
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="onboarding-welcome-container" style="text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 10px 0;">
+                                <img src="sales_hero.png" alt="SalesQuest Rocket" class="onboarding-hero-image" style="max-width: 260px; margin-bottom: 10px;">
+                                <h2 style="font-size: 28px; margin: 0; color: var(--text-main); font-family: var(--font-display);">Domina tus Ventas con Inteligencia Emocional</h2>
+                                <p class="onboarding-welcome-text" style="max-width: 600px; color: var(--text-muted); font-size: 14px; line-height: 1.6; margin: 0;">
+                                    Diseña tu ruta de aprendizaje de ventas personalizada. Resuelve objeciones al instante, perfila a tus prospectos en tiempo real y genera cierres de alto impacto emocional.
+                                </p>
+                                <button type="button" id="ob-start-btn" class="btn btn-primary btn-glow" style="margin-top: 15px; padding: 14px 32px; font-size: 16px;">
+                                    <span>Comenzar mi Ruta 🚀</span>
+                                </button>
                             </div>
                         </div>
 
-                        <!-- STEP 2: Lead Temperature -->
+                        <!-- STEP 2: Sector Selection -->
                         <div class="onboarding-step-slide hidden" id="ob-step-2">
-                            <div class="onboarding-header">
-                                <span class="badge-promo">Paso 2 de 3</span>
-                                <h2>¿Cuál es la temperatura de tu venta?</h2>
-                                <p>El origen de tu cliente determina el tipo de objeciones a superar.</p>
+                            <input type="hidden" id="product-name" value="tu producto">
+                            <div class="onboarding-header" style="text-align: center; margin-bottom: 24px;">
+                                <span class="badge-promo">Paso 1 de 3</span>
+                                <h2 style="margin: 8px 0 4px 0;">¿Cuál es tu sector comercial?</h2>
+                                <p style="color: var(--text-muted); font-size: 13px;">Elige el sector en el que quieres especializar tu entrenamiento.</p>
                             </div>
-                            <div class="sector-grid" style="grid-template-columns: 1fr 1fr;">
-                                <div class="sector-card" id="lead-cold-card" style="padding: 24px 16px;">
+                            <div class="sector-grid" id="sector-grid" style="grid-template-columns: 1fr 1fr; gap: 16px; max-width: 640px; margin: 0 auto;">
+                                <!-- Sectors injected here -->
+                            </div>
+                        </div>
+
+                        <!-- STEP 3: Lead Temperature -->
+                        <div class="onboarding-step-slide hidden" id="ob-step-3">
+                            <div class="onboarding-header" style="text-align: center; margin-bottom: 24px;">
+                                <span class="badge-promo">Paso 2 de 3</span>
+                                <h2 style="margin: 8px 0 4px 0;">¿Cuál es la temperatura de tu venta?</h2>
+                                <p style="color: var(--text-muted); font-size: 13px;">El origen de tu cliente determina el tipo de objeciones a superar.</p>
+                            </div>
+                            <div class="sector-grid" style="grid-template-columns: 1fr 1fr; gap: 16px; max-width: 640px; margin: 0 auto;">
+                                <div class="sector-card" id="lead-cold-card" style="padding: 24px 16px; cursor: pointer; text-align: center;">
                                     <span class="sector-emoji">❄️</span>
-                                    <h3 style="margin-top: 8px;">Lead Frío</h3>
+                                    <h3 style="margin-top: 8px; font-size: 16px;">Lead Frío</h3>
                                     <p style="font-size: 11px; color: var(--text-muted); margin-top: 6px; line-height: 1.4;">Llamada/Email en frío, prospección activa, sin contacto previo.</p>
                                 </div>
-                                <div class="sector-card" id="lead-warm-card" style="padding: 24px 16px;">
+                                <div class="sector-card" id="lead-warm-card" style="padding: 24px 16px; cursor: pointer; text-align: center;">
                                     <span class="sector-emoji">🔥</span>
-                                    <h3 style="margin-top: 8px;">Lead Caliente</h3>
+                                    <h3 style="margin-top: 8px; font-size: 16px;">Lead Caliente</h3>
                                     <p style="font-size: 11px; color: var(--text-muted); margin-top: 6px; line-height: 1.4;">Inbound, viene de anuncios, descargó recursos o solicitó información.</p>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- STEP 3: Previous Filters (Only shown if Lead Warm selected) -->
-                        <div class="onboarding-step-slide hidden" id="ob-step-3">
-                            <div class="onboarding-header">
+                        <!-- STEP 4: Previous Filters -->
+                        <div class="onboarding-step-slide hidden" id="ob-step-4">
+                            <div class="onboarding-header" style="text-align: center; margin-bottom: 24px;">
                                 <span class="badge-promo">Paso 3 de 3</span>
-                                <h2>¿Por qué filtros previos pasó este lead?</h2>
-                                <p>Selecciona todos los puntos de contacto previos (puedes elegir varios o pulsar Siguiente).</p>
+                                <h2 style="margin: 8px 0 4px 0;">¿Por qué filtros previos pasó este lead?</h2>
+                                <p style="color: var(--text-muted); font-size: 13px;">Selecciona todos los puntos de contacto previos (puedes elegir varios o pulsar Siguiente).</p>
                             </div>
-                            <div class="quiz-options" id="filters-options-container">
-                                <div class="quiz-option" data-val="ad" style="cursor: pointer; display: flex; align-items: center; gap: 10px;">
+                            <div class="quiz-options" id="filters-options-container" style="max-width: 580px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px;">
+                                <div class="quiz-option" data-val="ad" style="cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02); transition: var(--transition-smooth);">
                                     <span>📢</span> Vio un anuncio publicitario
                                 </div>
-                                <div class="quiz-option" data-val="download" style="cursor: pointer; display: flex; align-items: center; gap: 10px;">
+                                <div class="quiz-option" data-val="download" style="cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02); transition: var(--transition-smooth);">
                                     <span>📄</span> Descargó un recurso gratuito (PDF, Ebook)
                                 </div>
-                                <div class="quiz-option" data-val="filter_call" style="cursor: pointer; display: flex; align-items: center; gap: 10px;">
+                                <div class="quiz-option" data-val="filter_call" style="cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02); transition: var(--transition-smooth);">
                                     <span>📞</span> Pasó una llamada de filtro / calificación previa
                                 </div>
-                                <div class="quiz-option" data-val="referral" style="cursor: pointer; display: flex; align-items: center; gap: 10px;">
+                                <div class="quiz-option" data-val="referral" style="cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02); transition: var(--transition-smooth);">
                                     <span>🤝</span> Vino recomendado por un cliente existente
                                 </div>
                             </div>

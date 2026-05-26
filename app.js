@@ -383,20 +383,25 @@ function updateWizardUI() {
         
         // Update badge text dynamically based on leadType
         const badge = currentSlide.querySelector(".badge-promo");
-        if (badge) {
+        if (badge && step > 1) {
             const total = app.state.leadType === "cold" ? 2 : 3;
-            badge.textContent = `Paso ${step} de ${total}`;
+            badge.textContent = `Paso ${step - 1} de ${total}`;
         }
     }
     
     // Update progress bar
+    const progressContainer = document.querySelector(".quiz-progress-bar");
     const progress = document.getElementById("onboarding-progress");
-    if (progress) {
-        let pct = (step / 3) * 100;
-        if (app.state.leadType === "cold") {
-            pct = (step / 2) * 100;
+    if (step === 1) {
+        if (progressContainer) progressContainer.style.display = "none";
+    } else {
+        if (progressContainer) progressContainer.style.display = "block";
+        if (progress) {
+            const total = app.state.leadType === "cold" ? 2 : 3;
+            const currentStep = step - 1; // 1, 2, 3
+            const pct = (currentStep / total) * 100;
+            progress.style.width = `${pct}%`;
         }
-        progress.style.width = `${pct}%`;
     }
     
     // Update navigation buttons
@@ -412,20 +417,53 @@ function updateWizardUI() {
     }
     
     if (nextBtn) {
-        if (step === 1 || step === 2) {
+        const lastStep = app.state.leadType === "cold" ? 3 : 4;
+        if (step < lastStep) {
             nextBtn.classList.add("hidden");
         } else {
             nextBtn.classList.remove("hidden");
             nextBtn.innerHTML = `<span>Comenzar mi Ruta 🚀</span>`;
         }
     }
+
+    // Highlight selections for step 3
+    if (step === 3) {
+        const coldCard = document.getElementById("lead-cold-card");
+        const warmCard = document.getElementById("lead-warm-card");
+        if (coldCard && warmCard) {
+            if (app.state.leadType === "cold") {
+                coldCard.classList.add("selected");
+                warmCard.classList.remove("selected");
+            } else if (app.state.leadType === "warm") {
+                warmCard.classList.add("selected");
+                coldCard.classList.remove("selected");
+            } else {
+                coldCard.classList.remove("selected");
+                warmCard.classList.remove("selected");
+            }
+        }
+    }
+
+    // Highlight selections for step 4
+    if (step === 4) {
+        document.querySelectorAll("#filters-options-container .quiz-option").forEach(opt => {
+            const val = opt.dataset.val;
+            if (app.state.previousFilters.includes(val)) {
+                opt.classList.add("selected");
+            } else {
+                opt.classList.remove("selected");
+            }
+        });
+    }
 }
 
 function resetOnboardingWizardUI() {
     app.state.onboardingStep = 1;
     
+    const progressContainer = document.querySelector(".quiz-progress-bar");
+    if (progressContainer) progressContainer.style.display = "none";
     const progress = document.getElementById("onboarding-progress");
-    if (progress) progress.style.width = "33%";
+    if (progress) progress.style.width = "0%";
     
     document.querySelectorAll(".onboarding-step-slide").forEach((slide, idx) => {
         if (idx === 0) {
@@ -451,9 +489,7 @@ function resetOnboardingWizardUI() {
     const prevBtn = document.getElementById("ob-prev-btn");
     const nextBtn = document.getElementById("ob-next-btn");
     if (prevBtn) prevBtn.classList.add("hidden");
-    if (nextBtn) {
-        nextBtn.innerHTML = `<span>Siguiente</span><svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`;
-    }
+    if (nextBtn) nextBtn.classList.add("hidden");
 }
 
 // 3. UI and DOM Manager
@@ -627,7 +663,9 @@ function setupEventListeners() {
                 const sectorName = sectorObj ? sectorObj.name : "tu sector";
                 app.state.productName = sectorName; // Respaldo para plantillas
                 
-                app.state.completedStages = ["stage-1"]; // Desbloquear stage 1
+                if (!app.state.completedStages.includes("stage-1")) {
+                    app.state.completedStages.push("stage-1");
+                }
                 app.addXP(20);
                 
                 document.getElementById("app-header").classList.remove("hidden");
@@ -643,30 +681,29 @@ function setupEventListeners() {
                 navigateTo("dashboard");
             };
             
-            if (step === 1) {
+            if (step === 2) {
                 if (!app.state.sectorId) {
                     alert("Por favor, selecciona un sector comercial.");
                     return;
                 }
-                app.state.onboardingStep = 2;
+                app.state.onboardingStep = 3;
                 updateWizardUI();
             } 
-            else if (step === 2) {
+            else if (step === 3) {
                 if (!app.state.leadType) {
                     alert("Por favor, selecciona si es un Lead Frío o Caliente.");
                     return;
                 }
                 
-                // Si es frío, completamos aquí la ruta de inmediato (solo 2 pasos)
+                // Si es frío, completamos aquí la ruta de inmediato
                 if (app.state.leadType === "cold") {
                     completeOnboarding();
                 } else {
-                    app.state.onboardingStep = 3;
+                    app.state.onboardingStep = 4;
                     updateWizardUI();
                 }
             } 
-            else if (step === 3) {
-                // Si es caliente, completamos aquí la ruta (3 pasos)
+            else if (step === 4) {
                 completeOnboarding();
             }
         });
@@ -801,6 +838,33 @@ function setupEventListeners() {
             if (confirm("¿Estás seguro de que quieres reiniciar tu configuración? Se borrará tu producto, sector y progreso de XP.")) {
                 app.resetState();
             }
+        });
+    }
+
+    // Start Onboarding button on Welcome Screen
+    const startBtn = document.getElementById("ob-start-btn");
+    if (startBtn) {
+        startBtn.addEventListener("click", () => {
+            app.state.onboardingStep = 2;
+            updateWizardUI();
+        });
+    }
+
+    // Header Back to Onboarding / Reconfigure button
+    const backToOnboardingBtn = document.getElementById("back-to-onboarding-btn");
+    if (backToOnboardingBtn) {
+        backToOnboardingBtn.addEventListener("click", () => {
+            app.state.onboardingStep = 1;
+            
+            // Hide app header and navigation
+            const headerEl = document.getElementById("app-header");
+            const navEl = document.getElementById("app-nav");
+            if (headerEl) headerEl.classList.add("hidden");
+            if (navEl) navEl.classList.add("hidden");
+            
+            // Update UI and navigate to onboarding view
+            updateWizardUI();
+            navigateTo("onboarding");
         });
     }
 }

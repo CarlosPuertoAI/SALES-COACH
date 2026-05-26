@@ -126,6 +126,32 @@ body {
     border: 1px solid var(--panel-border);
 }
 
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header-back-btn {
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 8px;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-smooth);
+}
+
+.header-back-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateX(-2px);
+    color: var(--primary);
+}
+
 .app-logo {
     display: flex;
     align-items: center;
@@ -1605,6 +1631,7 @@ input[type="text"]:focus {
 
     .header-left {
         text-align: center;
+        justify-content: center;
     }
 
     .header-right {
