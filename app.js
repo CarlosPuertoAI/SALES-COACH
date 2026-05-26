@@ -269,6 +269,20 @@ class SalesQuest {
             customObjections: [],
             detectedProfileId: ""
         };
+        
+        // Ocultar cabecera y menú de navegación
+        const headerEl = document.getElementById("app-header");
+        const navEl = document.getElementById("app-nav");
+        if (headerEl) headerEl.classList.add("hidden");
+        if (navEl) navEl.classList.add("hidden");
+        
+        // Limpiar el campo de texto del producto
+        const productInput = document.getElementById("product-name");
+        if (productInput) productInput.value = "";
+        
+        // Regenerar la cuadrícula de sectores (para quitar la selección anterior)
+        renderSectorSelectionGrid();
+        
         this.saveState();
         this.navigateTo("onboarding");
     }
