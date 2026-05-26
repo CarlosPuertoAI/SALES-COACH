@@ -223,6 +223,9 @@ class SalesQuest {
         this.state = {
             productName: "",
             sectorId: "",
+            leadType: "", // "cold" or "warm"
+            previousFilters: [], // Array of filters completed
+            onboardingStep: 1, // Onboarding wizard step
             xp: 0,
             level: 1,
             completedStages: [], // Node identifiers that are completed
@@ -259,6 +262,9 @@ class SalesQuest {
         this.state = {
             productName: "",
             sectorId: "",
+            leadType: "",
+            previousFilters: [],
+            onboardingStep: 1,
             xp: 0,
             level: 1,
             completedStages: [],
@@ -280,8 +286,8 @@ class SalesQuest {
         const productInput = document.getElementById("product-name");
         if (productInput) productInput.value = "";
         
-        // Regenerar la cuadrícula de sectores (para quitar la selección anterior)
-        renderSectorSelectionGrid();
+        // Restaurar estado visual del Wizard
+        resetOnboardingWizardUI();
         
         this.saveState();
         this.navigateTo("onboarding");
@@ -312,12 +318,104 @@ class SalesQuest {
     get currentObjections() {
         const sector = this.currentSector;
         if (!sector) return [];
-        return [...sector.objections, ...this.state.customObjections];
+        
+        let list = [];
+        // Si es Lead Frío, añadimos las 2 objeciones universales de prospección al inicio
+        if (this.state.leadType === "cold") {
+            list = [
+                {
+                    title: "No tengo tiempo / Envíame un correo",
+                    racional: "Entiendo perfectamente, el tiempo es el recurso más valioso. Por eso mismo, {product} está diseñado para automatizar procesos en tu sector y ahorrarle a tu equipo hasta 8 horas semanales. Para no hacerte perder tu tiempo, ¿te vendría bien una llamada corta de 5 minutos el próximo martes para evaluar si os encaja?",
+                    emocional: "Comprendo tu postura, hoy en día vamos todos saturados de correos y llamadas comerciales. Precisamente te contacto porque sé que {product} aliviará la carga de trabajo que tenéis encima, ayudándote a delegar tareas repetitivas y a respirar un poco más en tu día a día. ¿Me darías 5 minutos para contarte cómo?",
+                    redireccion: "Si te envío un correo con un resumen ejecutivo de 3 puntos clave que demuestra cómo ahorrar costes en tu área, y tras leerlo ves valor, ¿aceptarías una breve llamada de 5 minutos?"
+                },
+                {
+                    title: "No me interesa / Ya estoy cubierto",
+                    racional: "Es normal que no te interese algo que aún no has visto en acción. {product} ofrece un enfoque diferente que incrementa la eficiencia en tu sector en un 30% respecto a los métodos tradicionales. ¿Te parecería razonable ver una comparación rápida de 2 minutos para evaluar si tu proveedor actual te está dejando dinero sobre la mesa?",
+                    emocional: "Respeto tu decisión y entiendo que ya tengas soluciones contratadas. Mi intención no es hacerte cambiar por capricho, sino retar vuestros resultados actuales. Te mereces tener la total tranquilidad de que estás usando la opción más eficiente y rentable del mercado. ¿Hacemos un análisis rápido de contraste?",
+                    redireccion: "Si te demostramos con datos que hay una fuga de eficiencia del 15% en vuestro sistema actual que podemos solventar de inmediato, ¿sería algo de tu interés analizar?"
+                }
+            ];
+        }
+        
+        return [...list, ...sector.objections, ...this.state.customObjections];
     }
 
     get currentObjection() {
         const objections = this.currentObjections;
         return objections[this.state.currentObjectionIndex] || null;
+    }
+}
+
+// Onboarding Wizard UI Controllers
+function updateWizardUI() {
+    const step = app.state.onboardingStep;
+    
+    // Hide all step slides
+    document.querySelectorAll(".onboarding-step-slide").forEach(slide => {
+        slide.classList.add("hidden");
+    });
+    
+    // Show current slide
+    const currentSlide = document.getElementById(`ob-step-${step}`);
+    if (currentSlide) currentSlide.classList.remove("hidden");
+    
+    // Update progress bar
+    const progress = document.getElementById("onboarding-progress");
+    if (progress) {
+        const pct = (step / 4) * 100;
+        progress.style.width = `${pct}%`;
+    }
+    
+    // Update navigation buttons
+    const prevBtn = document.getElementById("ob-prev-btn");
+    const nextBtn = document.getElementById("ob-next-btn");
+    
+    if (prevBtn) {
+        if (step === 1) {
+            prevBtn.classList.add("hidden");
+        } else {
+            prevBtn.classList.remove("hidden");
+        }
+    }
+    
+    if (nextBtn) {
+        if (step === 4) {
+            nextBtn.innerHTML = `<span>Comenzar mi Ruta 🚀</span>`;
+        } else {
+            nextBtn.innerHTML = `<span>Siguiente</span><svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`;
+        }
+    }
+}
+
+function resetOnboardingWizardUI() {
+    app.state.onboardingStep = 1;
+    
+    const progress = document.getElementById("onboarding-progress");
+    if (progress) progress.style.width = "25%";
+    
+    document.querySelectorAll(".onboarding-step-slide").forEach((slide, idx) => {
+        if (idx === 0) {
+            slide.classList.remove("hidden");
+        } else {
+            slide.classList.add("hidden");
+        }
+    });
+    
+    const coldCard = document.getElementById("lead-cold-card");
+    const warmCard = document.getElementById("lead-warm-card");
+    if (coldCard) coldCard.classList.remove("selected");
+    if (warmCard) warmCard.classList.remove("selected");
+    
+    document.querySelectorAll("#filters-options-container .quiz-option").forEach(opt => {
+        opt.classList.remove("selected");
+    });
+    
+    const prevBtn = document.getElementById("ob-prev-btn");
+    const nextBtn = document.getElementById("ob-next-btn");
+    if (prevBtn) prevBtn.classList.add("hidden");
+    if (nextBtn) {
+        nextBtn.innerHTML = `<span>Siguiente</span><svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`;
     }
 }
 
@@ -426,33 +524,117 @@ SalesQuest.prototype.updateHeaderStats = function() {
 
 // Event Listeners Binder
 function setupEventListeners() {
-    // Onboarding Form Submit
-    const onboardingForm = document.getElementById("onboarding-form");
-    if (onboardingForm) {
-        onboardingForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const productInput = document.getElementById("product-name");
-            
-            if (!app.state.sectorId) {
-                alert("Por favor, selecciona un sector comercial para continuar.");
-                return;
+    // Onboarding Wizard: Temperature selection
+    const coldCard = document.getElementById("lead-cold-card");
+    const warmCard = document.getElementById("lead-warm-card");
+    if (coldCard && warmCard) {
+        coldCard.addEventListener("click", () => {
+            coldCard.classList.add("selected");
+            warmCard.classList.remove("selected");
+            app.state.leadType = "cold";
+            app.state.previousFilters = []; // Reset filters if switched to cold
+        });
+        
+        warmCard.addEventListener("click", () => {
+            warmCard.classList.add("selected");
+            coldCard.classList.remove("selected");
+            app.state.leadType = "warm";
+        });
+    }
+
+    // Onboarding Wizard: Previous Filters Selection (Multiple)
+    const filterOptions = document.querySelectorAll("#filters-options-container .quiz-option");
+    filterOptions.forEach(opt => {
+        opt.addEventListener("click", () => {
+            const val = opt.dataset.val;
+            if (opt.classList.contains("selected")) {
+                opt.classList.remove("selected");
+                app.state.previousFilters = app.state.previousFilters.filter(f => f !== val);
+            } else {
+                opt.classList.add("selected");
+                if (!app.state.previousFilters.includes(val)) {
+                    app.state.previousFilters.push(val);
+                }
             }
+        });
+    });
+
+    // Onboarding Wizard: Navigation Buttons
+    const prevBtn = document.getElementById("ob-prev-btn");
+    const nextBtn = document.getElementById("ob-next-btn");
+    
+    if (nextBtn) {
+        nextBtn.addEventListener("click", () => {
+            const step = app.state.onboardingStep;
             
-            app.state.productName = productInput.value.trim();
-            app.state.completedStages = ["stage-1"]; // Unlock stage 1 automatically
-            app.addXP(20); // 20 initial onboarding XP
-            
-            document.getElementById("app-header").classList.remove("hidden");
-            document.getElementById("app-nav").classList.remove("hidden");
-            app.updateHeaderStats();
-            
-            showCelebrationModal(
-                "¡Ruta Creada! 🚀", 
-                `Tu ruta de aprendizaje de ventas para "${app.state.productName}" está lista. Ganas +20 XP por iniciar.`,
-                [{ emoji: "🗺️", name: "Iniciador" }]
-            );
-            
-            navigateTo("roadmap");
+            if (step === 1) {
+                const productInput = document.getElementById("product-name");
+                if (!productInput.value.trim()) {
+                    alert("Por favor, escribe el nombre de tu producto o servicio.");
+                    return;
+                }
+                app.state.productName = productInput.value.trim();
+                app.state.onboardingStep = 2;
+                updateWizardUI();
+            } 
+            else if (step === 2) {
+                if (!app.state.leadType) {
+                    alert("Por favor, selecciona si es un Lead Frío o Caliente.");
+                    return;
+                }
+                // Si es frío, saltamos el paso 3 y vamos al 4 directo
+                if (app.state.leadType === "cold") {
+                    app.state.onboardingStep = 4;
+                } else {
+                    app.state.onboardingStep = 3;
+                }
+                updateWizardUI();
+            } 
+            else if (step === 3) {
+                app.state.onboardingStep = 4;
+                updateWizardUI();
+            } 
+            else if (step === 4) {
+                if (!app.state.sectorId) {
+                    alert("Por favor, selecciona un sector comercial.");
+                    return;
+                }
+                
+                // Complete Onboarding Wizard
+                app.state.completedStages = ["stage-1"]; // Desbloquear stage 1
+                app.addXP(20);
+                
+                document.getElementById("app-header").classList.remove("hidden");
+                document.getElementById("app-nav").classList.remove("hidden");
+                app.updateHeaderStats();
+                
+                showCelebrationModal(
+                    "¡Ruta Creada! 🚀", 
+                    `Tu ruta de aprendizaje de ventas para "${app.state.productName}" (${app.state.leadType === 'cold' ? 'Lead Frío' : 'Lead Caliente'}) está lista. Ganas +20 XP.`,
+                    [{ emoji: "🗺️", name: "Iniciador" }]
+                );
+                
+                navigateTo("roadmap");
+            }
+        });
+    }
+
+    if (prevBtn) {
+        prevBtn.addEventListener("click", () => {
+            const step = app.state.onboardingStep;
+            if (step === 4) {
+                // Si es frío, volvemos al paso 2 directo
+                if (app.state.leadType === "cold") {
+                    app.state.onboardingStep = 2;
+                } else {
+                    app.state.onboardingStep = 3;
+                }
+            } else if (step === 3) {
+                app.state.onboardingStep = 2;
+            } else if (step === 2) {
+                app.state.onboardingStep = 1;
+            }
+            updateWizardUI();
         });
     }
 
@@ -975,26 +1157,46 @@ function renderClosing() {
     if (summaryObjection) summaryObjection.innerText = objection.title;
     if (leverTag) leverTag.innerText = `Palanca: ${profile.lever}`;
     
+    // Generate context phrase based on leadType and previousFilters
+    let contextPhrase = "";
+    if (app.state.leadType === "cold") {
+        contextPhrase = "Como es la primera vez que conversamos y aún nos estamos conociendo, quiero darte total tranquilidad. ";
+    } else {
+        const filters = app.state.previousFilters || [];
+        if (filters.includes("referral")) {
+            contextPhrase = "Teniendo en cuenta que vienes recomendado por un cliente nuestro que ya está teniendo excelentes resultados, ";
+        } else if (filters.includes("filter_call")) {
+            contextPhrase = "Retomando lo que analizamos en nuestra anterior llamada de descubrimiento sobre los cuellos de botella de tu negocio, ";
+        } else if (filters.includes("download")) {
+            contextPhrase = "Dado que ya tuviste la oportunidad de revisar el material y dossier de {product} que te descargaste, ";
+        } else if (filters.includes("ad")) {
+            contextPhrase = "Teniendo en cuenta tu interés inicial al registrarte en nuestra campaña sobre {product}, ";
+        } else {
+            contextPhrase = "Teniendo en cuenta el interés que has mostrado previamente en nuestra solución, ";
+        }
+    }
+
     // Generate Custom Script based on client profile template
     let template = "";
     let explanation = "";
     
     if (profileId === "analitico") {
-        template = `Entiendo perfectamente tu postura. Con {product}, no estamos buscando que tomes una decisión precipitada el día de hoy.\n\nLo que te propongo es que analicemos juntos nuestra auditoría de integración técnica que demuestra un índice de estabilidad del 99.9% y un retorno de inversión promedio de X meses. Para tu total seguridad, todo esto queda respaldado por una garantía contractual de satisfacción de 30 días, lo que reduce el riesgo financiero de tu empresa a cero.\n\n¿Te parecería bien si nuestro analista configura un entorno de pruebas mañana mismo para que puedas validar los datos con tu propio equipo técnico?`;
+        template = `{context}con {product} no estamos buscando que tomes una decisión precipitada el día de hoy.\n\nLo que te propongo es que analicemos juntos nuestra auditoría de integración técnica que demuestra un índice de estabilidad del 99.9% y un retorno de inversión promedio de X meses. Para tu total seguridad, todo esto queda respaldado por una garantía contractual de satisfacción de 30 días, lo que reduce el riesgo financiero de tu empresa a cero.\n\n¿Te parecería bien si nuestro analista configura un entorno de pruebas mañana mismo para que puedas validar los datos con tu propio equipo técnico?`;
         explanation = "Este cierre apela al miedo a equivocarse del Analítico. Le ofrece datos concretos, un proceso libre de presiones ('no decidas hoy mismo') y elimina el riesgo mediante una garantía auditable, haciéndole sentir en control racional de la operación.";
     } else if (profileId === "directo") {
-        template = `Valoro mucho tu tiempo y sé que tu objetivo es optimizar los resultados operativos de tu departamento lo antes posible.\n\n{product} está diseñado precisamente para líderes de vuestro sector que no quieren perder el tiempo en gestiones lentas y buscan recortar un 20% de ineficiencia competitiva esta misma semana. Al dar el paso hoy, te garantizas estar un paso por delante de tus competidores principales y agilizar los procesos de tu equipo.\n\nVamos a iniciar con el plan de despliegue rápido. ¿Qué correo de facturación dejamos registrado para activar las licencias hoy mismo y no perder ni un día de tracción?`;
+        template = `{context}sé que tu objetivo es optimizar los resultados operativos de tu departamento lo antes posible.\n\n{product} está diseñado precisamente para líderes de vuestro sector que no quieren perder el tiempo en gestiones lentas y buscan recortar un 20% de ineficiencia competitiva esta misma semana. Al dar el paso hoy, te garantizaras estar un paso por delante de tus competidores principales y agilizar los procesos de tu equipo.\n\nVamos a iniciar con el plan de despliegue rápido. ¿Qué correo de facturación dejamos registrado para activar las licencias hoy mismo y no perder ni un día de tracción?`;
         explanation = "El Directo valora el control, el tiempo y el estatus competitivo. Este cierre corta los rodeos, le sitúa como un líder vanguardista con poder de decisión y le empuja a la acción inmediata utilizando la urgencia de no perder tracción.";
     } else if (profileId === "relacional") {
-        template = `Entiendo muy bien de dónde viene tu inquietud. Para nosotros, tu tranquilidad y la de tu equipo es la prioridad número uno.\n\nSi decides confiar en nosotros, yo personalmente estaré a cargo del plan de acompañamiento junto con nuestro especialista asignado 24/7. No te vamos a dejar un manual PDF y desaparecer; nos encargaremos de formar a tu equipo paso a paso y resolveremos cada duda en videollamada siempre que lo necesites. En {product} no buscamos clientes, buscamos socios a largo plazo.\n\n¿Te parece bien si agendamos nuestra sesión de inducción conjunta para el próximo lunes a primera hora para que conozcas al equipo técnico que te apoyará?`;
+        template = `{context}para nosotros, tu tranquilidad y la de tu equipo es la prioridad número uno.\n\nSi decides confiar en nosotros, yo personalmente estaré a cargo del plan de acompañamiento junto con nuestro especialista asignado 24/7. No te vamos a dejar un manual PDF y desaparecer; nos encargaremos de formar a tu equipo paso a paso y resolveremos cada duda en videollamada siempre que lo necesites. En {product} no buscamos clientes, buscamos socios a largo plazo.\n\n¿Te parece bien si agendamos nuestra sesión de inducción conjunta para el próximo lunes a primera hora para que conozcas al equipo técnico que te apoyará?`;
         explanation = "El Relacional busca soporte, conexión humana y paz mental. Este cierre le asegura que habrá un gestor asignado guiándole en todo momento, quitándole la presión de sentirse solo ante una mala implementación técnica.";
     } else if (profileId === "impulsivo") {
-        template = `¡Totalmente de acuerdo! En un mercado que evoluciona a esta velocidad, el mayor riesgo es quedarse estancado haciendo lo mismo de siempre.\n\nCon {product}, estás posicionando a tu marca como un referente innovador en tu área. De hecho, esta campaña de acceso exclusivo a la nueva versión que te he mostrado solo está disponible para los primeros 5 clientes de esta semana, y a esta hora solo nos quedan 2 accesos de primicia comercial.\n\nSi tomamos la decisión ahora, asegurarás los bonus de lanzamiento y la exclusividad territorial frente a tus rivales. ¿Le damos luz verde antes de que se agote la oferta?`;
+        template = `{context}con {product} estarás posicionando a tu marca como un referente innovador en tu área.\n\nDe hecho, esta campaña de acceso exclusivo a la nueva versión que te he mostrado solo está disponible para los primeros 5 clientes de esta semana, y a esta hora solo nos quedan 2 accesos de primicia comercial.\n\nSi tomamos la decisión ahora, asegurarás los bonus de lanzamiento y la exclusividad territorial frente a tus rivales. ¿Le damos luz verde antes de que se agote la oferta?`;
         explanation = "El Impulsivo/Innovador se mueve por la excitación, las tendencias y el miedo a perderse algo (FOMO). Este cierre enfatiza la primicia, la escasez de vacantes disponibles y el estatus exclusivo de pertenecer al círculo inicial de adoptantes.";
     }
     
     // Inject Product and Sector parameters
     const finalScript = template
+        .replace(/{context}/g, contextPhrase)
         .replace(/{product}/g, app.state.productName || "nuestro producto")
         .replace(/{sector}/g, app.currentSector ? app.currentSector.name : "tu sector");
         

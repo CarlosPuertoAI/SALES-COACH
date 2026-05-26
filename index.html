@@ -47,33 +47,99 @@
         <!-- MAIN CONTENT AREA -->
         <main class="main-content" id="main-content">
             
-            <!-- VIEW 1: ONBOARDING / SETUP -->
+            <!-- VIEW 1: ONBOARDING / SETUP (WIZARD) -->
             <section id="view-onboarding" class="view active">
                 <div class="onboarding-card glass-panel">
-                    <div class="onboarding-header">
-                        <span class="badge-promo">Beta Abierta</span>
-                        <h2>Domina tus Ventas con Inteligencia Emocional</h2>
-                        <p>Diseña tu ruta de aprendizaje de ventas personalizada. Resuelve objeciones al instante, perfila a tus prospectos y genera cierres de alto impacto emocional.</p>
+                    
+                    <!-- Wizard Progress Bar -->
+                    <div class="quiz-progress-bar" style="margin-bottom: 30px;">
+                        <div class="quiz-progress-fill" id="onboarding-progress" style="width: 25%"></div>
                     </div>
 
                     <form id="onboarding-form" class="interactive-form">
-                        <div class="form-group">
-                            <label for="product-name">¿Qué producto o servicio vendes?</label>
-                            <input type="text" id="product-name" placeholder="Ej. Software de CRM para PYMES, Apartamentos en la playa, Seguros de vida..." required autocomplete="off">
-                            <span class="input-helper">Esto nos ayudará a personalizar tus guiones de venta.</span>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Selecciona tu Sector Comercial</label>
-                            <div class="sector-grid" id="sector-grid">
-                                <!-- Sectors will be injected here via JS -->
+                        
+                        <!-- STEP 1: Product Name -->
+                        <div class="onboarding-step-slide" id="ob-step-1">
+                            <div class="onboarding-header">
+                                <span class="badge-promo">Paso 1 de 4</span>
+                                <h2>¿Qué producto o servicio vendes?</h2>
+                                <p>Esto nos ayudará a personalizar tus objeciones y guiones de venta.</p>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="product-name" placeholder="Ej. CRM para PYMES, Apartamentos en la playa, Seguros de vida..." required autocomplete="off">
+                                <span class="input-helper">Introduce el nombre de tu producto o servicio principal.</span>
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary btn-block btn-glow">
-                            <span>Comenzar mi Ruta</span>
-                            <svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                        </button>
+                        <!-- STEP 2: Lead Temperature -->
+                        <div class="onboarding-step-slide hidden" id="ob-step-2">
+                            <div class="onboarding-header">
+                                <span class="badge-promo">Paso 2 de 4</span>
+                                <h2>¿Cuál es la temperatura de tu venta?</h2>
+                                <p>El origen de tu cliente determina el tipo de objeciones a superar.</p>
+                            </div>
+                            <div class="sector-grid" style="grid-template-columns: 1fr 1fr;">
+                                <div class="sector-card" id="lead-cold-card" style="padding: 24px 16px;">
+                                    <span class="sector-emoji">❄️</span>
+                                    <h3 style="margin-top: 8px;">Lead Frío</h3>
+                                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 6px; line-height: 1.4;">Llamada/Email en frío, prospección activa, sin contacto previo.</p>
+                                </div>
+                                <div class="sector-card" id="lead-warm-card" style="padding: 24px 16px;">
+                                    <span class="sector-emoji">🔥</span>
+                                    <h3 style="margin-top: 8px;">Lead Caliente</h3>
+                                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 6px; line-height: 1.4;">Inbound, viene de anuncios, descargó recursos o solicitó información.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- STEP 3: Previous Filters (Only shown if Lead Warm selected) -->
+                        <div class="onboarding-step-slide hidden" id="ob-step-3">
+                            <div class="onboarding-header">
+                                <span class="badge-promo">Paso 3 de 4</span>
+                                <h2>¿Por qué filtros previos pasó este lead?</h2>
+                                <p>Selecciona todos los puntos de contacto previos (puedes elegir varios o pulsar Siguiente).</p>
+                            </div>
+                            <div class="quiz-options" id="filters-options-container">
+                                <div class="quiz-option" data-val="ad" style="cursor: pointer; display: flex; align-items: center; gap: 10px;">
+                                    <span>📢</span> Vio un anuncio publicitario
+                                </div>
+                                <div class="quiz-option" data-val="download" style="cursor: pointer; display: flex; align-items: center; gap: 10px;">
+                                    <span>📄</span> Descargó un recurso gratuito (PDF, Ebook)
+                                </div>
+                                <div class="quiz-option" data-val="filter_call" style="cursor: pointer; display: flex; align-items: center; gap: 10px;">
+                                    <span>📞</span> Pasó una llamada de filtro / calificación previa
+                                </div>
+                                <div class="quiz-option" data-val="referral" style="cursor: pointer; display: flex; align-items: center; gap: 10px;">
+                                    <span>🤝</span> Vino recomendado por un cliente existente
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- STEP 4: Sector Selection -->
+                        <div class="onboarding-step-slide hidden" id="ob-step-4">
+                            <div class="onboarding-header">
+                                <span class="badge-promo">Paso 4 de 4</span>
+                                <h2>¿Cuál es tu sector comercial?</h2>
+                                <p>Cargaremos las objeciones y cierres específicos para tu industria.</p>
+                            </div>
+                            <div class="form-group">
+                                <div class="sector-grid" id="sector-grid">
+                                    <!-- Sectors injected here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Wizard Navigation Buttons -->
+                        <div class="wizard-actions" style="display: flex; justify-content: space-between; gap: 16px; margin-top: 20px;">
+                            <button type="button" id="ob-prev-btn" class="btn btn-secondary hidden" style="flex: 1;">
+                                <svg class="icon" viewBox="0 0 24 24" style="transform: rotate(180deg);"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                                <span>Atrás</span>
+                            </button>
+                            <button type="button" id="ob-next-btn" class="btn btn-primary" style="flex: 2;">
+                                <span>Siguiente</span>
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </button>
+                        </div>
                     </form>
                 </div>
             </section>
