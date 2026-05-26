@@ -1055,41 +1055,41 @@ input[type="text"]:focus {
     }
 }
 
-/* Master Persuasion Custom Neon Tabs */
-.response-tabs .tab-btn[data-tab="belfort"] {
+/* Custom Persuasion Profiles Neon Tabs */
+.response-tabs .tab-btn[data-tab="agresivo"] {
     border: 1px solid transparent;
 }
-.response-tabs .tab-btn[data-tab="belfort"].active {
-    background: rgba(6, 182, 212, 0.1);
-    color: #22d3ee;
-    border-color: rgba(6, 182, 212, 0.35) !important;
-    box-shadow: 0 0 12px rgba(6, 182, 212, 0.15);
-}
-
-.response-tabs .tab-btn[data-tab="voss"] {
-    border: 1px solid transparent;
-}
-.response-tabs .tab-btn[data-tab="voss"].active {
-    background: rgba(245, 158, 11, 0.1);
-    color: #fbbf24;
-    border-color: rgba(245, 158, 11, 0.35) !important;
-    box-shadow: 0 0 12px rgba(245, 158, 11, 0.15);
-}
-
-.response-tabs .tab-btn[data-tab="cardone"] {
-    border: 1px solid transparent;
-}
-.response-tabs .tab-btn[data-tab="cardone"].active {
+.response-tabs .tab-btn[data-tab="agresivo"].active {
     background: rgba(239, 68, 68, 0.1);
     color: #f87171;
     border-color: rgba(239, 68, 68, 0.35) !important;
     box-shadow: 0 0 12px rgba(239, 68, 68, 0.15);
 }
 
-.response-tabs .tab-btn[data-tab="spin"] {
+.response-tabs .tab-btn[data-tab="emocional"] {
     border: 1px solid transparent;
 }
-.response-tabs .tab-btn[data-tab="spin"].active {
+.response-tabs .tab-btn[data-tab="emocional"].active {
+    background: rgba(245, 158, 11, 0.1);
+    color: #fbbf24;
+    border-color: rgba(245, 158, 11, 0.35) !important;
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.15);
+}
+
+.response-tabs .tab-btn[data-tab="analitico"] {
+    border: 1px solid transparent;
+}
+.response-tabs .tab-btn[data-tab="analitico"].active {
+    background: rgba(6, 182, 212, 0.1);
+    color: #22d3ee;
+    border-color: rgba(6, 182, 212, 0.35) !important;
+    box-shadow: 0 0 12px rgba(6, 182, 212, 0.15);
+}
+
+.response-tabs .tab-btn[data-tab="solucionador"] {
+    border: 1px solid transparent;
+}
+.response-tabs .tab-btn[data-tab="solucionador"].active {
     background: rgba(139, 92, 246, 0.1);
     color: #a78bfa;
     border-color: rgba(139, 92, 246, 0.35) !important;

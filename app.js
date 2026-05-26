@@ -11,24 +11,24 @@ const SECTORS = [
         objections: [
             {
                 title: "Es muy caro / No hay presupuesto disponible",
-                belfort: "Entiendo que el coste es un factor clave, pero déjame hacerte una pregunta. Si este software te ahorrara un 25% de costes y te trajera el doble de clientes, ¿se autofinanciaría solo? Claro que sí. A nivel de escala de 1 a 10, ¿cómo de útil ves la idea? Si confías en mí, nos encargaremos de que el retorno de inversión supere cualquier cuota. Hagamos la prueba.",
-                voss: "Parece que te preocupa comprometer fondos sin tener la absoluta certeza del retorno. ¿Cómo podríamos estructurar esto para que no suponga un riesgo para tu presupuesto mensual? ¿Qué tendría que pasar para que esta inversión fuera una decisión obvia para tu directiva?",
-                cardone: "¡Tienes toda la razón, es una inversión importante! Y precisamente por eso debes hacerlo. El dinero va y viene, pero el tiempo que pierde tu equipo no se recupera. El verdadero coste no es la cuota de {product}, sino seguir perdiendo miles de euros en ineficiencias. Vamos a firmar y a empezar hoy mismo.",
-                spin: "¿Qué impacto tiene en vuestra facturación que el equipo pierda 10 horas semanales en procesos manuales? Si no solucionáis esa ineficiencia hoy, ¿cuánto presupuesto habréis desperdiciado de aquí a final de año? ¿Cómo ayudaría a vuestros objetivos liberar ese tiempo con {product}?"
+                analitico: "Entiendo que el coste es un factor clave, pero déjame hacerte una pregunta. Si este software te ahorrara un 25% de costes y te trajera el doble de clientes, ¿se autofinanciaría solo? Claro que sí. A nivel de escala de 1 a 10, ¿cómo de útil ves la idea? Si confías en mí, nos encargaremos de que el retorno de inversión supere cualquier cuota. Hagamos la prueba.",
+                emocional: "Parece que te preocupa comprometer fondos sin tener la absoluta certeza del retorno. ¿Cómo podríamos estructurar esto para que no suponga un riesgo para tu presupuesto mensual? ¿Qué tendría que pasar para que esta inversión fuera una decisión obvia para tu directiva?",
+                agresivo: "¡Tienes toda la razón, es una inversión importante! Y precisamente por eso debes hacerlo. El dinero va y viene, pero el tiempo que pierde tu equipo no se recupera. El verdadero coste no es la cuota de {product}, sino seguir perdiendo miles de euros en ineficiencias. Vamos a firmar y a empezar hoy mismo.",
+                solucionador: "¿Qué impacto tiene en vuestra facturación que el equipo pierda 10 horas semanales en procesos manuales? Si no solucionáis esa ineficiencia hoy, ¿cuánto presupuesto habréis desperdiciado de aquí a final de año? ¿Cómo ayudaría a vuestros objetivos liberar ese tiempo con {product}?"
             },
             {
                 title: "Es difícil de integrar con nuestras herramientas actuales",
-                belfort: "Comprendo el temor a la integración, pero déjame decirte algo: nuestro software está diseñado para conectarse con un clic. Si te garantizo que mi equipo técnico hará la migración en menos de 2 horas sin interrumpir tus operaciones, y asumo yo toda la responsabilidad de que funcione al 100%, ¿estarías dispuesto a dar el paso?",
-                voss: "Parece que has tenido malas experiencias previas con integraciones de software que causaron caos en tu equipo. ¿Cómo afectaría a tus operaciones que la transición se hiciera de forma totalmente transparente? ¿Qué te preocupa en particular de conectar {product}?",
-                cardone: "¡Totalmente de acuerdo, da pereza pensar en cambiar de sistemas! Pero la comodidad es el enemigo del crecimiento. Si evitas este cambio por miedo a la integración, te quedarás estancado con procesos obsoletos mientras tu competencia avanza. Nosotros nos encargamos de todo. ¡Hagámoslo!",
-                spin: "¿Qué problemas operativos os causa actualmente tener la información fragmentada en herramientas que no se comunican? Si esta dificultad de integración os impide escalar, ¿qué coste tiene para la empresa a largo plazo? ¿Cómo cambiaría la eficiencia del equipo si unificáramos todo?"
+                analitico: "Comprendo el temor a la integración, pero déjame decirte algo: nuestro software está diseñado para conectarse con un clic. Si te garantizo que mi equipo técnico hará la migración en menos de 2 horas sin interrumpir tus operaciones, y asumo yo toda la responsabilidad de que funcione al 100%, ¿estarías dispuesto a dar el paso?",
+                emocional: "Parece que has tenido malas experiencias previas con integraciones de software que causaron caos en tu equipo. ¿Cómo afectaría a tus operaciones que la transición se hiciera de forma totalmente transparente? ¿Qué te preocupa en particular de conectar {product}?",
+                agresivo: "¡Totalmente de acuerdo, da pereza pensar en cambiar de sistemas! Pero la comodidad es el enemigo del crecimiento. Si evitas este cambio por miedo a la integración, te quedarás estancado con procesos obsoletos mientras tu competencia avanza. Nosotros nos encargamos de todo. ¡Hagámoslo!",
+                solucionador: "¿Qué problemas operativos os causa actualmente tener la información fragmentada en herramientas que no se comunican? Si esta dificultad de integración os impide escalar, ¿qué coste tiene para la empresa a largo plazo? ¿Cómo cambiaría la eficiencia del equipo si unificáramos todo?"
             },
             {
                 title: "No tenemos tiempo para aprender a usar una plataforma nueva",
-                belfort: "Entiendo perfectamente, el tiempo es oro. Pero hagamos números: tardarás 30 minutos en aprender a usar {product}, y a cambio ahorrarás 8 horas semanales para siempre. Si la idea tiene sentido y confías en que te daremos formación personalizada VIP interactiva, ¿empezamos ya?",
-                voss: "Parece que el equipo ya está al límite de su capacidad operativa y temes sobrecargarlos. ¿Cómo podemos planificar la capacitación para que no interfiera en su día a día? ¿Qué apoyo por nuestra parte te daría la tranquilidad de que será sencillo?",
-                cardone: "¡Estoy de acuerdo, no hay tiempo! Y por eso mismo necesitas {product}. Si no tienes tiempo hoy, ¿cuándo lo vas a tener? ¿El año que viene cuando estéis aún más saturados? Compra tiempo automatizando tareas hoy mismo. Empecemos de una vez.",
-                spin: "¿Cuánto tiempo dedica actualmente tu equipo a tareas repetitivas que podrían automatizarse? Si continúan con este ritmo de trabajo sin herramientas modernas, ¿qué impacto tendrá en la moral del equipo y en vuestro crecimiento? ¿Cómo os beneficiaría liberar un día completo a la semana por empleado?"
+                analitico: "Entiendo perfectamente, el tiempo es oro. Pero hagamos números: tardarás 30 minutos en aprender a usar {product}, y a cambio ahorrarás 8 horas semanales para siempre. Si la idea tiene sentido y confías en que te daremos formación personalizada VIP interactiva, ¿empezamos ya?",
+                emocional: "Parece que el equipo ya está al límite de su capacidad operativa y temes sobrecargarlos. ¿Cómo podemos planificar la capacitación para que no interfiera en su día a día? ¿Qué apoyo por nuestra parte te daría la tranquilidad de que será sencillo?",
+                agresivo: "¡Estoy de acuerdo, no hay tiempo! Y por eso mismo necesitas {product}. Si no tienes tiempo hoy, ¿cuándo lo vas a tener? ¿El año que viene cuando estéis aún más saturados? Compra tiempo automatizando tareas hoy mismo. Empecemos de una vez.",
+                solucionador: "¿Cuánto tiempo dedica actualmente tu equipo a tareas repetitivas que podrían automatizarse? Si continúan con este ritmo de trabajo sin herramientas modernas, ¿qué impacto tendrá en la moral del equipo y en vuestro crecimiento? ¿Cómo os beneficiaría liberar un día completo a la semana por empleado?"
             }
         ]
     },
@@ -39,24 +39,24 @@ const SECTORS = [
         objections: [
             {
                 title: "Los tipos de interés y las hipotecas están muy altos ahora",
-                belfort: "Entiendo perfectamente, pero déjame hacerte una pregunta. Si esperas a que bajen los tipos, la demanda subirá y esta casa costará un 10% más. Si compras ahora al precio de hoy y refinancias la hipoteca más adelante, ¿no estarías ganando por partida doble? La propiedad es perfecta, confía en mí y cerremos el trato.",
-                voss: "Parece que sientes incertidumbre por el panorama financiero y temes tomar una decisión precipitada. ¿Cómo tendría que ser la oferta para que te sintieras cómodo comprando en el mercado actual? ¿Qué pasaría si esperas y los precios de la zona siguen subiendo?",
-                cardone: "¡Totalmente de acuerdo, los tipos están altos! Pero nunca habrá un momento perfecto para comprar. El mejor momento fue hace 10 años, el segundo mejor es hoy. La inflación se come tu dinero en el banco; el ladrillo es el activo más seguro. Vamos a reservar la casa antes de que se la quede otro comprador.",
-                spin: "¿Qué coste mensual extra os supone seguir pagando un alquiler que no construye patrimonio? Si los precios de los inmuebles en esta zona suben un 6% anual, ¿cuánto os costará esta misma casa si decidís esperar dos años? ¿Qué seguridad os aportaría tener vuestra vivienda en propiedad ya?"
+                analitico: "Entiendo perfectamente, pero déjame hacerte una pregunta. Si esperas a que bajen los tipos, la demanda subirá y esta casa costará un 10% más. Si compras ahora al precio de hoy y refinancias la hipoteca más adelante, ¿no estarías ganando por partida doble? La propiedad es perfecta, confía en mí y cerremos el trato.",
+                emocional: "Parece que sientes incertidumbre por el panorama financiero y temes tomar una decisión precipitada. ¿Cómo tendría que ser la oferta para que te sintieras cómodo comprando en el mercado actual? ¿Qué pasaría si esperas y los precios de la zona siguen subiendo?",
+                agresivo: "¡Totalmente de acuerdo, los tipos están altos! Pero nunca habrá un momento perfecto para comprar. El mejor momento fue hace 10 años, el segundo mejor es hoy. La inflación se come tu dinero en el banco; el ladrillo es el activo más seguro. Vamos a reservar la casa antes de que se la quede otro comprador.",
+                solucionador: "¿Qué coste mensual extra os supone seguir pagando un alquiler que no construye patrimonio? Si los precios de los inmuebles en esta zona suben un 6% anual, ¿cuánto os costará esta misma casa si decidís esperar dos años? ¿Qué seguridad os aportaría tener vuestra vivienda en propiedad ya?"
             },
             {
                 title: "Necesito consultarlo con mi pareja o socio primero",
-                belfort: "Me parece una excelente idea, la familia y los socios son lo primero. Pero déjame preguntarte: a ti personalmente, ¿te entusiasma la casa? Si la respuesta es un 10, déjame acompañarte mañana a presentársela de forma profesional para que entiendan la gran oportunidad técnica y financiera que es. ¿Te parece bien a las 6?",
-                voss: "Parece que no quieres asumir la responsabilidad de esta decisión tú solo por miedo a que tu pareja o socio no comparta tu visión. ¿Cómo reaccionarían si les presentáramos un dossier detallado con el retorno de inversión y las ventajas de la zona? ¿Qué dudas crees que plantearán?",
-                cardone: "¡Por supuesto, consúltalo! Pero sé honesto: si a ti te encanta, ellos confiarán en tu criterio. Si esperas a mañana para decidir, esta propiedad ya no estará en el mercado porque hay tres visitas programadas para esta tarde. Toma la iniciativa, reserva ahora y si a tu pareja no le gusta, te devuelvo el depósito.",
-                spin: "¿Qué inconvenientes surgirían si perdemos esta vivienda por no tomar una decisión a tiempo? Si tu pareja o socio tuvieran que ver el inmueble hoy, ¿qué aspectos valorarían más? ¿Cómo ayudaría a la negociación que hagamos una visita conjunta mañana?"
+                analitico: "Me parece una excelente idea, la familia y los socios son lo primero. Pero déjame preguntarte: a ti personalmente, ¿te entusiasma la casa? Si la respuesta es un 10, déjame acompañarte mañana a presentársela de forma profesional para que entiendan la gran oportunidad técnica y financiera que es. ¿Te parece bien a las 6?",
+                emocional: "Parece que no quieres asumir la responsabilidad de esta decisión tú solo por miedo a que tu pareja o socio no comparta tu visión. ¿Cómo reaccionarían si les presentáramos un dossier detallado con el retorno de inversión y las ventajas de la zona? ¿Qué dudas crees que plantearán?",
+                agresivo: "¡Por supuesto, consúltalo! Pero sé honesto: si a ti te encanta, ellos confiarán en tu criterio. Si esperas a mañana para decidir, esta propiedad ya no estará en el mercado porque hay tres visitas programadas para esta tarde. Toma la iniciativa, reserva ahora y si a tu pareja no le gusta, te devuelvo el depósito.",
+                solucionador: "¿Qué inconvenientes surgirían si perdemos esta vivienda por no tomar una decisión a tiempo? Si tu pareja o socio tuvieran que ver el inmueble hoy, ¿qué aspectos valorarían más? ¿Cómo ayudaría a la negociación que hagamos una visita conjunta mañana?"
             },
             {
                 title: "La casa me gusta, pero la zona no me convence del todo",
-                belfort: "Entiendo tu duda con la zona, pero analicemos los datos objetivos. Este barrio está en el plan de desarrollo municipal con una nueva línea de metro y un parque comercial a 500 metros. Comprar hoy aquí es comprar barato para ver cómo se revaloriza tu vivienda un 20% en 3 años. Confía en mí, es una jugada maestra.",
-                voss: "Parece que te preocupa la seguridad o la calidad de vida de tu familia al cambiar de entorno. ¿Qué servicios o características de la zona son indispensables para ti? ¿Cómo afectaría a tu día a día que el barrio mejore sus conexiones el próximo año?",
-                cardone: "¡Tienes razón, la zona es diferente a la que tenías en mente! Pero la casa es espectacular y el precio es inmejorable. La zona se puede adaptar y crecer, de hecho se está revalorizando rapidísimo. No dejes escapar la casa de tus sueños por un prejuicio de ubicación. Vamos a firmar.",
-                spin: "¿Qué limitaciones encontráis en vuestro barrio actual que esta casa sí solucione? Si buscáis una casa con estas características en vuestra zona preferida, ¿cuánto presupuesto adicional tendríais que invertir? ¿Cómo compensa esta vivienda esa diferencia?"
+                analitico: "Entiendo tu duda con la zona, pero analicemos los datos objetivos. Este barrio está en el plan de desarrollo municipal con una nueva línea de metro y un parque comercial a 500 metros. Comprar hoy aquí es comprar barato para ver cómo se revaloriza tu vivienda un 20% en 3 años. Confía en mí, es una jugada maestra.",
+                emocional: "Parece que te preocupa la seguridad o la calidad de vida de tu familia al cambiar de entorno. ¿Qué servicios o características de la zona son indispensables para ti? ¿Cómo afectaría a tu día a día que el barrio mejore sus conexiones el próximo año?",
+                agresivo: "¡Tienes razón, la zona es diferente a la que tenías en mente! Pero la casa es espectacular y el precio es inmejorable. La zona se puede adaptar y crecer, de hecho se está revalorizando rapidísimo. No dejes escapar la casa de tus sueños por un prejuicio de ubicación. Vamos a firmar.",
+                solucionador: "¿Qué limitaciones encontráis en vuestro barrio actual que esta casa sí solucione? Si buscáis una casa con estas características en vuestra zona preferida, ¿cuánto presupuesto adicional tendríais que invertir? ¿Cómo compensa esta vivienda esa diferencia?"
             }
         ]
     },
@@ -67,24 +67,24 @@ const SECTORS = [
         objections: [
             {
                 title: "El coche eléctrico/híbrido perderá mucho valor de reventa",
-                belfort: "Entiendo el temor a la depreciación, pero déjame hacerte una pregunta. Con las restricciones ambientales que vienen, ¿qué valor de reventa crees que tendrá un coche diésel en 5 años? Cero. Este híbrido conserva su valor por normativa de emisiones. Confía en mí, estás protegiendo tu inversión de cara al futuro.",
-                voss: "Parece que te preocupa comprar una tecnología que pueda quedar obsoleta rápidamente y te haga perder dinero. ¿Cómo podríamos estructurar la compra para garantizarte un valor mínimo de recompra firmado? ¿Qué te haría sentir totalmente seguro?",
-                cardone: "¡Estoy de acuerdo, da miedo la devaluación! Pero compras un coche para disfrutarlo, no para venderlo mañana. El ahorro en combustible y mantenimiento que vas a tener cada mes compensa con creces cualquier depreciación futura. Llévatelo hoy y empieza a disfrutar de la conducción del futuro.",
-                spin: "¿Cuánto gastas actualmente en combustible y averías con tu coche antiguo? Si sigues con él, ¿qué restricciones de circulación te afectarán pronto en tu ciudad? ¿Cómo cambiaría tu tranquilidad diaria saber que este modelo híbrido tiene acceso libre ilimitado?"
+                analitico: "Entiendo el temor a la depreciación, pero déjame hacerte una pregunta. Con las restricciones ambientales que vienen, ¿qué valor de reventa crees que tendrá un coche diésel en 5 años? Cero. Este híbrido conserva su valor por normativa de emisiones. Confía en mí, estás protegiendo tu inversión de cara al futuro.",
+                emocional: "Parece que te preocupa comprar una tecnología que pueda quedar obsoleta rápidamente y te haga perder dinero. ¿Cómo podríamos estructurar la compra para garantizarte un valor mínimo de recompra firmado? ¿Qué te haría sentir totalmente seguro?",
+                agresivo: "¡Estoy de acuerdo, da miedo la devaluación! Pero compras un coche para disfrutarlo, no para venderlo mañana. El ahorro en combustible y mantenimiento que vas a tener cada mes compensa con creces cualquier depreciación futura. Llévatelo hoy y empieza a disfrutar de la conducción del futuro.",
+                solucionador: "¿Cuánto gastas actualmente en combustible y averías con tu coche antiguo? Si sigues con él, ¿qué restricciones de circulación te afectarán pronto en tu ciudad? ¿Cómo cambiaría tu tranquilidad diaria saber que este modelo híbrido tiene acceso libre ilimitado?"
             },
             {
                 title: "Las cuotas mensuales son demasiado elevadas",
-                belfort: "Entiendo que la cuota llame la atención, pero hagamos cuentas claras. Si sumas lo que gastas hoy en gasolina y reparaciones de tu coche viejo, verás que supera la cuota de este modelo nuevo que no consume casi nada y tiene garantía total. En realidad, el coche se paga solo. Confía en mí, es un negocio redondo.",
-                voss: "Parece que comprometer esa cantidad mensual te genera estrés por miedo a desajustar tus finanzas familiares. ¿Qué importe mensual se adaptaría con total comodidad a tus gastos actuales? ¿Cómo podríamos ajustar la entrada para lograrlo?",
-                cardone: "¡Tienes toda la razón, es dinero! Pero mereces conducir un coche seguro, fiable y moderno. No reduzcas tus sueños al tamaño de una cuota; incrementa tu comodidad y seguridad. Ajustemos el plazo a tu medida, pero no renuncies al coche que de verdad quieres. Vamos a tramitar la financiación.",
-                spin: "¿Qué problemas te causaría que tu coche actual sufriera una avería grave el próximo mes? Si tuvieras que gastar 2000€ de golpe en reparaciones, ¿cómo afectaría a tu presupuesto? ¿Cómo te ayudaría tener una cuota fija que incluya mantenimiento y garantía?"
+                analitico: "Entiendo que la cuota llame la atención, pero hagamos cuentas claras. Si sumas lo que gastas hoy en gasolina y reparaciones de tu coche viejo, verás que supera la cuota de este modelo nuevo que no consume casi nada y tiene garantía total. En realidad, el coche se paga solo. Confía en mí, es un negocio redondo.",
+                emocional: "Parece que comprometer esa cantidad mensual te genera estrés por miedo a desajustar tus finanzas familiares. ¿Qué importe mensual se adaptaría con total comodidad a tus gastos actuales? ¿Cómo podríamos ajustar la entrada para lograrlo?",
+                agresivo: "¡Tienes toda la razón, es dinero! Pero mereces conducir un coche seguro, fiable y moderno. No reduzcas tus sueños al tamaño de una cuota; incrementa tu comodidad y seguridad. Ajustemos el plazo a tu medida, pero no renuncies al coche que de verdad quieres. Vamos a tramitar la financiación.",
+                solucionador: "¿Qué problemas te causaría que tu coche actual sufriera una avería grave el próximo mes? Si tuvieras que gastar 2000€ de golpe en reparaciones, ¿cómo afectaría a tu presupuesto? ¿Cómo te ayudaría tener una cuota fija que incluya mantenimiento y garantía?"
             },
             {
                 title: "Tengo que mirar otras opciones antes de decidirme",
-                belfort: "Es lógico que quieras comparar. Pero déjame preguntarte: si evaluamos la seguridad de este modelo, el equipamiento y la oferta de financiación que te acabo de hacer, ¿no es exactamente el coche que buscas? Si cerramos la reserva hoy, te aseguro este precio de fábrica exclusivo. Confía en mí, no encontrarás nada mejor.",
-                voss: "Parece que sientes la presión de tomar una decisión final y quieres asegurarte de no estar pasando por alto una mejor opción. ¿Qué características o precios específicos necesitas encontrar en otros concesionarios para convencerte de que este es tu coche?",
-                cardone: "¡Por supuesto, compara! Pero sabes perfectamente que este es el coche que te ha hecho sonreír al conducirlo. El tiempo que vas a perder yendo a otros concesionarios vale más que cualquier pequeña diferencia que encuentres. Reserva hoy, y si encuentras algo mejor en 48 horas, te devuelvo la reserva. ¡Hagámoslo!",
-                spin: "¿Qué riesgos corres si dejas pasar esta unidad específica con este color y equipamiento que tanto te gusta? Si cuando decidas volver el coche ya se ha vendido, ¿cuánto tiempo tardaríamos en pedir otro a fábrica? ¿Cómo afectaría eso a tus planes de viaje?"
+                analitico: "Es lógico que quieras comparar. Pero déjame preguntarte: si evaluamos la seguridad de este modelo, el equipamiento y la oferta de financiación que te acabo de hacer, ¿no es exactamente el coche que buscas? Si cerramos la reserva hoy, te aseguro este precio de fábrica exclusivo. Confía en mí, no encontrarás nada mejor.",
+                emocional: "Parece que sientes la presión de tomar una decisión final y quieres asegurarte de no estar pasando por alto una mejor opción. ¿Qué características o precios específicos necesitas encontrar en otros concesionarios para convencerte de que este es tu coche?",
+                agresivo: "¡Por supuesto, compara! Pero sabes perfectamente que este es el coche que te ha hecho sonreír al conducirlo. El tiempo que vas a perder yendo a otros concesionarios vale más que cualquier pequeña diferencia que encuentres. Reserva hoy, y si encuentras algo mejor en 48 horas, te devuelvo la reserva. ¡Hagámoslo!",
+                solucionador: "¿Qué riesgos corres si dejas pasar esta unidad específica con este color y equipamiento que tanto te gusta? Si cuando decidas volver el coche ya se ha vendido, ¿cuánto tiempo tardaríamos en pedir otro a fábrica? ¿Cómo afectaría eso a tus planes de viaje?"
             }
         ]
     },
@@ -95,24 +95,24 @@ const SECTORS = [
         objections: [
             {
                 title: "No podéis garantizarnos un ROI exacto por contrato",
-                belfort: "Entiendo tu postura, pero seamos realistas: nadie serio en consultoría puede garantizar variables de mercado externas. Lo que sí te garantizo, y por eso nuestro histórico muestra un retorno medio de 3:1, es que pondremos a tus servicios la metodología exacta de {product}. Si confías en nuestra experiencia y en mi equipo, los resultados llegarán. Empecemos con un piloto auditado.",
-                voss: "Parece que temes contratar un servicio intangible y que los resultados no justifiquen la inversión ante tu directiva. ¿Cómo podríamos definir KPIs intermedios para que puedas medir y controlar el avance del proyecto mes a mes? ¿Qué te daría tranquilidad?",
-                cardone: "¡Estoy de acuerdo, no hay garantías en esta vida! Pero el riesgo real no es contratar a {product}, sino seguir con los mismos procesos mediocres que tenéis hoy. Si no haces nada, tu ROI garantizado es del 0%. Vamos a firmar, a comprometernos al 100% y a hacer que los resultados sucedan.",
-                spin: "¿Qué coste tiene para la empresa mantener la fuga de eficiencia que detectamos en vuestra auditoría? Si no solucionáis este problema en los próximos 6 meses, ¿cómo afectará a vuestra cuota de mercado? ¿Cómo cambiarían vuestros números si logramos solucionar esto?"
+                analitico: "Entiendo tu postura, pero seamos realistas: nadie serio en consultoría puede garantizar variables de mercado externas. Lo que sí te garantizo, y por eso nuestro histórico muestra un retorno medio de 3:1, es que pondremos a tus servicios la metodología exacta de {product}. Si confías en nuestra experiencia y en mi equipo, los resultados llegarán. Empecemos con un piloto auditado.",
+                emocional: "Parece que temes contratar un servicio intangible y que los resultados no justifiquen la inversión ante tu directiva. ¿Cómo podríamos definir KPIs intermedios para que puedas medir y controlar el avance del proyecto mes a mes? ¿Qué te daría tranquilidad?",
+                agresivo: "¡Estoy de acuerdo, no hay garantías en esta vida! Pero el riesgo real no es contratar a {product}, sino seguir con los mismos procesos mediocres que tenéis hoy. Si no haces nada, tu ROI garantizado es del 0%. Vamos a firmar, a comprometernos al 100% y a hacer que los resultados sucedan.",
+                solucionador: "¿Qué coste tiene para la empresa mantener la fuga de eficiencia que detectamos en vuestra auditoría? Si no solucionáis este problema en los próximos 6 meses, ¿cómo afectará a vuestra cuota de mercado? ¿Cómo cambiarían vuestros números si logramos solucionar esto?"
             },
             {
                 title: "Ya trabajamos con otra agencia/proveedor y nos va bien",
-                belfort: "Me alegro de que estéis cubiertos, pero déjame hacerte una pregunta. Si te demuestro con una auditoría gratuita de 5 minutos que vuestro proveedor actual os está dejando un 20% de rendimiento sobre la mesa que nosotros sí podemos capturar con {product}, ¿no tendrías la obligación profesional de evaluarlo? Confía en mí, hagamos la auditoría.",
-                voss: "Parece que valoras la lealtad con tu proveedor actual y no quieres generar conflictos ni molestias cambiando de agencia. ¿Qué tendría que ofrecer {product} para que valiera la pena considerar una prueba complementaria sin romper con ellos?",
-                cardone: "¡Excelente que os vaya bien! Pero 'bien' es el enemigo de 'extraordinario'. No te conformes con resultados aceptables cuando puedes tener un crecimiento del 40% con {product}. Te propongo que nos des un proyecto pequeño piloto y compares directamente los resultados. Que ganen los mejores. Firmemos el piloto.",
-                spin: "¿Qué limitaciones habéis notado últimamente con vuestro proveedor en cuanto a tiempos de respuesta o innovación? Si esas pequeñas carencias se mantienen a largo plazo, ¿cómo afectará a vuestros proyectos clave? ¿De qué manera os ayudaría contar con nuestro soporte especializado?"
+                analitico: "Me alegro de que estéis cubiertos, pero déjame hacerte una pregunta. Si te demuestro con una auditoría gratuita de 5 minutos que vuestro proveedor actual os está dejando un 20% de rendimiento sobre la mesa que nosotros sí podemos capturar con {product}, ¿no tendrías la obligación profesional de evaluarlo? Confía en mí, hagamos la auditoría.",
+                emocional: "Parece que valoras la lealtad con tu proveedor actual y no quieres generar conflictos ni molestias cambiando de agencia. ¿Qué tendría que ofrecer {product} para que valiera la pena considerar una prueba complementaria sin romper con ellos?",
+                agresivo: "¡Excelente que os vaya bien! Pero 'bien' es el enemigo de 'extraordinario'. No te conformes con resultados aceptables cuando puedes tener un crecimiento del 40% con {product}. Te propongo que nos des un proyecto pequeño piloto y compares directamente los resultados. Que ganen los mejores. Firmemos el piloto.",
+                solucionador: "¿Qué limitaciones habéis notado últimamente con vuestro proveedor en cuanto a tiempos de respuesta o innovación? Si esas pequeñas carencias se mantienen a largo plazo, ¿cómo afectará a vuestros proyectos clave? ¿De qué manera os ayudaría contar con nuestro soporte especializado?"
             },
             {
                 title: "Vuestra propuesta parece muy genérica para nuestro negocio",
-                belfort: "Entiendo perfectamente tu percepción. La propuesta inicial es un marco de trabajo estándar. Pero si confías en nuestra metodología y le damos luz verde hoy, realizaremos 3 sesiones de inmersión profunda con tu equipo para tallar a medida vuestro libro de ruta operativo exclusivo. Hagamos la primera sesión esta semana.",
-                voss: "Parece que sientes que no hemos comprendido del todo las particularidades únicas de tu negocio y temes recibir un servicio enlatado. ¿Qué elementos críticos o desafíos específicos de tu día a día deberíamos incorporar para que sea perfecta?",
-                cardone: "¡Tienes razón, a simple vista puede parecer genérica! Pero las bases del crecimiento comercial son universales, lo que cambia es la ejecución. Y en ejecución somos los más agresivos y profesionales del mercado. Empecemos a trabajar y verás cómo adaptamos cada detalle a tu ADN operativo. Firmemos aquí.",
-                spin: "¿Qué consecuencias tiene para vuestro equipo de ventas utilizar herramientas generales no adaptadas? Si vuestros procesos siguen sin una personalización real, ¿cuántas ventas estimas que se perderán? ¿Cómo mejoraría el cierre si diseñamos este flujo juntos?"
+                analitico: "Entiendo perfectamente tu percepción. La propuesta inicial es un marco de trabajo estándar. Pero si confías en nuestra metodología y le damos luz verde hoy, realizaremos 3 sesiones de inmersión profunda con tu equipo para tallar a medida vuestro libro de ruta operativo exclusivo. Hagamos la primera sesión esta semana.",
+                emocional: "Parece que sientes que no hemos comprendido del todo las particularidades únicas de tu negocio y temes recibir un servicio enlatado. ¿Qué elementos críticos o desafíos específicos de tu día a día deberíamos incorporar para que sea perfecta?",
+                agresivo: "¡Tienes razón, a simple vista puede parecer genérica! Pero las bases del crecimiento comercial son universales, lo que cambia es la ejecución. Y en ejecución somos los más agresivos y profesionales del mercado. Empecemos a trabajar y verás cómo adaptamos cada detalle a tu ADN operativo. Firmemos aquí.",
+                solucionador: "¿Qué consecuencias tiene para vuestro equipo de ventas utilizar herramientas generales no adaptadas? Si vuestros procesos siguen sin una personalización real, ¿cuántas ventas estimas que se perderán? ¿Cómo mejoraría el cierre si diseñamos este flujo juntos?"
             }
         ]
     },
@@ -123,24 +123,24 @@ const SECTORS = [
         objections: [
             {
                 title: "Ya tengo una póliza básica y no quiero gastar más",
-                belfort: "Entiendo el deseo de ahorrar, pero déjame hacerte una pregunta seria. Si mañana sufres un imprevisto grave y tu póliza básica no cubre el tratamiento, ¿de dónde saldrán los 50.000€ necesarios? De tus ahorros de toda la vida. Por solo un 15% más de cuota con {product}, eliminas el riesgo al 100%. Confía en mí, es lo inteligente.",
-                voss: "Parece que sientes que las compañías de seguros intentan venderte coberturas innecesarias solo para cobrarte más. ¿Qué tendría que pasar en tu situación familiar para que consideraras que ampliar la protección es una prioridad real?",
-                cardone: "¡Estoy de acuerdo, a nadie le gusta gastar en seguros! Pero un seguro no es un gasto, es una protección patrimonial. Si no quieres gastar 20€ más al mes hoy, ¿cómo vas a afrontar una emergencia médica o familiar de miles de euros mañana? Aseguremos tu tranquilidad hoy mismo.",
-                spin: "¿Qué ocurriría con la estabilidad económica de tu familia si tuvieras una baja laboral prolongada no cubierta por tu póliza básica? Si tus ingresos se reducen a la mitad, ¿cómo afrontarías la hipoteca? ¿Qué valor tiene para ti saber que estarás cubierto al 100%?"
+                analitico: "Entiendo el deseo de ahorrar, pero déjame hacerte una pregunta seria. Si mañana sufres un imprevisto grave y tu póliza básica no cubre el tratamiento, ¿de dónde saldrán los 50.000€ necesarios? De tus ahorros de toda la vida. Por solo un 15% más de cuota con {product}, eliminas el riesgo al 100%. Confía en mí, es lo inteligente.",
+                emocional: "Parece que sientes que las compañías de seguros intentan venderte coberturas innecesarias solo para cobrarte más. ¿Qué tendría que pasar en tu situación familiar para que consideraras que ampliar la protección es una prioridad real?",
+                agresivo: "¡Estoy de acuerdo, a nadie le gusta gastar en seguros! Pero un seguro no es un gasto, es una protección patrimonial. Si no quieres gastar 20€ más al mes hoy, ¿cómo vas a afrontar una emergencia médica o familiar de miles de euros mañana? Aseguremos tu tranquilidad hoy mismo.",
+                solucionador: "¿Qué ocurriría con la estabilidad económica de tu familia si tuvieras una baja laboral prolongada no cubierta por tu póliza básica? Si tus ingresos se reducen a la mitad, ¿cómo afrontarías la hipoteca? ¿Qué valor tiene para ti saber que estarás cubierto al 100%?"
             },
             {
                 title: "No confío en que las aseguradoras paguen cuando pase algo",
-                belfort: "Entiendo tu desconfianza, hay mucha mala reputación ahí fuera. Pero déjame darte un dato objetivo: {product} tiene un índice de resolución favorable del 98.4% auditado. Además, si confías en mí, yo seré tu gestor personal y quien pelee por tus derechos ante cualquier siniestro. Tienes mi palabra de que responderemos.",
-                voss: "Parece que has tenido malas experiencias con aseguradoras que se desentendieron en el momento de la verdad y te sientes desprotegido. ¿Cómo podríamos documentar y firmar las cláusulas de exclusión para que no tengas ninguna duda de lo que cubre?",
-                cardone: "¡Tienes toda la razón del mundo en desconfiar, el sector a veces abusa! Y precisamente por eso estoy yo aquí. Yo no soy un contestador automático; soy tu asesor y daré la cara por ti si pasa algo. No te vendo un papel, te vendo mi respaldo profesional 24/7. Dejemos la póliza activa hoy.",
-                spin: "¿Qué impacto tendría en tu bienestar y en el de los tuyos tener que costear un siniestro de tu bolsillo por no contar con un contrato claro? Si surge un problema, ¿cómo afectará a tu salud mental no tener a quién acudir? ¿Cómo te ayudaría contar con mi asesoría directa?"
+                analitico: "Entiendo tu desconfianza, hay mucha mala reputación ahí fuera. Pero déjame darte un dato objetivo: {product} tiene un índice de resolución favorable del 98.4% auditado. Además, si confías en mí, yo seré tu gestor personal y quien pelee por tus derechos ante cualquier siniestro. Tienes mi palabra de que responderemos.",
+                emocional: "Parece que has tenido malas experiencias con aseguradoras que se desentendieron en el momento de la verdad y te sientes desprotegido. ¿Cómo podríamos documentar y firmar las cláusulas de exclusión para que no tengas ninguna duda de lo que cubre?",
+                agresivo: "¡Tienes toda la razón del mundo en desconfiar, el sector a veces abusa! Y precisamente por eso estoy yo aquí. Yo no soy un contestador automático; soy tu asesor y daré la cara por ti si pasa algo. No te vendo un papel, te vendo mi respaldo profesional 24/7. Dejemos la póliza activa hoy.",
+                solucionador: "¿Qué impacto tendría en tu bienestar y en el de los tuyos tener que costear un siniestro de tu bolsillo por no contar con un contrato claro? Si surge un problema, ¿cómo afectará a tu salud mental no tener a quién acudir? ¿Cómo te ayudaría contar con mi asesoría directa?"
             },
             {
                 title: "Todavía soy joven y saludable, no necesito esto ahora",
-                belfort: "Es fantástico que tengas buena salud, y ojalá dure siempre. Pero déjame preguntarte una cosa: ¿cuándo crees que las aseguradoras aceptan dar primas ultra baratas sin exclusiones médicas? Ahora que estás sano. Esperar a enfermarte hará que te cueste el triple o que te rechacen. Confía en mí, el momento de contratar es hoy.",
-                voss: "Parece que ves el seguro de salud como algo lejano para personas mayores y sientes que contratarlo ahora es tirar el dinero. ¿Qué tendría que ocurrir para que consideraras que proteger tu salud actual es una inversión inteligente a largo plazo?",
-                cardone: "¡Totalmente de acuerdo, estás en tu mejor momento! Y por eso debes blindarlo. La salud no se compra cuando se pierde. Contratar hoy te garantiza una tarifa bajísima para toda la vida. Sé responsable con tu futuro y deja tu red de seguridad lista desde hoy.",
-                spin: "Si tuvieras un accidente o lesión deportiva que requiriera cirugía inmediata, ¿cuánto tiempo tendrías que esperar en la sanidad pública para ser operado? ¿Cómo afectaría esa espera a tu trabajo o carrera? ¿Cómo te beneficiaría tener acceso a especialistas en 24 horas?"
+                analitico: "Es fantástico que tengas buena salud, y ojalá dure siempre. Pero déjame preguntarte una cosa: ¿cuándo crees que las aseguradoras aceptan dar primas ultra baratas sin exclusiones médicas? Ahora que estás sano. Esperar a enfermarte hará que te cueste el triple o que te rechacen. Confía en mí, el momento de contratar es hoy.",
+                emocional: "Parece que ves el seguro de salud como algo lejano para personas mayores y sientes que contratarlo ahora es tirar el dinero. ¿Qué tendría que ocurrir para que consideraras que proteger tu salud actual es una inversión inteligente a largo plazo?",
+                agresivo: "¡Totalmente de acuerdo, estás en tu mejor momento! Y por eso debes blindarlo. La salud no se compra cuando se pierde. Contratar hoy te garantiza una tarifa bajísima para toda la vida. Sé responsable con tu futuro y deja tu red de seguridad lista desde hoy.",
+                solucionador: "Si tuvieras un accidente o lesión deportiva que requiriera cirugía inmediata, ¿cuánto tiempo tendrías que esperar en la sanidad pública para ser operado? ¿Cómo afectaría esa espera a tu trabajo o carrera? ¿Cómo te beneficiaría tener acceso a especialistas en 24 horas?"
             }
         ]
     },
@@ -151,24 +151,24 @@ const SECTORS = [
         objections: [
             {
                 title: "Puedo encontrar un producto similar online más barato",
-                belfort: "Es posible encontrar imitaciones o gamas bajas online. Pero hagamos una reflexión: ¿se puede replicar el tacto de este cuero italiano, la costura artesanal a mano y la garantía de autenticidad de esta firma? Jamás. Esta pieza es única. Confía en tu buen criterio, mereces poseer el original.",
-                voss: "Parece que sientes el precio de este artículo tiene un sobrecoste injustificado en comparación con alternativas del mercado. ¿Qué detalles de la confección o de la experiencia de compra son indispensables para que valores esta pieza como una inversión justificada?",
-                cardone: "¡Estoy de acuerdo, hay de todo online! Pero tú no eres una persona que busque lo más barato. Si buscas precio, compras online; si buscas estatus, exclusividad e historia, adquieres esta pieza. El lujo no se compara con la gama baja. Llévate esta obra de arte y lúcela con orgullo.",
-                spin: "Si adquieres una alternativa barata online y se deteriora en unos meses, ¿qué imagen proyectarás y cuánto habrás gastado al tener que reemplazarla? ¿Qué valor tiene para ti la durabilidad de una pieza de coleccionista que incrementa su valor con los años?"
+                analitico: "Es posible encontrar imitaciones o gamas bajas online. Pero hagamos una reflexión: ¿se puede replicar el tacto de este cuero italiano, la costura artesanal a mano y la garantía de autenticidad de esta firma? Jamás. Esta pieza es única. Confía en tu buen criterio, mereces poseer el original.",
+                emocional: "Parece que sientes el precio de este artículo tiene un sobrecoste injustificado en comparación con alternativas del mercado. ¿Qué detalles de la confección o de la experiencia de compra son indispensables para que valores esta pieza como una inversión justificada?",
+                agresivo: "¡Estoy de acuerdo, hay de todo online! Pero tú no eres una persona que busque lo más barato. Si buscas precio, compras online; si buscas estatus, exclusividad e historia, adquieres esta pieza. El lujo no se compara con la gama baja. Llévate esta obra de arte y lúcela con orgullo.",
+                solucionador: "Si adquieres una alternativa barata online y se deteriora en unos meses, ¿qué imagen proyectarás y cuánto habrás gastado al tener que reemplazarla? ¿Qué valor tiene para ti la durabilidad de una pieza de coleccionista que incrementa su valor con los años?"
             },
             {
                 title: "Solo estoy mirando de momento, no voy a comprar hoy",
-                belfort: "Me parece perfecto, la colección es para admirarla. Pero déjame comentarte un secreto de confianza: de esta edición exclusiva solo han llegado 2 piezas a nuestra boutique. Si de verdad te fascina, déjame reservártela 24 horas sin compromiso para que no la pierdas. ¿Te parece una buena idea?",
-                voss: "Parece que temes sentir la presión de una venta inmediata y prefieres evaluar la decisión con calma y sin agobios. ¿Cómo te sentirías si simplemente te probaras la pieza para apreciar la caída del material sobre tu piel, sin ningún tipo de compromiso hoy?",
-                cardone: "¡Me parece estupendo que mires! Pero sé sincero: cuando encuentras algo que te queda perfecto y te hace sentir extraordinario, esperar no tiene sentido. La vida es demasiado corta para posponer los premios que te has ganado con tu esfuerzo. Vamos a prepararte el paquete.",
-                spin: "¿Qué ocurriría si al volver a por esta pieza específica de edición limitada ya se hubiera agotado en toda Europa? ¿Cuánto lamentarías no haber tomado la decisión cuando la tenías en tus manos? ¿Cómo te sentirás cuando salgas de la boutique con ella hoy?"
+                analitico: "Me parece perfecto, la colección es para admirarla. Pero déjame comentarte un secreto de confianza: de esta edición exclusiva solo han llegado 2 piezas a nuestra boutique. Si de verdad te fascina, déjame reservártela 24 horas sin compromiso para que no la pierdas. ¿Te parece una buena idea?",
+                emocional: "Parece que temes sentir la presión de una venta inmediata y prefieres evaluar la decisión con calma y sin agobios. ¿Cómo te sentirías si simplemente te probaras la pieza para apreciar la caída del material sobre tu piel, sin ningún tipo de compromiso hoy?",
+                agresivo: "¡Me parece estupendo que mires! Pero sé sincero: cuando encuentras algo que te queda perfecto y te hace sentir extraordinario, esperar no tiene sentido. La vida es demasiado corta para posponer los premios que te has ganado con tu esfuerzo. Vamos a prepararte el paquete.",
+                solucionador: "¿Qué ocurriría si al volver a por esta pieza específica de edición limitada ya se hubiera agotado en toda Europa? ¿Cuánto lamentarías no haber tomado la decisión cuando la tenías en tus manos? ¿Cómo te sentirás cuando salgas de la boutique con ella hoy?"
             },
             {
                 title: "La marca tiene prestigio, pero el precio es desorbitado",
-                belfort: "Entiendo que el precio llame la atención de entrada. Pero analicemos lo que hay detrás: materiales nobles exclusivos y más de 80 horas de trabajo de maestros artesanos de primer nivel. Además, las piezas de esta firma suben de valor de tasación un 5% anual. No es un gasto, es una inversión patrimonial líquida. Confía en mí, es una decisión brillante.",
-                voss: "Parece que te preocupa estar pagando solo por el logotipo de la marca en lugar de por el valor intrínseco real del producto. ¿Qué elementos de calidad, garantía o exclusividad tendrían que destacar en esta pieza para que consideres que el precio es adecuado?",
-                cardone: "¡Totalmente de acuerdo, es un precio de nivel! Pero el prestigio no es gratis. Compras esta marca porque representa el éxito que has alcanzado en tu carrera. El precio es secundario comparado con la satisfacción de poseer algo que muy pocos pueden permitirse en el mundo. Hagámoslo tuyo.",
-                spin: "Si eliges una opción común sin el prestigio de esta marca, ¿cómo afectará a tu imagen en los eventos clave de tu sector? Si esta pieza representa un activo que mantendrá o incrementará su valor con el tiempo, ¿cuánto te costará dejar pasar esta oportunidad de inversión estética?"
+                analitico: "Entiendo que el precio llame la atención de entrada. Pero analicemos lo que hay detrás: materiales nobles exclusivos y más de 80 horas de trabajo de maestros artesanos de primer nivel. Además, las piezas de esta firma suben de valor de tasación un 5% anual. No es un gasto, es una inversión patrimonial líquida. Confía en mí, es una decisión brillante.",
+                emocional: "Parece que te preocupa estar pagando solo por el logotipo de la marca en lugar de por el valor intrínseco real del producto. ¿Qué elementos de calidad, garantía o exclusividad tendrían que destacar en esta pieza para que consideres que el precio es adecuado?",
+                agresivo: "¡Totalmente de acuerdo, es un precio de nivel! Pero el prestigio no es gratis. Compras esta marca porque representa el éxito que has alcanzado en tu carrera. El precio es secundario comparado con la satisfacción de poseer algo que muy pocos pueden permitirse en el mundo. Hagámoslo tuyo.",
+                solucionador: "Si eliges una opción común sin el prestigio de esta marca, ¿cómo afectará a tu imagen en los eventos clave de tu sector? Si esta pieza representa un activo que mantendrá o incrementará su valor con el tiempo, ¿cuánto te costará dejar pasar esta oportunidad de inversión estética?"
             }
         ]
     }
@@ -248,7 +248,7 @@ class SalesQuest {
             level: 1,
             completedStages: [], // Node identifiers that are completed
             currentObjectionIndex: 0,
-            activeTab: "belfort",
+            activeTab: "agresivo",
             quizIndex: 0,
             quizAnswers: [],
             customObjections: [],
@@ -287,7 +287,7 @@ class SalesQuest {
             level: 1,
             completedStages: [],
             currentObjectionIndex: 0,
-            activeTab: "belfort",
+            activeTab: "agresivo",
             quizIndex: 0,
             quizAnswers: [],
             customObjections: [],
@@ -343,17 +343,17 @@ class SalesQuest {
             list = [
                 {
                     title: "No tengo tiempo / Envíame un correo",
-                    belfort: "Entiendo perfectamente que estés ocupado, todos lo estamos. Pero déjame hacerte una pregunta rápida: si te demuestro en solo 3 minutos cómo {product} puede ahorrarle a tu equipo hasta 8 horas semanales, ¿no merecería la pena tener una breve charla de 5 minutos el martes? Confía en mí, valdrá cada segundo.",
-                    voss: "Parece que te pilló en un momento muy complicado de tu jornada y sientes que esta llamada es una distracción molesta. ¿Cuándo sería un momento menos inoportuno para enviarte un resumen de 3 puntos por correo y hablar muy brevemente después?",
-                    cardone: "¡Estoy de acuerdo contigo, no tienes tiempo! Y precisamente por eso me alegro de haberte localizado, porque {product} te va a devolver ese tiempo automatizando tus procesos. Si no tienes 5 minutos hoy para solucionar esto, seguirás saturado el mes que viene. Vamos a agendar 5 minutos mañana a las 9.",
-                    spin: "¿Qué tareas operativas te están quitando más tiempo en tu día a día actualmente? Si sigues dedicando horas a esos procesos manuales, ¿qué proyectos estratégicos estás dejando de lado? ¿Cómo aliviaría tu agenda mensual automatizar todo eso?"
+                    analitico: "Entiendo perfectamente que estés ocupado, todos lo estamos. Pero déjame hacerte una pregunta rápida: si te demuestro en solo 3 minutos cómo {product} puede ahorrarle a tu equipo hasta 8 horas semanales, ¿no merecería la pena tener una breve charla de 5 minutos el martes? Confía en mí, valdrá cada segundo.",
+                    emocional: "Parece que te pilló en un momento muy complicado de tu jornada y sientes que esta llamada es una distracción molesta. ¿Cuándo sería un momento menos inoportuno para enviarte un resumen de 3 puntos por correo y hablar muy brevemente después?",
+                    agresivo: "¡Estoy de acuerdo contigo, no tienes tiempo! Y precisamente por eso me alegro de haberte localizado, porque {product} te va a devolver ese tiempo automatizando tus procesos. Si no tienes 5 minutos hoy para solucionar esto, seguirás saturado el mes que viene. Vamos a agendar 5 minutos mañana a las 9.",
+                    solucionador: "¿Qué tareas operativas te están quitando más tiempo en tu día a día actualmente? Si sigues dedicando horas a esos procesos manuales, ¿qué proyectos estratégicos estás dejando de lado? ¿Cómo aliviaría tu agenda mensual automatizar todo eso?"
                 },
                 {
                     title: "No me interesa / Ya estoy cubierto",
-                    belfort: "Es comprensible que de entrada digas que no te interesa algo de lo que aún no has visto el rendimiento real. Pero hagamos una cosa: si te muestro en un gráfico de 2 minutos cómo {product} aumenta la eficiencia en tu sector un 30% en comparación con lo que estás usando hoy, ¿no sería negligente no mirarlo? Confía en mí, hagamos la llamada rápida.",
-                    voss: "Parece que estás muy satisfecho con tu solución actual y sientes que cambiar o evaluar otra alternativa es una pérdida de tiempo innecesaria. ¿Qué tendría que pasar con tu proveedor actual para que te plantearas buscar una alternativa más competitiva?",
-                    cardone: "¡Tienes toda la razón, ya estás cubierto! Y me alegro por ello. Pero mi trabajo no es sustituir a tu proveedor actual por capricho, sino retar vuestros resultados. Si te conformas con estar bien, estás dejando dinero sobre la mesa que tu competencia sí aprovechará. Hagamos una prueba comparativa rápida hoy.",
-                    spin: "¿Qué limitaciones o costes ocultos habéis detectado con vuestro proveedor actual en los últimos meses? Si esas pequeñas ineficiencias se acumulan en el próximo año, ¿qué impacto económico tendrán en vuestra facturación? ¿Cómo solucionaría eso contar con {product}?"
+                    analitico: "Es comprensible que de entrada digas que no te interesa algo de lo que aún no has visto el rendimiento real. Pero hagamos una cosa: si te muestro en un gráfico de 2 minutos cómo {product} aumenta la eficiencia en tu sector un 30% en comparación con lo que estás usando hoy, ¿no sería negligente no mirarlo? Confía en mí, hagamos la llamada rápida.",
+                    emocional: "Parece que estás muy satisfecho con tu solución actual y sientes que cambiar o evaluar otra alternativa es una pérdida de tiempo innecesaria. ¿Qué tendría que pasar con tu proveedor actual para que te plantearas buscar una alternativa más competitiva?",
+                    agresivo: "¡Tienes toda la razón, ya estás cubierto! Y me alegro por ello. Pero mi trabajo no es sustituir a tu proveedor actual por capricho, sino retar vuestros resultados. Si te conformas con estar bien, estás dejando dinero sobre la mesa que tu competencia sí aprovechará. Hagamos una prueba comparativa rápida hoy.",
+                    solucionador: "¿Qué limitaciones o costes ocultos habéis detectado con vuestro proveedor actual en los últimos meses? Si esas pequeñas ineficiencias se acumulan en el próximo año, ¿qué impacto económico tendrán en vuestra facturación? ¿Cómo solucionaría eso contar con {product}?"
                 }
             ];
         }
@@ -812,13 +812,13 @@ function addCustomObjection() {
     
     if (!text) return;
     
-    // Dynamic generated responses based on simple heuristics representing the 4 masters
+    // Dynamic generated responses based on simple heuristics representing the 4 profiles
     const newObjection = {
         title: `"${text}"`,
-        belfort: `Entiendo perfectamente que "${text}" sea tu mayor preocupación ahora mismo, y es una duda muy razonable. Pero déjame hacerte una pregunta seria: si eliminamos ese obstáculo sobre "${text}" y te demuestro que el ROI de {product} multiplica por tres tu inversión inicial, ¿estarías dispuesto a trabajar conmigo? Confía en mí, nos encargaremos personalmente de que sea un éxito rotundo. ¿Cerramos los detalles técnicos hoy?`,
-        voss: `Parece que te preocupa mucho el impacto de "${text}" en tus operaciones y temes que sea un problema difícil de solucionar. ¿Cómo crees que podríamos abordar "${text}" para que te sientas totalmente cómodo dando el paso? ¿Qué opción ves viable por nuestra parte?`,
-        cardone: `¡Estoy 100% de acuerdo contigo en que "${text}" es un punto crítico! Pero no dejes que "${text}" sea la excusa para quedarte estancado. El verdadero coste es la inacción y seguir perdiendo tracción comercial cada día. Vamos a dejar firmado el acuerdo de {product} hoy mismo y resolveremos "${text}" sobre la marcha con nuestro equipo técnico.`,
-        spin: `¿Qué problemas concretos os genera "${text}" en vuestra actividad diaria en {sector}? Si no solucionáis la causa raíz detrás de "${text}", ¿cuánto dinero y tiempo habréis perdido en los próximos 12 meses? ¿De qué forma mejoraría vuestra rentabilidad si resolvemos esto de una vez con {product}?`
+        analitico: `Entiendo perfectamente que "${text}" sea tu mayor preocupación ahora mismo, y es una duda muy razonable. Pero déjame hacerte una pregunta seria: si eliminamos ese obstáculo sobre "${text}" y te demuestro que el ROI de {product} multiplica por tres tu inversión inicial, ¿estarías dispuesto a trabajar conmigo? Confía en mí, nos encargaremos personalmente de que sea un éxito rotundo. ¿Cerramos los detalles técnicos hoy?`,
+        emocional: `Parece que te preocupa mucho el impacto de "${text}" en tus operaciones y temes que sea un problema difícil de solucionar. ¿Cómo crees que podríamos abordar "${text}" para que te sientas totalmente cómodo dando el paso? ¿Qué opción ves viable por nuestra parte?`,
+        agresivo: `¡Estoy 100% de acuerdo contigo en que "${text}" es un punto crítico! Pero no dejes que "${text}" sea la excusa para quedarte estancado. El verdadero coste es la inacción y seguir perdiendo tracción comercial cada día. Vamos a dejar firmado el acuerdo de {product} hoy mismo y resolveremos "${text}" sobre la marcha con nuestro equipo técnico.`,
+        solucionador: `¿Qué problemas concretos os genera "${text}" en vuestra actividad diaria en {sector}? Si no solucionáis la causa raíz detrás de "${text}", ¿cuánto dinero y tiempo habréis perdido en los próximos 12 meses? ¿De qué forma mejoraría vuestra rentabilidad si resolvemos esto de una vez con {product}?`
     };
     
     app.state.customObjections.push(newObjection);
@@ -1057,7 +1057,7 @@ function renderObjections() {
     });
     
     // Set the correct active tab in the DOM according to the state
-    const activeTab = app.state.activeTab || "belfort";
+    const activeTab = app.state.activeTab || "agresivo";
     document.querySelectorAll(".tab-btn").forEach(btn => {
         btn.classList.remove("active");
         if (btn.dataset.tab === activeTab) {
@@ -1093,15 +1093,15 @@ function updateActiveObjectionDisplay() {
             .replace(/{sector}/g, app.currentSector ? app.currentSector.name : "tu sector");
     };
 
-    const scriptBelfort = document.getElementById("script-belfort-text");
-    const scriptVoss = document.getElementById("script-voss-text");
-    const scriptCardone = document.getElementById("script-cardone-text");
-    const scriptSpin = document.getElementById("script-spin-text");
+    const scriptAgresivo = document.getElementById("script-agresivo-text");
+    const scriptEmocional = document.getElementById("script-emocional-text");
+    const scriptAnalitico = document.getElementById("script-analitico-text");
+    const scriptSolucionador = document.getElementById("script-solucionador-text");
 
-    if (scriptBelfort) scriptBelfort.innerText = compile(obj.belfort);
-    if (scriptVoss) scriptVoss.innerText = compile(obj.voss);
-    if (scriptCardone) scriptCardone.innerText = compile(obj.cardone);
-    if (scriptSpin) scriptSpin.innerText = compile(obj.spin);
+    if (scriptAgresivo) scriptAgresivo.innerText = compile(obj.agresivo);
+    if (scriptEmocional) scriptEmocional.innerText = compile(obj.emocional);
+    if (scriptAnalitico) scriptAnalitico.innerText = compile(obj.analitico);
+    if (scriptSolucionador) scriptSolucionador.innerText = compile(obj.solucionador);
 }
 
 // 6. Component: Client Profiler Quiz
