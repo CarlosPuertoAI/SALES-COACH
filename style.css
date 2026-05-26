@@ -951,6 +951,151 @@ input[type="text"]:focus {
     justify-content: flex-end;
 }
 
+/* ==========================================================================
+   Dashboard / Hub Principal Styles
+   ========================================================================== */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-top: 12px;
+}
+
+.dashboard-card {
+    padding: 36px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    min-height: 380px;
+    cursor: pointer;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 24px;
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
+    transition: var(--transition-smooth);
+}
+
+.dashboard-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Card Glow Effect for Live Assistant */
+.dashboard-card#db-card-copilot {
+    border-color: rgba(79, 172, 254, 0.25);
+}
+
+.dashboard-card#db-card-copilot:hover {
+    border-color: var(--primary);
+    box-shadow: 0 20px 40px rgba(79, 172, 254, 0.12), 0 0 30px rgba(138, 43, 226, 0.08);
+}
+
+.dashboard-card#db-card-roadmap:hover {
+    box-shadow: 0 20px 40px rgba(255, 255, 255, 0.04);
+}
+
+.db-card-icon {
+    font-size: 56px;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 0 10px rgba(255,255,255,0.1));
+    transition: var(--transition-smooth);
+}
+
+.dashboard-card:hover .db-card-icon {
+    transform: scale(1.12) rotate(4deg);
+}
+
+.dashboard-card#db-card-copilot:hover .db-card-icon {
+    filter: drop-shadow(0 0 15px var(--primary-glow));
+}
+
+.dashboard-card h3 {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-main);
+}
+
+.dashboard-card p {
+    color: var(--text-muted);
+    font-size: 13.5px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    flex: 1;
+}
+
+.db-badge-live {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.35);
+    animation: pulse-live-badge 2s infinite;
+}
+
+@keyframes pulse-live-badge {
+    0%, 100% {
+        opacity: 1;
+        box-shadow: 0 0 10px rgba(239, 68, 68, 0.35);
+    }
+    50% {
+        opacity: 0.8;
+        box-shadow: 0 0 18px rgba(239, 68, 68, 0.65);
+    }
+}
+
+/* Master Persuasion Custom Neon Tabs */
+.response-tabs .tab-btn[data-tab="belfort"] {
+    border: 1px solid transparent;
+}
+.response-tabs .tab-btn[data-tab="belfort"].active {
+    background: rgba(6, 182, 212, 0.1);
+    color: #22d3ee;
+    border-color: rgba(6, 182, 212, 0.35) !important;
+    box-shadow: 0 0 12px rgba(6, 182, 212, 0.15);
+}
+
+.response-tabs .tab-btn[data-tab="voss"] {
+    border: 1px solid transparent;
+}
+.response-tabs .tab-btn[data-tab="voss"].active {
+    background: rgba(245, 158, 11, 0.1);
+    color: #fbbf24;
+    border-color: rgba(245, 158, 11, 0.35) !important;
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.15);
+}
+
+.response-tabs .tab-btn[data-tab="cardone"] {
+    border: 1px solid transparent;
+}
+.response-tabs .tab-btn[data-tab="cardone"].active {
+    background: rgba(239, 68, 68, 0.1);
+    color: #f87171;
+    border-color: rgba(239, 68, 68, 0.35) !important;
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.15);
+}
+
+.response-tabs .tab-btn[data-tab="spin"] {
+    border: 1px solid transparent;
+}
+.response-tabs .tab-btn[data-tab="spin"].active {
+    background: rgba(139, 92, 246, 0.1);
+    color: #a78bfa;
+    border-color: rgba(139, 92, 246, 0.35) !important;
+    box-shadow: 0 0 12px rgba(139, 92, 246, 0.15);
+}
+
 /* 12. Client Profiler / Questionnaire */
 .profiler-card {
     max-width: 600px;
@@ -1433,6 +1578,16 @@ input[type="text"]:focus {
     
     .closing-script-card {
         order: 1;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .dashboard-card {
+        min-height: auto;
+        padding: 24px;
     }
 }
 
