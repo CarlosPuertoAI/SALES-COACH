@@ -546,21 +546,41 @@ const SALES_QUOTES = [
 
 function startQuoteRotation() {
     const quoteEl = document.getElementById("sales-quote");
-    if (!quoteEl) return;
+    const welcomeQuoteEl = document.getElementById("welcome-quote");
+    
+    if (!quoteEl && !welcomeQuoteEl) return;
     
     // Choose a random quote to display initially
     let currentIndex = Math.floor(Math.random() * SALES_QUOTES.length);
-    const initialQuote = SALES_QUOTES[currentIndex];
-    quoteEl.innerHTML = `"${initialQuote.text}" — <strong>${initialQuote.author}</strong>`;
+    
+    if (quoteEl) {
+        const initialQuote = SALES_QUOTES[currentIndex];
+        quoteEl.innerHTML = `"${initialQuote.text}" — <strong>${initialQuote.author}</strong>`;
+    }
+    
+    if (welcomeQuoteEl) {
+        const initialWelcomeQuote = SALES_QUOTES[(currentIndex + 3) % SALES_QUOTES.length];
+        welcomeQuoteEl.innerHTML = `"${initialWelcomeQuote.text}" — <strong>${initialWelcomeQuote.author}</strong>`;
+    }
     
     setInterval(() => {
-        quoteEl.style.opacity = 0;
+        if (quoteEl) quoteEl.style.opacity = 0;
+        if (welcomeQuoteEl) welcomeQuoteEl.style.opacity = 0;
         
         setTimeout(() => {
             currentIndex = (currentIndex + 1) % SALES_QUOTES.length;
-            const quote = SALES_QUOTES[currentIndex];
-            quoteEl.innerHTML = `"${quote.text}" — <strong>${quote.author}</strong>`;
-            quoteEl.style.opacity = 1;
+            
+            if (quoteEl) {
+                const quote = SALES_QUOTES[currentIndex];
+                quoteEl.innerHTML = `"${quote.text}" — <strong>${quote.author}</strong>`;
+                quoteEl.style.opacity = 1;
+            }
+            
+            if (welcomeQuoteEl) {
+                const quoteWelcome = SALES_QUOTES[(currentIndex + 3) % SALES_QUOTES.length];
+                welcomeQuoteEl.innerHTML = `"${quoteWelcome.text}" — <strong>${quoteWelcome.author}</strong>`;
+                welcomeQuoteEl.style.opacity = 1;
+            }
         }, 500);
     }, 8000);
 }
