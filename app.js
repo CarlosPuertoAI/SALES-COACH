@@ -563,7 +563,7 @@ function initUI() {
     startQuoteRotation();
     
     // Auto navigation based on state
-    if (app.state.completedStages.includes("stage-1")) {
+    if (app.state.completedStages.includes("onboarding-complete")) {
         document.getElementById("app-header").classList.remove("hidden");
         document.getElementById("app-nav").classList.remove("hidden");
         app.updateHeaderStats();
@@ -722,8 +722,8 @@ function setupEventListeners() {
                 const sectorName = sectorObj ? sectorObj.name : "tu sector";
                 app.state.productName = sectorName; // Respaldo para plantillas
                 
-                if (!app.state.completedStages.includes("stage-1")) {
-                    app.state.completedStages.push("stage-1");
+                if (!app.state.completedStages.includes("onboarding-complete")) {
+                    app.state.completedStages.push("onboarding-complete");
                 }
                 app.addXP(20);
                 
@@ -861,9 +861,9 @@ function setupEventListeners() {
                 app.state.completedStages.push(stageKey);
                 app.addXP(30);
                 
-                // Add stage 4 (Objections) to completed roadmap
-                if (!app.state.completedStages.includes("stage-4")) {
-                    app.state.completedStages.push("stage-4");
+                // Add stage 7 (Objections) to completed roadmap
+                if (!app.state.completedStages.includes("stage-7")) {
+                    app.state.completedStages.push("stage-7");
                 }
                 
                 showCelebrationModal(
@@ -912,8 +912,8 @@ function setupEventListeners() {
     const completeRoadmapBtn = document.getElementById("complete-roadmap-btn");
     if (completeRoadmapBtn) {
         completeRoadmapBtn.addEventListener("click", () => {
-            if (!app.state.completedStages.includes("stage-5")) {
-                app.state.completedStages.push("stage-5");
+            if (!app.state.completedStages.includes("stage-8")) {
+                app.state.completedStages.push("stage-8");
                 app.addXP(100);
                 showCelebrationModal(
                     "🏆 ¡Cierre de Ruta Exitoso!",
@@ -996,13 +996,16 @@ function renderRoadmap() {
     
     path.innerHTML = "";
     
-    // Core Stages definition
+    // Core Stages definition (8 modules mapped to 14 core sales competencies)
     const stages = [
-        { id: "stage-1", title: "1. Conexión & Rapport", emoji: "🤝", desc: "Crea confianza al instante" },
-        { id: "stage-2", title: "2. Descubrimiento", emoji: "🔎", desc: "Encuentra el dolor del cliente" },
-        { id: "stage-3", title: "3. El Pitch de Oro", emoji: "⚡", desc: "Presenta el valor real" },
-        { id: "stage-4", title: "4. Manejo de Objeciones", emoji: "🛡️", desc: "Respuestas automáticas" },
-        { id: "stage-5", title: "5. Perfilado & Cierre", emoji: "🎯", desc: "Genera el Cierre Emocional" }
+        { id: "stage-1", title: "1. Mentalidad & Preparación de Acero", emoji: "🧠", desc: "Forja resiliencia, psicología y preparación previa" },
+        { id: "stage-2", title: "2. Sintonía & Diálogo Activo", emoji: "🗣️", desc: "Conecta en su sintonía y evita monólogos" },
+        { id: "stage-3", title: "3. Descubrimiento del Dolor", emoji: "🔎", desc: "Identifica el motor real de compra" },
+        { id: "stage-4", title: "4. El Reencuadre & Visión", emoji: "🔄", desc: "Enseña una nueva perspectiva comercial" },
+        { id: "stage-5", title: "5. Adaptación & Deseo", emoji: "🔥", desc: "Ajusta tu discurso y enciende la emoción" },
+        { id: "stage-6", title: "6. La Oferta Irresistible", emoji: "💎", desc: "Reduce fricción y maximiza valor percibido" },
+        { id: "stage-7", title: "7. Copiloto de Objeciones", emoji: "🛡️", desc: "Usa el asistente en vivo para rebatir objeciones" },
+        { id: "stage-8", title: "8. Perfilado & Cierre de Oro", emoji: "🎯", desc: "Genera el guión final adaptado al cliente" }
     ];
     
     stages.forEach((stage, idx) => {
@@ -1053,12 +1056,12 @@ function renderRoadmap() {
             }
             
             // Interaction logic per node click
-            if (stage.id === "stage-4") {
+            if (stage.id === "stage-7") {
                 navigateTo("objections");
-            } else if (stage.id === "stage-5") {
+            } else if (stage.id === "stage-8") {
                 navigateTo("profiler");
             } else {
-                // Interactive Mini-challenge for Stages 1, 2, 3
+                // Interactive Mini-challenge for Stages 1 to 6
                 if (status === "active") {
                     handleMiniChallenge(stage.id, stage.title);
                 } else {
@@ -1078,26 +1081,47 @@ function handleMiniChallenge(stageId, stageTitle) {
     let tip = "";
 
     if (stageId === "stage-1") {
-        question = "Entras en una llamada con un prospecto de tu sector y parece distante. ¿Cómo inicias la conversación?";
+        question = "Estás a punto de iniciar una jornada de llamadas de ventas en frío. Tu mente empieza a dudar y temes el rechazo. ¿Cuál es la preparación y mentalidad correcta antes de marcar?";
         options = [
-            { text: "Vas directo a presentar las especificaciones y precio de tu producto.", correct: false, reason: "Incorrecto. Ir directo al precio ahuyenta al cliente sin antes conectar." },
-            { text: "Le saludas cordialmente, preguntas cómo está y haces un comentario positivo y sincero sobre su empresa o una noticia reciente de su sector.", correct: true, reason: "¡Excelente! Crear rapport rompe la barrera defensiva del comprador inicial." }
+            { text: "Te mentalizas en que debes cerrar a todos a toda costa para ser exitoso, y empiezas a llamar sin investigar a los leads para ahorrar tiempo.", correct: false, reason: "Incorrecto. Esta mentalidad de desesperación se transmite y saltarse la investigación te hace sonar genérico." },
+            { text: "Adoptas una mentalidad de curiosidad genuina (quieres ver si puedes ayudarles) e investigas brevemente a cada empresa para personalizar el ángulo de entrada.", correct: true, reason: "¡Excelente! La curiosidad genuina reduce la presión y la preparación previa te posiciona como un profesional valioso." }
         ];
-        tip = "El cerebro busca confianza antes de escuchar lógica.";
+        tip = "La venta empieza en tu mente: busca entender antes de intentar ser entendido.";
     } else if (stageId === "stage-2") {
-        question = "Para conocer los dolores reales del cliente, ¿cuál es la mejor estrategia de descubrimiento?";
+        question = "Comienzas la llamada y el cliente te dice: 'Hola, sí, dime rápido qué quieres'. ¿Cómo manejas la conversación para evitar un monólogo técnico y conectar en su misma sintonía?";
         options = [
-            { text: "Hablar el 80% del tiempo describiendo los beneficios generales de tu oferta.", correct: false, reason: "Incorrecto. Si hablas tú, no descubres sus necesidades." },
-            { text: "Hacer preguntas abiertas como '¿Cuál es el principal cuello de botella que frena tu facturación hoy?' y escuchar activamente.", correct: true, reason: "¡Perfecto! La regla de oro es: Escucha el 70%, habla el 30%." }
+            { text: "Igualas sutilmente su ritmo y tono de voz (espejamiento) para transmitir urgencia respetuosa, respondes brevemente y le devuelves el control con una pregunta abierta para iniciar un diálogo bidireccional.", correct: true, reason: "¡Perfecto! El tono y el diálogo interactivo desarman las defensas. La regla es: habla el 30%, escucha el 70%." },
+            { text: "Aprovechas que te dio la palabra para recitar de golpe todo tu discurso de ventas de 3 minutos sin pausar, para que conozca todas las características de tu producto.", correct: false, reason: "Incorrecto. Los monólogos largos aburren al prospecto y destruyen cualquier posibilidad de conexión humana." }
         ];
-        tip = "El cliente te dará las pistas de cómo venderle si le dejas hablar.";
+        tip = "Quien hace las preguntas correctas controla la conversación. Escucha activamente.";
     } else if (stageId === "stage-3") {
-        question = "Al presentar la propuesta de tu producto/servicio, ¿cómo debes estructurar el mensaje?";
+        question = "El cliente te dice: 'Actualmente estamos bien con nuestro proveedor de software'. ¿Cómo descubres si hay un dolor real o motor de compra latente bajo esa aparente tranquilidad?";
         options = [
-            { text: "Enfocar el discurso en cómo las características específicas solucionan directamente el dolor que te comentó en la etapa de descubrimiento.", correct: true, reason: "¡Exacto! Adapta tu discurso exclusivamente a lo que el cliente necesita solucionar." },
-            { text: "Enumerar todas las funciones técnicas en orden alfabético para demostrar la complejidad técnica del producto.", correct: false, reason: "Incorrecto. Demasiadas características abruman al cerebro del comprador." }
+            { text: "Le dices que tu software es mucho mejor y más barato que el de su proveedor actual y le insistes en hacer una demo.", correct: false, reason: "Incorrecto. Atacar al proveedor actual genera reactancia defensiva en el cliente por haber tomado esa decisión." },
+            { text: "Validación empática: 'Entiendo, cambiar de proveedor es un dolor de cabeza. Si tuviera que elegir una sola cosa que le gustaría que fuera un 10% más rápida o simple con ellos, ¿cuál sería?'", correct: true, reason: "¡Brillante! Esta pregunta de contraste indirecto revela fricciones operativas ocultas sin confrontar." }
         ];
-        tip = "No vendas características, vende el puente al estado ideal de tu cliente.";
+        tip = "No hay venta sin dolor. Si no duele, no hay motivación para cambiar de estado.";
+    } else if (stageId === "stage-4") {
+        question = "En lugar de limitarte a enumerar los beneficios de tu producto, quieres reencuadrar la visión del cliente. ¿Cómo le enseñas una nueva perspectiva del problema (Challenger Sale)?";
+        options = [
+            { text: "Presentas datos del sector que demuestran un riesgo invisible que su empresa está corriendo hoy: 'La mayoría de empresas de su sector pierden un 15% de margen por X. ¿Cómo se protegen de esto?'", correct: true, reason: "¡Excelente! Enseñar una nueva perspectiva comercial despierta interés intelectual y te posiciona como un consultor de confianza." },
+            { text: "Le dices que tu producto tiene inteligencia artificial integrada y le describes detalladamente cómo funciona el algoritmo de tu plataforma.", correct: false, reason: "Incorrecto. Vender características técnicas no cambia la perspectiva del cliente sobre su propio negocio." }
+        ];
+        tip = "No vendas el producto; vende una nueva forma de ver y resolver su dolor de cabeza.";
+    } else if (stageId === "stage-5") {
+        question = "Identificas que tu interlocutor es un perfil sumamente directo y enfocado en resultados rápidos (comprador Directo). ¿Cómo adaptas tu discurso y generas deseo y emoción?";
+        options = [
+            { text: "Le explicas la historia de fundación de tu empresa y el ambiente de soporte familiar y cercano que ofreces a largo plazo.", correct: false, reason: "Incorrecto. El perfil Directo se impacienta con las historias de soporte y relaciones personales al inicio." },
+            { text: "Vas al grano, enfocas la presentación en el impacto financiero, reducción de tiempos muertos y metas competitivas, usando contrastes claros.", correct: true, reason: "¡Espectacular! Adaptar el lenguaje al perfil psicológico del cliente enciende sus disparadores de deseo emocional." }
+        ];
+        tip = "El deseo se genera mostrando el contraste entre el dolor actual y el placer del futuro deseado.";
+    } else if (stageId === "stage-6") {
+        question = "Llega el momento de presentar la oferta. ¿Cómo la estructuras para que se perciba como una propuesta irresistible basada en la ecuación de valor de los mejores del mundo?";
+        options = [
+            { text: "Presentas el resultado final deseado garantizado, minimizando el tiempo para conseguirlo y reduciendo el esfuerzo requerido con garantías claras de devolución de riesgo.", correct: true, reason: "¡Extraordinario! Valor = (Resultado Deseado * Certeza) / (Tiempo de Entrega * Esfuerzo/Sacrificio). Cuanto menor sea el esfuerzo y tiempo, mayor es el valor percibido." },
+            { text: "Dices el precio total, describes las 40 horas de formación que el cliente tendrá que pasar para aprender a usarlo y añades que no se aceptan devoluciones.", correct: false, reason: "Incorrecto. Exigir mucho esfuerzo/tiempo y transferir todo el riesgo al cliente destruye el valor percibido." }
+        ];
+        tip = "Una oferta irresistible elimina el miedo al fracaso del cliente y acelera la toma de decisión.";
     }
 
     // Get elements
