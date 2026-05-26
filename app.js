@@ -499,9 +499,68 @@ document.addEventListener("DOMContentLoaded", () => {
     initUI();
 });
 
+const SALES_QUOTES = [
+    { text: "No vendas. Ayuda.", author: "Zig Ziglar" },
+    { text: "A la gente no le gusta que le vendan, pero les encanta comprar.", author: "Jeffrey Gitomer" },
+    { text: "Puedes conseguir todo lo que quieres en la vida si ayudas a suficientes personas a conseguir lo que ellas quieren.", author: "Zig Ziglar" },
+    { text: "Enfoca cada cliente con la idea de ayudarle a resolver un problema o alcanzar una meta, no de venderle un producto.", author: "Brian Tracy" },
+    { text: "La gente no compra por razones lógicas. Compra por razones emocionales.", author: "Zig Ziglar" },
+    { text: "Cuando trates con personas, recuerda que no tratas con criaturas de lógica, sino con criaturas de emoción.", author: "Dale Carnegie" },
+    { text: "La venta es esencialmente una transferencia de sentimientos.", author: "Zig Ziglar" },
+    { text: "Si le agradas a la gente, te escucharán. Si confían en ti, harán negocios contigo.", author: "Zig Ziglar" },
+    { text: "Demuestra que tu producto es la mejor opción para tu cliente, no el precio más bajo.", author: "Brian Tracy" },
+    { text: "Como regla general, la persona que hace las preguntas tiene el control.", author: "Brian Tracy" },
+    { text: "Cada objeción no es un rechazo, es una petición de más información.", author: "Zig Ziglar" },
+    { text: "Haz un cliente, no una venta.", author: "Katherine Barchetti" },
+    { text: "Si no estás cuidando a tu cliente, tu competencia lo hará.", author: "Bob Hooey" },
+    { text: "Las ventas dependen de la actitud del vendedor, no de la actitud del cliente.", author: "W. Clement Stone" },
+    { text: "El seguimiento no es una fase del proceso de ventas, es el proceso en sí.", author: "Jeffrey Gitomer" },
+    { text: "Nunca bajes tu meta; aumenta tus acciones.", author: "Grant Cardone" },
+    { text: "Nunca bajes tu precio, añade valor.", author: "Grant Cardone" },
+    { text: "Las ventas son la transferencia de emoción. Y la emoción que transfieres es la de certeza.", author: "Jordan Belfort" },
+    { text: "La mejor forma de vender algo es no vender nada. Gana primero el respeto y la confianza de tu prospecto.", author: "Jordan Belfort" },
+    { text: "Si le das a la gente un 'por qué' lo suficientemente bueno, siempre encontrarán el 'cómo'.", author: "Jordan Belfort" },
+    { text: "La negociación no es un acto de batalla, es un proceso de descubrimiento.", author: "Chris Voss" },
+    { text: "Las personas parecen estar más motivadas por la idea de perder algo que por la idea de ganar algo de igual valor.", author: "Robert Cialdini" },
+    { text: "Cada vez que decepcionas a un prospecto, decepcionas a 250 potenciales recomendados más.", author: "Joe Girard" },
+    { text: "El obstáculo es lo que ves cuando apartas los ojos de tu objetivo.", author: "Henry Ford" },
+    { text: "No vendas un producto, vende soluciones a problemas reales.", author: "Mark Cuban" },
+    { text: "A los clientes no les importa tu producto, les importan sus propios problemas.", author: "Jill Konrath" },
+    { text: "El consumidor no es tonto; respeta su inteligencia y dile la verdad.", author: "David Ogilvy" },
+    { text: "Presta atención a cada persona; todos llevan un cartel invisible que dice: Hazme sentir importante.", author: "Mary Kay Ash" },
+    { text: "Quien aprende a estar en desacuerdo sin ser desagradable descubre el gran secreto de la negociación.", author: "Chris Voss" },
+    { text: "En una llamada o contacto inicial no vendes tu producto; estás vendiendo una conversación.", author: "Art Sobczak" },
+    { text: "No celebres el cierre de una venta; celebra la apertura de una relación comercial.", author: "Patricia Fripp" },
+    { text: "El éxito en las ventas viene de hacer preguntas correctas, no de tener todas las respuestas.", author: "Neil Rackham" },
+    { text: "La regla de oro de las ventas: habla menos y escucha más.", author: "Brian Tracy" },
+    { text: "Tus clientes más descontentos son tu mayor fuente de aprendizaje.", author: "Bill Gates" }
+];
+
+function startQuoteRotation() {
+    const quoteEl = document.getElementById("sales-quote");
+    if (!quoteEl) return;
+    
+    // Choose a random quote to display initially
+    let currentIndex = Math.floor(Math.random() * SALES_QUOTES.length);
+    const initialQuote = SALES_QUOTES[currentIndex];
+    quoteEl.innerHTML = `"${initialQuote.text}" — <strong>${initialQuote.author}</strong>`;
+    
+    setInterval(() => {
+        quoteEl.style.opacity = 0;
+        
+        setTimeout(() => {
+            currentIndex = (currentIndex + 1) % SALES_QUOTES.length;
+            const quote = SALES_QUOTES[currentIndex];
+            quoteEl.innerHTML = `"${quote.text}" — <strong>${quote.author}</strong>`;
+            quoteEl.style.opacity = 1;
+        }, 500);
+    }, 8000);
+}
+
 function initUI() {
     renderSectorSelectionGrid();
     setupEventListeners();
+    startQuoteRotation();
     
     // Auto navigation based on state
     if (app.state.completedStages.includes("stage-1")) {
