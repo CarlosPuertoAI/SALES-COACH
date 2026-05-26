@@ -796,10 +796,15 @@ input[type="text"]:focus {
     padding-right: 70px; /* Space for copy button */
 }
 
-.btn-copy {
+.action-buttons {
     position: absolute;
     top: 20px;
     right: 20px;
+    display: flex;
+    gap: 8px;
+}
+
+.btn-copy, .btn-speak {
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 8px;
@@ -814,10 +819,50 @@ input[type="text"]:focus {
     transition: var(--transition-smooth);
 }
 
-.btn-copy:hover {
+.action-buttons .btn-copy, .action-buttons .btn-speak {
+    position: static;
+}
+
+.btn-copy:hover, .btn-speak:hover {
     background: rgba(255, 255, 255, 0.12);
     color: var(--text-main);
     border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Header Reset Button Style */
+.reset-btn {
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: var(--transition-smooth);
+}
+
+.reset-btn:hover {
+    background: rgba(239, 68, 68, 0.15) !important;
+    border-color: rgba(239, 68, 68, 0.3) !important;
+    color: var(--danger) !important;
+    transform: rotate(45deg);
+}
+
+/* Editable Closing Script Text */
+.script-text[contenteditable="true"] {
+    outline: none;
+    border: 1.5px dashed transparent;
+    border-radius: 12px;
+    padding: 10px;
+    transition: var(--transition-smooth);
+    cursor: text;
+}
+
+.script-text[contenteditable="true"]:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.script-text[contenteditable="true"]:focus {
+    border-color: var(--primary);
+    background: rgba(79, 172, 254, 0.04);
+    box-shadow: 0 0 15px rgba(79, 172, 254, 0.15);
 }
 
 .pro-tip {

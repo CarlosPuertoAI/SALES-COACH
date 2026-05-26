@@ -531,6 +531,16 @@ function setupEventListeners() {
             }
         });
     }
+
+    // Reset settings action
+    const resetBtn = document.getElementById("reset-profile-btn");
+    if (resetBtn) {
+        resetBtn.addEventListener("click", () => {
+            if (confirm("¿Estás seguro de que quieres reiniciar tu configuración? Se borrará tu producto, sector y progreso de XP.")) {
+                app.resetState();
+            }
+        });
+    }
 }
 
 // Action: Custom Objection Creation
@@ -932,6 +942,60 @@ SalesQuest.prototype.copyToClipboard = function(elementId) {
         document.body.removeChild(textarea);
         alert("¡Guión copiado al portapapeles!");
     });
+};
+
+// 10. Utility: Speech Synthesis (Text to Speech)
+SalesQuest.prototype.speakText = function(elementId) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    
+    const text = element.innerText;
+    
+    // Toggle speaking state
+    if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+        // Reset all play icons
+        document.querySelectorAll('.btn-speak').forEach(btn => {
+            btn.innerHTML = `<svg class="icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>`;
+        });
+        return;
+    }
+    
+    if (!text || text.includes("Selecciona una") || text.includes("Cargando tu")) {
+        alert("Por favor, selecciona una objeción válida primero.");
+        return;
+    }
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'es-ES';
+    utterance.rate = 0.95; // Slightly slower for clear pronunciation
+    utterance.pitch = 1.0;
+    
+    // Find trigger button and toggle its visual icon to pause
+    const buttons = document.querySelectorAll(`button[onclick*="'${elementId}'"]`);
+    buttons.forEach(btn => {
+        if (btn.classList.contains('btn-speak')) {
+            btn.innerHTML = `<svg class="icon" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`; // Pause bars
+        }
+    });
+    
+    utterance.onend = () => {
+        buttons.forEach(btn => {
+            if (btn.classList.contains('btn-speak')) {
+                btn.innerHTML = `<svg class="icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>`; // Speaker icon
+            }
+        });
+    };
+    
+    utterance.onerror = () => {
+        buttons.forEach(btn => {
+            if (btn.classList.contains('btn-speak')) {
+                btn.innerHTML = `<svg class="icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>`;
+            }
+        });
+    };
+    
+    window.speechSynthesis.speak(utterance);
 };
 
 // 9. Component: Celebrations Popups
