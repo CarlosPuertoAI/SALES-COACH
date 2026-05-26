@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SalesQuest 🎯 - Entrena tus Ventas</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Main Style Sheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background Glow Blobs for Visual Aesthetics -->
+    <div class="glow-blob blob-1"></div>
+    <div class="glow-blob blob-2"></div>
+    <div class="glow-blob blob-3"></div>
+
+    <div class="app-container">
+        <!-- APP HEADER (Hidden during onboarding) -->
+        <header id="app-header" class="app-header hidden">
+            <div class="header-left">
+                <div class="app-logo">
+                    <span class="logo-emoji">🎯</span>
+                    <div class="logo-text">
+                        <h1>SalesQuest</h1>
+                        <span id="header-sector" class="header-subtitle">Sector</span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="stat-badge xp-badge">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <span id="xp-counter">0</span> <span class="xp-unit">XP</span>
+                </div>
+                <div class="stat-badge level-badge">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M12 22c5.52 0 10-4.48 10-10S17.52 2 12 2 2 6.48 2 12s4.48 10 10 10zM12 6l4 4h-3v6h-2v-6H8l4-4z"/></svg>
+                    <span id="level-indicator">Nivel 1</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="main-content" id="main-content">
+            
+            <!-- VIEW 1: ONBOARDING / SETUP -->
+            <section id="view-onboarding" class="view active">
+                <div class="onboarding-card glass-panel">
+                    <div class="onboarding-header">
+                        <span class="badge-promo">Beta Abierta</span>
+                        <h2>Domina tus Ventas con Inteligencia Emocional</h2>
+                        <p>Diseña tu ruta de aprendizaje de ventas personalizada. Resuelve objeciones al instante, perfila a tus prospectos y genera cierres de alto impacto emocional.</p>
+                    </div>
+
+                    <form id="onboarding-form" class="interactive-form">
+                        <div class="form-group">
+                            <label for="product-name">¿Qué producto o servicio vendes?</label>
+                            <input type="text" id="product-name" placeholder="Ej. Software de CRM para PYMES, Apartamentos en la playa, Seguros de vida..." required autocomplete="off">
+                            <span class="input-helper">Esto nos ayudará a personalizar tus guiones de venta.</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Selecciona tu Sector Comercial</label>
+                            <div class="sector-grid" id="sector-grid">
+                                <!-- Sectors will be injected here via JS -->
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block btn-glow">
+                            <span>Comenzar mi Ruta</span>
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- VIEW 2: ROADMAP (ESTILO DUOLINGO) -->
+            <section id="view-roadmap" class="view hidden">
+                <div class="view-header">
+                    <h2>Tu Camino al Cierre Maestro</h2>
+                    <p>Completa cada etapa para ganar XP y desbloquear cierres emocionales avanzados.</p>
+                </div>
+
+                <div class="roadmap-container">
+                    <div class="roadmap-path" id="roadmap-path">
+                        <!-- Roadmap nodes will be injected here via JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 3: SIMULADOR DE OBJECIONES -->
+            <section id="view-objections" class="view hidden">
+                <div class="view-header">
+                    <h2>Simulador de Objeciones</h2>
+                    <p>Encuentra respuestas inmediatas a los miedos y objeciones de tu cliente.</p>
+                </div>
+
+                <div class="objections-layout">
+                    <!-- Sidebar: Objection List -->
+                    <div class="objections-sidebar glass-panel">
+                        <h3>Objeciones Comunes</h3>
+                        <div class="objection-list" id="objection-list">
+                            <!-- Objection items injected here -->
+                        </div>
+                        <div class="custom-objection-box">
+                            <h4>¿Otra objeción?</h4>
+                            <div class="search-input-group">
+                                <input type="text" id="custom-objection-input" placeholder="Escribe la objeción aquí...">
+                                <button id="custom-objection-btn" class="btn-icon">
+                                    <svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Panel: Answers Display -->
+                    <div class="objections-main glass-panel">
+                        <div class="active-objection-header">
+                            <span class="tag-status">Objeción Seleccionada</span>
+                            <h3 id="current-objection-title">Selecciona una objeción</h3>
+                        </div>
+
+                        <!-- Response Tabs -->
+                        <div class="response-tabs">
+                            <button class="tab-btn active" data-tab="racional">
+                                <span class="tab-emoji">🧠</span> Enfoque Racional
+                            </button>
+                            <button class="tab-btn" data-tab="emocional">
+                                <span class="tab-emoji">❤️</span> Enfoque Emocional
+                            </button>
+                            <button class="tab-btn" data-tab="redireccion">
+                                <span class="tab-emoji">🔄</span> Pregunta Filtro
+                            </button>
+                        </div>
+
+                        <!-- Response Content -->
+                        <div class="tab-content-container">
+                            <div id="tab-racional" class="tab-content active">
+                                <p class="response-concept">Desarma la objeción usando hechos fríos, lógica del retorno de inversión y minimización de riesgos.</p>
+                                <div class="script-box">
+                                    <p id="script-racional-text">Selecciona una objeción para ver la respuesta.</p>
+                                    <button class="btn-copy" onclick="app.copyToClipboard('script-racional-text')">
+                                        <svg class="icon" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M9 2h6v4H9z"/></svg>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div class="pro-tip">
+                                    <strong>💡 Consejo Pro:</strong> Ideal para perfiles analíticos que temen equivocarse financieramente.
+                                </div>
+                            </div>
+
+                            <div id="tab-emocional" class="tab-content">
+                                <p class="response-concept">Conecta con los deseos primarios del cliente: seguridad, estatus, paz mental o el miedo a perderse la oportunidad.</p>
+                                <div class="script-box">
+                                    <p id="script-emocional-text">Selecciona una objeción para ver la respuesta.</p>
+                                    <button class="btn-copy" onclick="app.copyToClipboard('script-emocional-text')">
+                                        <svg class="icon" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M9 2h6v4H9z"/></svg>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div class="pro-tip">
+                                    <strong>💡 Consejo Pro:</strong> Úsalo para calmar la ansiedad y validar los sentimientos del prospecto antes de cerrar.
+                                </div>
+                            </div>
+
+                            <div id="tab-redireccion" class="tab-content">
+                                <p class="response-concept">Una contra-pregunta diseñada para aislar la objeción real y descubrir si es una limitación real o una pantalla.</p>
+                                <div class="script-box">
+                                    <p id="script-redireccion-text">Selecciona una objeción para ver la respuesta.</p>
+                                    <button class="btn-copy" onclick="app.copyToClipboard('script-redireccion-text')">
+                                        <svg class="icon" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M9 2h6v4H9z"/></svg>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div class="pro-tip">
+                                    <strong>💡 Consejo Pro:</strong> Si el cliente responde afirmativamente, has obtenido un acuerdo de pre-cierre.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action footer in objections -->
+                        <div class="objections-footer">
+                            <button id="solve-objection-btn" class="btn btn-secondary">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14M22 4L12 14.01l-3-3"/></svg>
+                                <span>Marcar como Practicado (+30 XP)</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 4: PERFILADOR DE CLIENTES -->
+            <section id="view-profiler" class="view hidden">
+                <div class="view-header">
+                    <h2>Perfilador de Personalidad del Comprador</h2>
+                    <p>Responde 3 preguntas sencillas sobre tu prospecto para descifrar sus palancas emocionales de compra.</p>
+                </div>
+
+                <div class="profiler-card glass-panel" id="profiler-quiz-container">
+                    <div class="quiz-progress-bar">
+                        <div class="quiz-progress-fill" id="quiz-progress" style="width: 33%"></div>
+                    </div>
+
+                    <div class="quiz-question-slide" id="quiz-slide">
+                        <!-- Questions injected dynamically by JS -->
+                    </div>
+                </div>
+
+                <!-- RESULTS PANEL (Initially Hidden) -->
+                <div class="profiler-result-card glass-panel hidden" id="profiler-result-container">
+                    <div class="result-layout">
+                        <div class="result-avatar">
+                            <span id="result-emoji" class="profile-emoji">🧙‍♂️</span>
+                        </div>
+                        <div class="result-details">
+                            <span class="tag-status">Perfil Determinado</span>
+                            <h3 id="result-title">El Analítico</h3>
+                            <p id="result-desc">Descripción del perfil...</p>
+                            
+                            <div class="result-metrics">
+                                <div class="metric">
+                                    <strong>Miedo Principal:</strong>
+                                    <span id="result-fear">Equivocarse o perder dinero</span>
+                                </div>
+                                <div class="metric">
+                                    <strong>Palanca Emocional:</strong>
+                                    <span id="result-lever" class="text-highlight">Seguridad y Garantía</span>
+                                </div>
+                            </div>
+
+                            <button id="go-to-closing-btn" class="btn btn-primary btn-glow mt-4">
+                                <span>Generar Cierre Emocional</span>
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 5: CIERRE EMOCIONAL -->
+            <section id="view-closing" class="view hidden">
+                <div class="view-header">
+                    <h2>Tu Cierre Emocional Maestro</h2>
+                    <p>Guión persuasivo personalizado según el perfil del cliente, su principal objeción y tu sector.</p>
+                </div>
+
+                <div class="closing-layout">
+                    <!-- Config summary card -->
+                    <div class="closing-summary-card glass-panel">
+                        <h3>Configuración del Cierre</h3>
+                        <div class="summary-details">
+                            <div class="summary-item">
+                                <span class="label">Producto:</span>
+                                <span id="summary-product" class="val">CRM Software</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Perfil Cliente:</span>
+                                <span id="summary-profile" class="val">El Analítico</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Objeción Clave:</span>
+                                <span id="summary-objection" class="val">"Es muy caro"</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main script generator card -->
+                    <div class="closing-script-card glass-panel">
+                        <div class="script-header">
+                            <div class="header-left">
+                                <span class="lever-badge" id="closing-lever-tag">Palanca: Seguridad</span>
+                            </div>
+                            <div class="header-right">
+                                <button class="btn-copy" onclick="app.copyToClipboard('closing-script-text')">
+                                    <svg class="icon" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M9 2h6v4H9z"/></svg>
+                                    <span>Copiar Cierre</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="closing-script-body">
+                            <p id="closing-script-text" class="script-text">
+                                Cargando tu guión de cierre emocional...
+                            </p>
+                        </div>
+
+                        <div class="closing-explanation">
+                            <h4>¿Por qué funciona este cierre?</h4>
+                            <p id="closing-why-text">Explicación del disparador psicológico y por qué resuena con este perfil.</p>
+                        </div>
+
+                        <div class="closing-actions">
+                            <button id="complete-roadmap-btn" class="btn btn-primary btn-glow btn-block">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14M22 4L12 14.01l-3-3"/></svg>
+                                <span>¡Cierre Exitoso! Terminar Ruta (+100 XP)</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- NAVIGATION BAR (Only visible once onboarding is completed) -->
+        <nav id="app-nav" class="app-nav hidden">
+            <button class="nav-item active" data-view="roadmap">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+                <span>Ruta</span>
+            </button>
+            <button class="nav-item" data-view="objections">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M12 22c5.52 0 10-4.48 10-10S17.52 2 12 2 2 6.48 2 12s4.48 10 10 10zM12 8v4M12 16h.01"/></svg>
+                <span>Objeciones</span>
+            </button>
+            <button class="nav-item" data-view="profiler">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm14 14v-2a4 4 0 0 0-3-3.87m-4-12a4 4 0 0 1 0 7.75"/></svg>
+                <span>Perfilador</span>
+            </button>
+            <button class="nav-item" data-view="closing">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                <span>Cierres</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- MODAL / POPUP DE CELEBRACIÓN (Gamificación) -->
+    <div id="celebration-modal" class="modal-overlay hidden">
+        <div class="modal-card glass-panel animate-pop">
+            <div class="modal-emoji">🎉</div>
+            <h2 id="modal-title">¡Excelente Trabajo!</h2>
+            <p id="modal-desc">Has ganado 50 XP y has subido de nivel.</p>
+            <div class="reward-badges" id="modal-badges">
+                <!-- Unlocked badges -->
+            </div>
+            <button id="modal-close-btn" class="btn btn-primary">
+                <span>Continuar</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main JS Application Logic -->
+    <script src="app.js"></script>
+</body>
+</html>
