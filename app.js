@@ -1003,10 +1003,10 @@ function addCustomObjection() {
     // Dynamic generated responses based on simple heuristics representing the 4 profiles
     const newObjection = {
         title: `"${text}"`,
-        analitico: `Entiendo perfectamente que "${text}" sea tu mayor preocupación ahora mismo, y es una duda muy razonable. Pero déjame hacerte una pregunta seria: si eliminamos ese obstáculo sobre "${text}" y te demuestro que el ROI de {product} multiplica por tres tu inversión inicial, ¿estarías dispuesto a trabajar conmigo? Confía en mí, nos encargaremos personalmente de que sea un éxito rotundo. ¿Cerramos los detalles técnicos hoy?`,
-        emocional: `Parece que te preocupa mucho el impacto de "${text}" en tus operaciones y temes que sea un problema difícil de solucionar. ¿Cómo crees que podríamos abordar "${text}" para que te sientas totalmente cómodo dando el paso? ¿Qué opción ves viable por nuestra parte?`,
-        agresivo: `¡Estoy 100% de acuerdo contigo en que "${text}" es un punto crítico! Pero no dejes que "${text}" sea la excusa para quedarte estancado. El verdadero coste es la inacción y seguir perdiendo tracción comercial cada día. Vamos a dejar firmado el acuerdo de {product} hoy mismo y resolveremos "${text}" sobre la marcha con nuestro equipo técnico.`,
-        solucionador: `¿Qué problemas concretos os genera "${text}" en vuestra actividad diaria en {sector}? Si no solucionáis la causa raíz detrás de "${text}", ¿cuánto dinero y tiempo habréis perdido en los próximos 12 meses? ¿De qué forma mejoraría vuestra rentabilidad si resolvemos esto de una vez con {product}?`
+        analitico: `Si el obstáculo es "${text}", miremos la rentabilidad real de {product}. Los números muestran que recuperas la inversión en tres meses con total garantía técnica por contrato. ¿Qué necesitas ver hoy para que hagamos la prueba piloto?`,
+        emocional: `Si la preocupación principal es "${text}", mi compromiso es acompañarte a ti y a tu equipo en cada paso de la transición. No estarás solo con un manual de {product}, sino con soporte directo por videollamada siempre que lo necesites. ¿Te parece bien si agendamos una breve llamada de inducción el lunes?`,
+        agresivo: `Si dejas que "${text}" te detenga hoy, seguirás con el mismo problema el próximo mes y perdiendo margen frente a tu competencia. En {sector} la inacción es lo que realmente sale caro, no la solución. ¿Qué correo dejamos registrado para activar tu cuenta ahora mismo?`,
+        solucionador: `Si "${text}" es el inconveniente actual, miremos cómo resolver la raíz del problema de forma inmediata. ¿Cuánto os está costando operativamente no solucionar esto esta semana? ¿Comenzamos con la fase de diagnóstico de cinco minutos?`
     };
     
     app.state.customObjections.push(newObjection);
