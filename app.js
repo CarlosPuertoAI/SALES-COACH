@@ -527,6 +527,14 @@ function setupEventListeners() {
         });
     }
 
+    // Challenge Modal Close Action
+    const challengeClose = document.getElementById("challenge-close-btn");
+    if (challengeClose) {
+        challengeClose.addEventListener("click", () => {
+            document.getElementById("challenge-modal").classList.add("hidden");
+        });
+    }
+
     // Close Roadmap Complete Reward Action
     const completeRoadmapBtn = document.getElementById("complete-roadmap-btn");
     if (completeRoadmapBtn) {
@@ -691,27 +699,82 @@ function handleMiniChallenge(stageId, stageTitle) {
         tip = "No vendas características, vende el puente al estado ideal de tu cliente.";
     }
 
-    // Render a quick prompt modal (simulated through JS alert confirm workflow for simplicity, or customized flow)
-    const promptText = `${stageTitle.toUpperCase()}\n\nReto rápido:\n${question}\n\nOpciones:\n1. ${options[0].text}\n2. ${options[1].text}`;
-    const answer = prompt(promptText + "\n\nResponde escribiendo 1 o 2:");
-    
-    if (answer === "1" || answer === "2") {
-        const selected = options[parseInt(answer) - 1];
-        alert(selected.reason + "\n\nTip: " + tip);
+    // Get elements
+    const modal = document.getElementById("challenge-modal");
+    const titleEl = document.getElementById("challenge-title");
+    const questionEl = document.getElementById("challenge-question");
+    const optionsContainer = document.getElementById("challenge-options");
+    const feedbackBox = document.getElementById("challenge-feedback-box");
+
+    if (!modal || !titleEl || !questionEl || !optionsContainer || !feedbackBox) return;
+
+    // Reset feedback box
+    feedbackBox.classList.add("hidden");
+    feedbackBox.innerText = "";
+
+    // Set texts
+    titleEl.innerText = stageTitle;
+    questionEl.innerText = question;
+
+    // Render options
+    optionsContainer.innerHTML = "";
+    options.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "quiz-option";
+        btn.innerText = `${idx + 1}. ${opt.text}`;
         
-        if (selected.correct) {
-            app.state.completedStages.push(stageId);
-            app.addXP(20);
-            showCelebrationModal(
-                "¡Etapa Completada! 🌟", 
-                `Has dominado el concepto clave de "${stageTitle}". Sumas +20 XP.`,
-                [{ emoji: "🎓", name: "Conceptos Claros" }]
-            );
-            renderRoadmap();
-        }
-    } else {
-        alert("Reto cancelado. Puedes completarlo cuando estés listo.");
-    }
+        btn.addEventListener("click", () => {
+            // Disable options
+            optionsContainer.querySelectorAll(".quiz-option").forEach(b => b.disabled = true);
+            btn.classList.add("selected");
+            
+            // Show feedback
+            feedbackBox.innerText = `${opt.reason}\n\nConsejo: ${tip}`;
+            feedbackBox.classList.remove("hidden");
+            
+            if (opt.correct) {
+                // Style success feedback
+                feedbackBox.style.background = "rgba(16, 185, 129, 0.05)";
+                feedbackBox.style.borderColor = "rgba(16, 185, 129, 0.2)";
+                feedbackBox.style.color = "#10b981";
+                
+                // Add stage to completed
+                if (!app.state.completedStages.includes(stageId)) {
+                    app.state.completedStages.push(stageId);
+                    app.addXP(20);
+                }
+                
+                setTimeout(() => {
+                    modal.classList.add("hidden");
+                    showCelebrationModal(
+                        "¡Etapa Completada! 🌟", 
+                        `Has dominado el concepto clave de "${stageTitle}". Sumas +20 XP.`,
+                        [{ emoji: "🎓", name: "Conceptos Claros" }]
+                    );
+                    renderRoadmap();
+                }, 2000);
+            } else {
+                // Style error feedback
+                feedbackBox.style.background = "rgba(239, 68, 68, 0.05)";
+                feedbackBox.style.borderColor = "rgba(239, 68, 68, 0.2)";
+                feedbackBox.style.color = "#ef4444";
+                
+                // Enable options again to let them retry
+                setTimeout(() => {
+                    optionsContainer.querySelectorAll(".quiz-option").forEach(b => {
+                        b.disabled = false;
+                        b.classList.remove("selected");
+                    });
+                    feedbackBox.classList.add("hidden");
+                }, 2500);
+            }
+        });
+        
+        optionsContainer.appendChild(btn);
+    });
+
+    // Show modal
+    modal.classList.remove("hidden");
 }
 
 // 5. Component: Objection Simulator UI

@@ -360,6 +360,29 @@
         </div>
     </div>
 
+    <!-- MODAL / POPUP DE RETO (Mini-desafíos de la Ruta) -->
+    <div id="challenge-modal" class="modal-overlay hidden">
+        <div class="modal-card glass-panel animate-pop" style="max-width: 500px; text-align: left;">
+            <span class="tag-status" id="challenge-tag">Reto Rápido</span>
+            <h2 id="challenge-title" style="margin-bottom: 12px; font-family: var(--font-display); font-size: 22px;">Título del Reto</h2>
+            <p id="challenge-question" style="color: var(--text-main); font-size: 15px; line-height: 1.6; margin-bottom: 20px;">Pregunta del reto...</p>
+            
+            <div class="quiz-options" id="challenge-options" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
+                <!-- Options buttons injected here -->
+            </div>
+            
+            <div id="challenge-feedback-box" class="pro-tip hidden" style="margin-bottom: 20px; background: rgba(245, 158, 11, 0.05); border: 1px solid rgba(245, 158, 11, 0.1); color: #f3a63b;">
+                <!-- Feedback injected here -->
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button id="challenge-close-btn" class="btn btn-secondary">
+                    <span>Cerrar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Main JS Application Logic -->
     <script src="app.js"></script>
 </body>
