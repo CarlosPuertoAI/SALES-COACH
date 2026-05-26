@@ -364,7 +364,7 @@ function updateWizardUI() {
         // Update badge text dynamically based on leadType
         const badge = currentSlide.querySelector(".badge-promo");
         if (badge) {
-            const total = app.state.leadType === "cold" ? 3 : 4;
+            const total = app.state.leadType === "cold" ? 2 : 3;
             badge.textContent = `Paso ${step} de ${total}`;
         }
     }
@@ -372,9 +372,9 @@ function updateWizardUI() {
     // Update progress bar
     const progress = document.getElementById("onboarding-progress");
     if (progress) {
-        let pct = (step / 4) * 100;
+        let pct = (step / 3) * 100;
         if (app.state.leadType === "cold") {
-            pct = (step / 3) * 100;
+            pct = (step / 2) * 100;
         }
         progress.style.width = `${pct}%`;
     }
@@ -392,7 +392,7 @@ function updateWizardUI() {
     }
     
     if (nextBtn) {
-        if (step === 4 || (step === 3 && app.state.leadType === "cold")) {
+        if (step === 3 || (step === 2 && app.state.leadType === "cold")) {
             nextBtn.innerHTML = `<span>Comenzar mi Ruta 🚀</span>`;
         } else {
             nextBtn.innerHTML = `<span>Siguiente</span><svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`;
@@ -404,7 +404,7 @@ function resetOnboardingWizardUI() {
     app.state.onboardingStep = 1;
     
     const progress = document.getElementById("onboarding-progress");
-    if (progress) progress.style.width = "25%";
+    if (progress) progress.style.width = "33%";
     
     document.querySelectorAll(".onboarding-step-slide").forEach((slide, idx) => {
         if (idx === 0) {
@@ -447,7 +447,7 @@ function initUI() {
     setupEventListeners();
     
     // Auto navigation based on state
-    if (app.state.sectorId && app.state.productName) {
+    if (app.state.sectorId) {
         document.getElementById("app-header").classList.remove("hidden");
         document.getElementById("app-nav").classList.remove("hidden");
         app.updateHeaderStats();
@@ -584,6 +584,10 @@ function setupEventListeners() {
             const step = app.state.onboardingStep;
             
             const completeOnboarding = () => {
+                const sectorObj = SECTORS.find(s => s.id === app.state.sectorId);
+                const sectorName = sectorObj ? sectorObj.name : "tu sector";
+                app.state.productName = sectorName; // Respaldo para plantillas
+                
                 app.state.completedStages = ["stage-1"]; // Desbloquear stage 1
                 app.addXP(20);
                 
@@ -593,7 +597,7 @@ function setupEventListeners() {
                 
                 showCelebrationModal(
                     "¡Ruta Creada! 🚀", 
-                    `Tu ruta de aprendizaje de ventas para "${app.state.productName}" (${app.state.leadType === 'cold' ? 'Lead Frío' : 'Lead Caliente'}) está lista. Ganas +20 XP.`,
+                    `Tu ruta de aprendizaje de ventas para "${sectorName}" (${app.state.leadType === 'cold' ? 'Lead Frío' : 'Lead Caliente'}) está lista. Ganas +20 XP.`,
                     [{ emoji: "🗺️", name: "Iniciador" }]
                 );
                 
@@ -601,39 +605,29 @@ function setupEventListeners() {
             };
             
             if (step === 1) {
-                if (!app.state.leadType) {
-                    alert("Por favor, selecciona si es un Lead Frío o Caliente.");
+                if (!app.state.sectorId) {
+                    alert("Por favor, selecciona un sector comercial.");
                     return;
                 }
                 app.state.onboardingStep = 2;
                 updateWizardUI();
             } 
             else if (step === 2) {
-                if (!app.state.sectorId) {
-                    alert("Por favor, selecciona un sector comercial.");
+                if (!app.state.leadType) {
+                    alert("Por favor, selecciona si es un Lead Frío o Caliente.");
                     return;
                 }
-                app.state.onboardingStep = 3;
-                updateWizardUI();
-            } 
-            else if (step === 3) {
-                const productInput = document.getElementById("product-name");
-                if (!productInput.value.trim()) {
-                    alert("Por favor, escribe el nombre de tu producto o servicio.");
-                    return;
-                }
-                app.state.productName = productInput.value.trim();
                 
-                // Si es frío, completamos aquí la ruta
+                // Si es frío, completamos aquí la ruta de inmediato (solo 2 pasos)
                 if (app.state.leadType === "cold") {
                     completeOnboarding();
                 } else {
-                    app.state.onboardingStep = 4;
+                    app.state.onboardingStep = 3;
                     updateWizardUI();
                 }
             } 
-            else if (step === 4) {
-                // Si es caliente, completamos aquí la ruta
+            else if (step === 3) {
+                // Si es caliente, completamos aquí la ruta (3 pasos)
                 completeOnboarding();
             }
         });
