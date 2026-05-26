@@ -1354,6 +1354,54 @@ function renderObjections() {
     updateActiveObjectionDisplay();
 }
 
+function getMentorWisdom(tab, objectionTitle) {
+    const title = (objectionTitle || "").toLowerCase();
+    
+    // Categorize objection by keywords
+    const isPrice = title.includes("caro") || title.includes("presupuesto") || title.includes("dinero") || title.includes("cuota") || title.includes("precio") || title.includes("gastar") || title.includes("gastas") || title.includes("coste") || title.includes("euros");
+    const isTimeOrDecision = title.includes("tiempo") || title.includes("pareja") || title.includes("socio") || title.includes("mirar") || title.includes("hoy") || title.includes("decidir") || title.includes("momento") || title.includes("esperar");
+    const isTechnicalOrTrust = title.includes("integrar") || title.includes("zona") || title.includes("eléctrico") || title.includes("similar") || title.includes("proveedor") || title.includes("genérica") || title.includes("garantizar") || title.includes("aseguradoras") || title.includes("confío") || title.includes("saludable") || title.includes("marca");
+
+    switch(tab) {
+        case "agresivo":
+            if (isPrice) {
+                return `<strong>💥 Grant Cardone (Regla 10X):</strong> "¡Nunca rebajes el precio! Si dicen que es caro, multiplícales el valor en su mente. Muéstrales que el coste real de no resolver su problema hoy es 10 veces mayor que el precio de tu producto."<br><br><strong>🐺 Jordan Belfort (Línea Recta):</strong> "Utiliza el tono de certeza absoluta. Un cliente te dirá que no tiene presupuesto para probar tu resolución, pero si le demuestras certeza absoluta en el producto y en ti, el dinero aparecerá mágicamente."`;
+            }
+            if (isTimeOrDecision) {
+                return `<strong>💥 Grant Cardone:</strong> "Quien te pide tiempo te está regalando una excusa. El tiempo es el cementerio de las ventas. Compromételos a decidir hoy haciendo ver que posponer la decisión es un gasto innecesario."<br><br><strong>🐺 Jordan Belfort:</strong> "Si dicen que deben consultarlo, es porque no confían en ti al 100%. Vuelve a la línea recta, genera más certeza y di: 'Entiendo perfectamente, pero déjeme decirle por qué esto tiene sentido ahora mismo'."`;
+            }
+            return `<strong>💥 Grant Cardone:</strong> "El éxito es tu deber, tu obligación y tu responsabilidad. Si crees en tu producto al 100%, es tu obligación moral insistir y empujar al cliente a tomar la decisión de compra correcta."<br><br><strong>🐺 Jordan Belfort:</strong> "Cada objeción es una oportunidad para reencuadrar la certeza del cliente. Controla la conversación y llévalos paso a paso por la línea recta hacia el cierre."`;
+            
+        case "emocional":
+            if (isPrice) {
+                return `<strong>🧡 Tony Robbins:</strong> "El dinero solo representa seguridad o estatus. Descubre qué necesidad humana está insatisfecha. Transmite absoluta paz mental y hazles ver que esta compra es su mayor alivio financiero."<br><br><strong>🤝 Dale Carnegie:</strong> "Elogia su prudencia. Di: 'Aprecio enormemente que vigile tanto sus finanzas. Precisamente por esa mentalidad analítica y cuidadosa, este producto es idóneo para usted porque le evitará pérdidas'."`;
+            }
+            if (isTimeOrDecision) {
+                return `<strong>🧡 Tony Robbins:</strong> "La indecisión es el resultado del miedo al fracaso o al dolor. Cambia su enfoque mental de 'qué pasa si me equivoco' a 'cuánto sufriré si me quedo igual'. Guíalos con calma hacia su futuro deseado."<br><br><strong>🤝 Dale Carnegie:</strong> "Consigue que digan 'sí, sí' desde el principio. Busca puntos comunes de acuerdo y evita discutir. Haz que sientan que la idea de tomar acción hoy ha nacido de ellos."`;
+            }
+            return `<strong>🧡 Tony Robbins:</strong> "Para influir en alguien, debes saber qué es lo que ya influye en ellos. Adáptate a su mapa del mundo, iguala su ritmo y responde desde el amor y el deseo genuino de ayudar."<br><br><strong>🤝 Dale Carnegie:</strong> "La única manera de ganar una discusión es evitándola. Escucha con respeto total, muestra empatía táctica y haz que la otra persona se sienta valorada e importante."`;
+
+        case "analitico":
+            if (isPrice) {
+                return `<strong>📊 Alex Hormozi ($100M Offers):</strong> "Si el precio es un problema, tu oferta no tiene suficiente valor. Aumenta drásticamente los bonus, reduce su esfuerzo de implementación y garantiza el resultado por contrato. Haz que decir no sea una tontería."<br><br><strong>📋 Neil Rackham (SPIN Selling):</strong> "Usa preguntas de Implicación. No justifiques el precio lógicamente. Haz preguntas como: ¿Cuánto presupuesto estimas que se está fugando mensualmente si sigues con el sistema actual? Deja que el cliente haga los cálculos."`;
+            }
+            if (isTimeOrDecision) {
+                return `<strong>📊 Alex Hormozi:</strong> "El coste de oportunidad es lo que arruina a las empresas. Demuéstrales que esperar 3 meses para implementar esto les costará el triple en pérdidas de productividad. La inacción tiene un precio exacto."<br><br><strong>📋 Neil Rackham:</strong> "Haz preguntas de Necesidad de Recompensa. ¿Cómo afectaría a tu reporte de final de trimestre si automatizas este flujo hoy en lugar de postergarlo? Permite que visualicen el retorno de la inversión de inmediato."`;
+            }
+            return `<strong>📊 Alex Hormozi:</strong> "La fricción mata los negocios. Diseña una garantía de inversión o un periodo de prueba tan sólido que el cliente sientan que todo el riesgo lo asumes tú. El riesgo percibido debe ser cero."<br><br><strong>📋 Neil Rackham:</strong> "Los compradores lógicos odian las tácticas de venta agresivas. Usa preguntas de Situación y de Problema para que ellos solos lleguen a la conclusión racional de que te necesitan."`;
+
+        case "solucionador":
+            if (isPrice) {
+                return `<strong>🐍 Kobe Bryant (Mamba Mentality):</strong> "La objeción del coste es solo un obstáculo en tu camino al campeonato. No te frustres, estúdiala. Busca el ángulo donde la inversión elimine su dolor y ejecuta sin titubeos."<br><br><strong>🛠️ Brian Tracy:</strong> "Conviértete en un consultor de negocios y un solucionador de problemas. Si tu cliente entiende que tu producto es la cura exacta a su dolor operativo principal, el precio se vuelve secundario."`;
+            }
+            if (isTimeOrDecision) {
+                return `<strong>🏀 Michael Jordan:</strong> "He fallado más de 9000 tiros en mi carrera y por eso he tenido éxito. No tomar una decisión por miedo a fallar es el verdadero fracaso. Empuja al cliente a dar el tiro ganador hoy."<br><br><strong>🏈 Vince Lombardi:</strong> "El compromiso individual es lo que hace funcionar a un equipo. Mantén un seguimiento implacable y consistente. La disciplina y la entrega al detalle cierran contratos."`;
+            }
+            return `<strong>🐍 Kobe Bryant:</strong> "Mamba Mentality es preparación obsesiva. Si estudias a tu cliente y sus debilidades operativas antes de la llamada, ninguna objeción te pillará desprevenido. Sabrás exactamente qué recetar."<br><br><strong>🛠️ Brian Tracy:</strong> "No vendas un producto, vende una nueva perspectiva y un futuro mejor. Escucha el 70% del tiempo con curiosidad genuina, diagnostica el problema y ofrece la solución óptima."`;
+    }
+    return "Selecciona una objeción para ver la sabiduría de los mentores.";
+}
+
 function updateActiveObjectionDisplay() {
     const obj = app.currentObjection;
     const titleEl = document.getElementById("current-objection-title");
@@ -1382,7 +1430,19 @@ function updateActiveObjectionDisplay() {
     if (scriptEmocional) scriptEmocional.innerText = compile(obj.emocional);
     if (scriptAnalitico) scriptAnalitico.innerText = compile(obj.analitico);
     if (scriptSolucionador) scriptSolucionador.innerText = compile(obj.solucionador);
+
+    // Update Mentor Wisdom
+    const wisdomAgresivo = document.getElementById("mentor-wisdom-agresivo-text");
+    const wisdomEmocional = document.getElementById("mentor-wisdom-emocional-text");
+    const wisdomAnalitico = document.getElementById("mentor-wisdom-analitico-text");
+    const wisdomSolucionador = document.getElementById("mentor-wisdom-solucionador-text");
+
+    if (wisdomAgresivo) wisdomAgresivo.innerHTML = getMentorWisdom("agresivo", obj.title);
+    if (wisdomEmocional) wisdomEmocional.innerHTML = getMentorWisdom("emocional", obj.title);
+    if (wisdomAnalitico) wisdomAnalitico.innerHTML = getMentorWisdom("analitico", obj.title);
+    if (wisdomSolucionador) wisdomSolucionador.innerHTML = getMentorWisdom("solucionador", obj.title);
 }
+
 
 // 6. Component: Client Profiler Quiz
 function resetProfilerQuiz() {

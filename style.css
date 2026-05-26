@@ -1002,6 +1002,41 @@ input[type="text"]:focus {
     line-height: 1.5;
 }
 
+.mentor-wisdom-card {
+    background: rgba(251, 191, 36, 0.03);
+    border: 1px solid rgba(251, 191, 36, 0.08);
+    border-left: 4px solid #fbbf24;
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 16px;
+    transition: var(--transition-smooth);
+}
+
+.mentor-wisdom-card:hover {
+    background: rgba(251, 191, 36, 0.05);
+    border-color: rgba(251, 191, 36, 0.15);
+    box-shadow: 0 4px 20px rgba(251, 191, 36, 0.05);
+}
+
+.mentor-wisdom-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #fbbf24;
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.mentor-wisdom-text {
+    margin: 0;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
 .objections-footer {
     border-top: 1px solid rgba(255,255,255,0.06);
     padding-top: 20px;
