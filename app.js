@@ -1071,9 +1071,9 @@ function renderRoadmap() {
             } else {
                 // Interactive Mini-challenge for Stages 1 to 6
                 if (status === "active") {
-                    handleMiniChallenge(stage.id, stage.title);
+                    handleMiniChallenge(stage.id, stage.title, false);
                 } else {
-                    alert(`Ya has completado la etapa de "${stage.title}". Puedes seguir repasando.`);
+                    handleMiniChallenge(stage.id, stage.title, true);
                 }
             }
         });
@@ -1082,8 +1082,19 @@ function renderRoadmap() {
     });
 }
 
+const REPETITION_QUOTES = [
+    { text: "La repetición es la madre de la maestría.", author: "Tony Robbins" },
+    { text: "Somos lo que hacemos repetidamente. La excelencia, entonces, no es un acto, sino un hábito.", author: "Aristóteles" },
+    { text: "No temo al hombre que ha practicado 10,000 patadas una vez, sino al que ha practicado una patada 10,000 veces.", author: "Bruce Lee" },
+    { text: "La repetición es la madre del aprendizaje, el padre de la acción, lo que la convierte en el arquitecto del éxito.", author: "Zig Ziglar" },
+    { text: "Cualquier cosa que practiques repetidamente se convertirá en un nuevo hábito de pensamiento y acción.", author: "Brian Tracy" },
+    { text: "La clave para dominar cualquier habilidad es la repetición constante hasta que se convierta en una segunda naturaleza.", author: "Joe Girard" },
+    { text: "La práctica no hace la perfección. Solo la práctica perfecta hace la perfección.", author: "Vince Lombardi" },
+    { text: "El conocimiento no es poder hasta que se aplica y se practica repetidamente.", author: "Dale Carnegie" }
+];
+
 // Action: Interactive Mini-challenges for roadmap exploration
-function handleMiniChallenge(stageId, stageTitle) {
+function handleMiniChallenge(stageId, stageTitle, isReview = false) {
     let question = "";
     let options = [];
     let tip = "";
@@ -1143,6 +1154,7 @@ function handleMiniChallenge(stageId, stageTitle) {
     const modal = document.getElementById("challenge-modal");
     const titleEl = document.getElementById("challenge-title");
     const theoryEl = document.getElementById("challenge-theory");
+    const reviewQuoteEl = document.getElementById("challenge-review-quote");
     const questionEl = document.getElementById("challenge-question");
     const optionsContainer = document.getElementById("challenge-options");
     const feedbackBox = document.getElementById("challenge-feedback-box");
@@ -1153,8 +1165,18 @@ function handleMiniChallenge(stageId, stageTitle) {
     feedbackBox.classList.add("hidden");
     feedbackBox.innerText = "";
 
+    // Handle review motivational quote
+    if (isReview && reviewQuoteEl) {
+        const randIndex = Math.floor(Math.random() * REPETITION_QUOTES.length);
+        const quote = REPETITION_QUOTES[randIndex];
+        reviewQuoteEl.innerHTML = `<strong>💡 Repaso de Maestría:</strong> "${quote.text}" — <em>${quote.author}</em>`;
+        reviewQuoteEl.classList.remove("hidden");
+    } else if (reviewQuoteEl) {
+        reviewQuoteEl.classList.add("hidden");
+    }
+
     // Set texts
-    titleEl.innerText = stageTitle;
+    titleEl.innerText = isReview ? `${stageTitle} (Repaso)` : stageTitle;
     if (theoryEl) theoryEl.innerHTML = theory;
     questionEl.innerText = question;
 
@@ -1180,21 +1202,33 @@ function handleMiniChallenge(stageId, stageTitle) {
                 feedbackBox.style.borderColor = "rgba(16, 185, 129, 0.2)";
                 feedbackBox.style.color = "#10b981";
                 
-                // Add stage to completed
-                if (!app.state.completedStages.includes(stageId)) {
-                    app.state.completedStages.push(stageId);
-                    app.addXP(20);
+                if (isReview) {
+                    // Review mode transition (no duplicate XP)
+                    setTimeout(() => {
+                        modal.classList.add("hidden");
+                        showCelebrationModal(
+                            "¡Excelente Repaso! 🔁", 
+                            "La repetición constante graba el conocimiento en tu subconsciente. ¡Sigue repasando para alcanzar la maestría!",
+                            [{ emoji: "🔄", name: "Repetición Diaria" }]
+                        );
+                    }, 2000);
+                } else {
+                    // Add stage to completed
+                    if (!app.state.completedStages.includes(stageId)) {
+                        app.state.completedStages.push(stageId);
+                        app.addXP(20);
+                    }
+                    
+                    setTimeout(() => {
+                        modal.classList.add("hidden");
+                        showCelebrationModal(
+                            "¡Etapa Completada! 🌟", 
+                            `Has dominado el concepto clave de "${stageTitle}". Sumas +20 XP.`,
+                            [{ emoji: "🎓", name: "Conceptos Claros" }]
+                        );
+                        renderRoadmap();
+                    }, 2000);
                 }
-                
-                setTimeout(() => {
-                    modal.classList.add("hidden");
-                    showCelebrationModal(
-                        "¡Etapa Completada! 🌟", 
-                        `Has dominado el concepto clave de "${stageTitle}". Sumas +20 XP.`,
-                        [{ emoji: "🎓", name: "Conceptos Claros" }]
-                    );
-                    renderRoadmap();
-                }, 2000);
             } else {
                 // Style error feedback
                 feedbackBox.style.background = "rgba(239, 68, 68, 0.05)";
