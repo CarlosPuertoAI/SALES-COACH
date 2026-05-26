@@ -192,11 +192,34 @@
                 </div>
             </section>
 
-            <!-- VIEW 3: AYUDANTE DE VENTAS EN VIVO (COPILOTO) -->
             <section id="view-objections" class="view hidden">
                 <div class="view-header">
                     <h2>Copiloto de Ventas en Vivo ⚡</h2>
-                    <p>Usa la sabiduría de los mejores vendedores del mundo para rebatir objeciones en tiempo real durante tu llamada.</p>
+                    <p>Usa la sabiduría de los mejores perfiles persuasivos para rebatir objeciones en tiempo real durante tu llamada.</p>
+                </div>
+
+                <div class="copilot-config-bar glass-panel" style="margin-bottom: 24px; padding: 16px 24px; display: flex; gap: 20px; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 20px;">⚙️</span>
+                        <h4 style="margin: 0; font-family: var(--font-display); font-size: 16px; color: var(--text-main);">Filtro Rápido del Copiloto:</h4>
+                    </div>
+                    <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+                        <!-- Sector Selector -->
+                        <div class="form-group-inline" style="display: flex; align-items: center; gap: 8px;">
+                            <label style="font-size: 13px; color: var(--text-muted); font-weight: 500;">Sector:</label>
+                            <select id="copilot-sector-select" class="config-select" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--text-main); padding: 8px 12px; font-size: 13px; cursor: pointer; outline: none; transition: var(--transition-smooth);">
+                                <!-- Sector options injected dynamically -->
+                            </select>
+                        </div>
+                        <!-- Lead Type Selector -->
+                        <div class="form-group-inline" style="display: flex; align-items: center; gap: 8px;">
+                            <label style="font-size: 13px; color: var(--text-muted); font-weight: 500;">Contacto:</label>
+                            <div class="lead-toggle-group" style="display: flex; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 3px;">
+                                <button type="button" id="copilot-lead-cold" class="toggle-btn" style="background: none; border: none; border-radius: 6px; color: var(--text-muted); padding: 6px 12px; font-size: 12px; font-weight: 600; cursor: pointer; transition: var(--transition-smooth);">❄️ Frío</button>
+                                <button type="button" id="copilot-lead-warm" class="toggle-btn" style="background: none; border: none; border-radius: 6px; color: var(--text-muted); padding: 6px 12px; font-size: 12px; font-weight: 600; cursor: pointer; transition: var(--transition-smooth);">🔥 Caliente</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="objections-layout">

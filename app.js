@@ -756,6 +756,43 @@ function setupEventListeners() {
         });
     });
 
+    // Copilot Configuration: Sector Select
+    const copilotSectorSelect = document.getElementById("copilot-sector-select");
+    if (copilotSectorSelect) {
+        copilotSectorSelect.addEventListener("change", (e) => {
+            app.state.sectorId = e.target.value;
+            
+            // Also update the global product name to match new sector name
+            const sectorObj = SECTORS.find(s => s.id === app.state.sectorId);
+            if (sectorObj) {
+                app.state.productName = sectorObj.name;
+            }
+            
+            app.state.currentObjectionIndex = 0; // Reset active objection index
+            app.saveState();
+            renderObjections();
+        });
+    }
+
+    // Copilot Configuration: Lead Type Toggles
+    const copilotLeadCold = document.getElementById("copilot-lead-cold");
+    const copilotLeadWarm = document.getElementById("copilot-lead-warm");
+    if (copilotLeadCold && copilotLeadWarm) {
+        copilotLeadCold.addEventListener("click", () => {
+            app.state.leadType = "cold";
+            app.state.previousFilters = [];
+            app.state.currentObjectionIndex = 0;
+            app.saveState();
+            renderObjections();
+        });
+        copilotLeadWarm.addEventListener("click", () => {
+            app.state.leadType = "warm";
+            app.state.currentObjectionIndex = 0;
+            app.saveState();
+            renderObjections();
+        });
+    }
+
     // Solve/Practice Objection Action
     const solveBtn = document.getElementById("solve-objection-btn");
     if (solveBtn) {
@@ -1084,6 +1121,31 @@ function handleMiniChallenge(stageId, stageTitle) {
 
 // 5. Component: Objection Simulator UI
 function renderObjections() {
+    // Synchronize quick filters config bar
+    const sectorSelect = document.getElementById("copilot-sector-select");
+    if (sectorSelect) {
+        if (sectorSelect.options.length === 0) {
+            SECTORS.forEach(s => {
+                const opt = document.createElement("option");
+                opt.value = s.id;
+                opt.innerText = `${s.emoji} ${s.name}`;
+                sectorSelect.appendChild(opt);
+            });
+        }
+        sectorSelect.value = app.state.sectorId;
+    }
+    const coldBtn = document.getElementById("copilot-lead-cold");
+    const warmBtn = document.getElementById("copilot-lead-warm");
+    if (coldBtn && warmBtn) {
+        if (app.state.leadType === "cold") {
+            coldBtn.classList.add("active");
+            warmBtn.classList.remove("active");
+        } else {
+            warmBtn.classList.add("active");
+            coldBtn.classList.remove("active");
+        }
+    }
+
     const listContainer = document.getElementById("objection-list");
     if (!listContainer) return;
     

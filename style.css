@@ -853,6 +853,28 @@ input[type="text"]:focus {
     color: var(--primary);
 }
 
+/* Copilot quick filters config select & toggle button styling */
+.config-select:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.config-select option {
+    background: #101528;
+    color: var(--text-main);
+}
+
+.lead-toggle-group .toggle-btn:hover {
+    color: var(--text-main) !important;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.lead-toggle-group .toggle-btn.active {
+    background: var(--primary) !important;
+    color: #000000 !important;
+    box-shadow: 0 0 10px rgba(79, 172, 254, 0.4);
+}
+
 /* Tab contents */
 .tab-content-container {
     flex: 1;
