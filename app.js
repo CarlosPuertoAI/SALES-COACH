@@ -264,6 +264,14 @@ class SalesQuest {
         if (saved) {
             try {
                 this.state = { ...this.state, ...JSON.parse(saved) };
+                
+                // MIGRACIÓN: Si el usuario tiene "stage-1" de la sesión anterior (cuando onboarding marcaba "stage-1" como completado),
+                // lo eliminamos de completedStages y lo reemplazamos por "onboarding-complete" para que la Etapa 1
+                // empiece limpia y jugable, pero mantenga el acceso al dashboard.
+                if (this.state.completedStages.includes("stage-1") && !this.state.completedStages.includes("onboarding-complete")) {
+                    this.state.completedStages = this.state.completedStages.filter(s => s !== "stage-1");
+                    this.state.completedStages.push("onboarding-complete");
+                }
             } catch (e) {
                 console.error("Error al cargar el estado guardado", e);
             }
@@ -1079,8 +1087,10 @@ function handleMiniChallenge(stageId, stageTitle) {
     let question = "";
     let options = [];
     let tip = "";
+    let theory = "";
 
     if (stageId === "stage-1") {
+        theory = "<strong>🧠 Mentalidad & Preparación:</strong> La venta de alto nivel no empieza en el producto, sino en la psicología del vendedor. La clave es adoptar un estado de curiosidad genuina: en lugar de presionarte para 'cerrar una venta', prepárate investigando brevemente al prospecto para ver sinceramente si puedes aportarle valor y resolver su dolor de cabeza. Esto reduce la ansiedad y elimina la actitud de vendedor desesperado.";
         question = "Estás a punto de iniciar una jornada de llamadas de ventas en frío. Tu mente empieza a dudar y temes el rechazo. ¿Cuál es la preparación y mentalidad correcta antes de marcar?";
         options = [
             { text: "Te mentalizas en que debes cerrar a todos a toda costa para ser exitoso, y empiezas a llamar sin investigar a los leads para ahorrar tiempo.", correct: false, reason: "Incorrecto. Esta mentalidad de desesperación se transmite y saltarse la investigación te hace sonar genérico." },
@@ -1088,6 +1098,7 @@ function handleMiniChallenge(stageId, stageTitle) {
         ];
         tip = "La venta empieza en tu mente: busca entender antes de intentar ser entendido.";
     } else if (stageId === "stage-2") {
+        theory = "<strong>🗣️ Sintonía & Diálogo Activo:</strong> Para conectar con un cliente potencial, debes evitar los monólogos de presentación y lograr una conversación bidireccional de calidad. Aplica la regla del 70/30: escucha activamente el 70% del tiempo y habla el 30%. Sintoniza tu ritmo y tono de voz con los del cliente (técnica de espejamiento) para generar confianza instantánea y responder con precisión.";
         question = "Comienzas la llamada y el cliente te dice: 'Hola, sí, dime rápido qué quieres'. ¿Cómo manejas la conversación para evitar un monólogo técnico y conectar en su misma sintonía?";
         options = [
             { text: "Igualas sutilmente su ritmo y tono de voz (espejamiento) para transmitir urgencia respetuosa, respondes brevemente y le devuelves el control con una pregunta abierta para iniciar un diálogo bidireccional.", correct: true, reason: "¡Perfecto! El tono y el diálogo interactivo desarman las defensas. La regla es: habla el 30%, escucha el 70%." },
@@ -1095,6 +1106,7 @@ function handleMiniChallenge(stageId, stageTitle) {
         ];
         tip = "Quien hace las preguntas correctas controla la conversación. Escucha activamente.";
     } else if (stageId === "stage-3") {
+        theory = "<strong>🔎 Descubrimiento del Dolor:</strong> Las personas compran por sus propias razones (emocionales), no por las tuyas (lógicas). En las ventas B2B, no hay transacción si no hay dolor u oportunidad clara. En lugar de atacar a su proveedor actual o vender características, haz preguntas de contraste que ayuden al cliente a identificar por sí mismo sus principales cuellos de botella.";
         question = "El cliente te dice: 'Actualmente estamos bien con nuestro proveedor de software'. ¿Cómo descubres si hay un dolor real o motor de compra latente bajo esa aparente tranquilidad?";
         options = [
             { text: "Le dices que tu software es mucho mejor y más barato que el de su proveedor actual y le insistes en hacer una demo.", correct: false, reason: "Incorrecto. Atacar al proveedor actual genera reactancia defensiva en el cliente por haber tomado esa decisión." },
@@ -1102,6 +1114,7 @@ function handleMiniChallenge(stageId, stageTitle) {
         ];
         tip = "No hay venta sin dolor. Si no duele, no hay motivación para cambiar de estado.";
     } else if (stageId === "stage-4") {
+        theory = "<strong>🔄 El Reencuadre & Visión:</strong> Los mejores vendedores del mundo no repiten las bondades de un producto; enseñan una nueva perspectiva comercial. Ayuda al cliente a ver un problema en su negocio desde un ángulo que no había considerado antes (Challenger Sale) y pinta con claridad el puente hacia su futuro ideal, en lugar de vender las especificaciones técnicas actuales.";
         question = "En lugar de limitarte a enumerar los beneficios de tu producto, quieres reencuadrar la visión del cliente. ¿Cómo le enseñas una nueva perspectiva del problema (Challenger Sale)?";
         options = [
             { text: "Presentas datos del sector que demuestran un riesgo invisible que su empresa está corriendo hoy: 'La mayoría de empresas de su sector pierden un 15% de margen por X. ¿Cómo se protegen de esto?'", correct: true, reason: "¡Excelente! Enseñar una nueva perspectiva comercial despierta interés intelectual y te posiciona como un consultor de confianza." },
@@ -1109,6 +1122,7 @@ function handleMiniChallenge(stageId, stageTitle) {
         ];
         tip = "No vendas el producto; vende una nueva forma de ver y resolver su dolor de cabeza.";
     } else if (stageId === "stage-5") {
+        theory = "<strong>🔥 Adaptación & Deseo:</strong> Cada cliente procesa la información de forma diferente según su tipo de personalidad. Para generar deseo y emoción, debes adaptar tu vocabulario al instante: usa datos cuantitativos para perfiles Analíticos y ve directo al grano centrado en velocidad y resultados para perfiles Directos. El deseo nace al contrastar su frustración presente con la solución de su dolor.";
         question = "Identificas que tu interlocutor es un perfil sumamente directo y enfocado en resultados rápidos (comprador Directo). ¿Cómo adaptas tu discurso y generas deseo y emoción?";
         options = [
             { text: "Le explicas la historia de fundación de tu empresa y el ambiente de soporte familiar y cercano que ofreces a largo plazo.", correct: false, reason: "Incorrecto. El perfil Directo se impacienta con las historias de soporte y relaciones personales al inicio." },
@@ -1116,6 +1130,7 @@ function handleMiniChallenge(stageId, stageTitle) {
         ];
         tip = "El deseo se genera mostrando el contraste entre el dolor actual y el placer del futuro deseado.";
     } else if (stageId === "stage-6") {
+        theory = "<strong>💎 La Oferta Irresistible:</strong> Según los principios de la ecuación de valor, una oferta es irresistible cuando maximiza la probabilidad del resultado deseado por el cliente, minimizando tanto el tiempo de entrega como el esfuerzo y fricción necesarios por su parte, sumado a una clara garantía que retire todo el riesgo de su decisión.";
         question = "Llega el momento de presentar la oferta. ¿Cómo la estructuras para que se perciba como una propuesta irresistible basada en la ecuación de valor de los mejores del mundo?";
         options = [
             { text: "Presentas el resultado final deseado garantizado, minimizando el tiempo para conseguirlo y reduciendo el esfuerzo requerido con garantías claras de devolución de riesgo.", correct: true, reason: "¡Extraordinario! Valor = (Resultado Deseado * Certeza) / (Tiempo de Entrega * Esfuerzo/Sacrificio). Cuanto menor sea el esfuerzo y tiempo, mayor es el valor percibido." },
@@ -1127,6 +1142,7 @@ function handleMiniChallenge(stageId, stageTitle) {
     // Get elements
     const modal = document.getElementById("challenge-modal");
     const titleEl = document.getElementById("challenge-title");
+    const theoryEl = document.getElementById("challenge-theory");
     const questionEl = document.getElementById("challenge-question");
     const optionsContainer = document.getElementById("challenge-options");
     const feedbackBox = document.getElementById("challenge-feedback-box");
@@ -1139,6 +1155,7 @@ function handleMiniChallenge(stageId, stageTitle) {
 
     // Set texts
     titleEl.innerText = stageTitle;
+    if (theoryEl) theoryEl.innerHTML = theory;
     questionEl.innerText = question;
 
     // Render options
