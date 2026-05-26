@@ -392,10 +392,11 @@ function updateWizardUI() {
     }
     
     if (nextBtn) {
-        if (step === 3 || (step === 2 && app.state.leadType === "cold")) {
-            nextBtn.innerHTML = `<span>Comenzar mi Ruta 🚀</span>`;
+        if (step === 1 || step === 2) {
+            nextBtn.classList.add("hidden");
         } else {
-            nextBtn.innerHTML = `<span>Siguiente</span><svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`;
+            nextBtn.classList.remove("hidden");
+            nextBtn.innerHTML = `<span>Comenzar mi Ruta 🚀</span>`;
         }
     }
 }
@@ -475,6 +476,12 @@ function renderSectorSelectionGrid() {
             document.querySelectorAll(".sector-card").forEach(c => c.classList.remove("selected"));
             card.classList.add("selected");
             app.state.sectorId = sector.id;
+            
+            // Auto advance to next step after a tiny delay
+            setTimeout(() => {
+                const nextBtn = document.getElementById("ob-next-btn");
+                if (nextBtn) nextBtn.click();
+            }, 250);
         });
         
         grid.appendChild(card);
@@ -549,12 +556,24 @@ function setupEventListeners() {
             warmCard.classList.remove("selected");
             app.state.leadType = "cold";
             app.state.previousFilters = []; // Reset filters if switched to cold
+            
+            // Auto complete/advance after a tiny delay
+            setTimeout(() => {
+                const nextBtn = document.getElementById("ob-next-btn");
+                if (nextBtn) nextBtn.click();
+            }, 250);
         });
         
         warmCard.addEventListener("click", () => {
             warmCard.classList.add("selected");
             coldCard.classList.remove("selected");
             app.state.leadType = "warm";
+            
+            // Auto advance to next step after a tiny delay
+            setTimeout(() => {
+                const nextBtn = document.getElementById("ob-next-btn");
+                if (nextBtn) nextBtn.click();
+            }, 250);
         });
     }
 
