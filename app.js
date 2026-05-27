@@ -694,6 +694,10 @@ function startQuoteRotation() {
 }
 
 function initUI() {
+    // Initialize default API key if not set
+    if (!localStorage.getItem("gemini_api_key")) {
+        localStorage.setItem("gemini_api_key", "AIzaSyAh6rnDonSPELb3MqhE-zSBAoo0ExVyr6o");
+    }
     renderSectorSelectionGrid();
     setupEventListeners();
     setupRoleplayEventListeners();
@@ -1114,6 +1118,14 @@ function setupEventListeners() {
         geminiApiKeyInput.value = localStorage.getItem("gemini_api_key") || "";
         geminiApiKeyInput.addEventListener("input", (e) => {
             localStorage.setItem("gemini_api_key", e.target.value.trim());
+        });
+    }
+
+    const testGlobalKeyBtn = document.getElementById("test-global-key-btn");
+    if (testGlobalKeyBtn) {
+        testGlobalKeyBtn.addEventListener("click", () => {
+            const key = localStorage.getItem("gemini_api_key") || "";
+            testGeminiApiKey(key, "global-key-status");
         });
     }
 }
@@ -2156,6 +2168,14 @@ function setupRoleplayEventListeners() {
         });
     }
 
+    const testRpKeyBtn = document.getElementById("test-roleplay-key-btn");
+    if (testRpKeyBtn) {
+        testRpKeyBtn.addEventListener("click", () => {
+            const key = localStorage.getItem("gemini_api_key") || "";
+            testGeminiApiKey(key, "roleplay-key-status");
+        });
+    }
+
     // Start Simulation Button
     const startBtn = document.getElementById("roleplay-start-btn");
     if (startBtn) {
@@ -2292,6 +2312,9 @@ function setupRoleplayEventListeners() {
             recognition.continuous = false;
 
             recognition.onstart = () => {
+                if (window.speechSynthesis) {
+                    window.speechSynthesis.cancel();
+                }
                 micBtn.classList.add("recording");
                 const inputField = document.getElementById("roleplay-chat-input");
                 if (inputField) {
@@ -2348,6 +2371,9 @@ function setupRoleplayEventListeners() {
 
 // User sends message
 function sendUserMessage() {
+    if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+    }
     const chatInput = document.getElementById("roleplay-chat-input");
     const text = chatInput.value.trim();
     if (!text || !app.roleplay.active) return;
@@ -2434,7 +2460,14 @@ REGLAS DE ORO:
         });
 
         if (!response.ok) {
-            throw new Error(`Error API (${response.status})`);
+            let errorMsg = `HTTP ${response.status}`;
+            try {
+                const errData = await response.json();
+                if (errData.error?.message) {
+                    errorMsg = errData.error.message;
+                }
+            } catch (e) {}
+            throw new Error(errorMsg);
         }
 
         const data = await response.json();
@@ -2454,7 +2487,7 @@ REGLAS DE ORO:
 
     } catch (error) {
         console.error("Error generating roleplay customer response:", error);
-        appendChatMessage("customer", `[Error de conexión: no se pudo obtener respuesta del cliente. Asegúrate de que tu clave de Gemini es válida.]`);
+        appendChatMessage("customer", `[Error de conexión: ${error.message}. Asegúrate de que tu clave de Gemini es válida y tienes conexión a Internet.]`);
     } finally {
         if (typingIndicator) typingIndicator.classList.add("hidden");
         if (chatInput) {
@@ -2525,7 +2558,14 @@ INSTRUCCIONES DE AUDITORÍA:
         });
 
         if (!response.ok) {
-            throw new Error(`Error API (${response.status})`);
+            let errorMsg = `HTTP ${response.status}`;
+            try {
+                const errData = await response.json();
+                if (errData.error?.message) {
+                    errorMsg = errData.error.message;
+                }
+            } catch (e) {}
+            throw new Error(errorMsg);
         }
 
         const data = await response.json();
@@ -2613,7 +2653,7 @@ INSTRUCCIONES DE AUDITORÍA:
 
     } catch (error) {
         console.error("Error evaluating roleplay simulation:", error);
-        alert("Error al procesar la auditoría de la llamada. Inténtalo nuevamente o verifica tu conexión.");
+        alert(`Error al procesar la auditoría de la llamada: ${error.message}. Inténtalo nuevamente o verifica tu conexión.`);
         if (chatScreen) chatScreen.classList.remove("hidden");
     } finally {
         if (typingIndicator) typingIndicator.classList.add("hidden");
@@ -2649,5 +2689,45 @@ function speakRoleplayText(text) {
     utterance.pitch = 1.0;
 
     window.speechSynthesis.speak(utterance);
+}
+
+// Test Gemini API key connectivity
+async function testGeminiApiKey(apiKey, statusElementId) {
+    const statusEl = document.getElementById(statusElementId);
+    if (!statusEl) return;
+    
+    apiKey = apiKey.trim();
+    if (!apiKey) {
+        statusEl.innerHTML = `<span style="color: #ef4444; font-size: 11px;">Introduce una clave primero.</span>`;
+        return;
+    }
+    
+    statusEl.innerHTML = `<span style="color: var(--text-muted); font-size: 11px;">Verificando... 🔄</span>`;
+    
+    try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: "ping" }] }],
+                generationConfig: { maxOutputTokens: 5 }
+            })
+        });
+        
+        if (!response.ok) {
+            let errorDetails = `HTTP ${response.status}`;
+            try {
+                const errData = await response.json();
+                if (errData.error?.message) {
+                    errorDetails = errData.error.message;
+                }
+            } catch (e) {}
+            throw new Error(errorDetails);
+        }
+        
+        statusEl.innerHTML = `<span style="color: #10b981; font-weight: bold; font-size: 11px;">¡Clave válida! 🚀</span>`;
+    } catch (error) {
+        statusEl.innerHTML = `<span style="color: #ef4444; font-size: 11px; font-weight: 500;">Error: ${error.message}</span>`;
+    }
 }
 
