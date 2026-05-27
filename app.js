@@ -688,7 +688,6 @@ function startQuoteRotation() {
             if (welcomeQuoteEl) {
                 const quoteWelcome = SALES_QUOTES[(currentIndex + 3) % SALES_QUOTES.length];
                 welcomeQuoteEl.innerHTML = `"${quoteWelcome.text}" — <strong>${quoteWelcome.author}</strong>`;
-                welcomeQuoteEl.style.opacity = 1;
             }
         }, 500);
     }, 8000);
@@ -697,11 +696,12 @@ function startQuoteRotation() {
 function initUI() {
     renderSectorSelectionGrid();
     setupEventListeners();
+    setupRoleplayEventListeners();
     startQuoteRotation();
     
-    // Auto navigation based on state
     if (app.state.completedStages.includes("onboarding-complete")) {
-        document.getElementById("app-header").classList.remove("hidden");
+        const headerEl = document.getElementById("app-header");
+        if (headerEl) headerEl.classList.remove("hidden");
         document.getElementById("app-nav").classList.remove("hidden");
         app.updateHeaderStats();
         navigateTo("dashboard");
@@ -772,6 +772,8 @@ function navigateTo(viewId) {
         resetProfilerQuiz();
     } else if (viewId === "closing") {
         renderClosing();
+    } else if (viewId === "roleplay") {
+        initRoleplaySetup();
     }
 
     // Scroll to top
@@ -2062,3 +2064,467 @@ SalesQuest.prototype.generateAI = async function(profileId) {
         button.innerHTML = originalBtnText;
     }
 };
+
+// ==========================================================================
+// MÓDULO DE SIMULADOR DE ROLEPLAY IA (FASE 1)
+// ==========================================================================
+
+// Inicializar la configuración del Roleplay
+function initRoleplaySetup() {
+    const setupScreen = document.getElementById("roleplay-setup-screen");
+    const chatScreen = document.getElementById("roleplay-chat-screen");
+    const feedbackScreen = document.getElementById("roleplay-feedback-screen");
+
+    if (setupScreen) setupScreen.classList.remove("hidden");
+    if (chatScreen) chatScreen.classList.add("hidden");
+    if (feedbackScreen) feedbackScreen.classList.add("hidden");
+
+    // Populate active product
+    const productInput = document.getElementById("roleplay-product-input");
+    if (productInput) {
+        productInput.value = app.state.productName || "Software de Gestión B2B";
+    }
+
+    // Update shared API key inputs
+    const globalKey = localStorage.getItem("gemini_api_key") || "";
+    const rpKeyInput = document.getElementById("roleplay-gemini-key");
+    if (rpKeyInput) rpKeyInput.value = globalKey;
+
+    // Reset roleplay state
+    app.roleplay = {
+        active: false,
+        customerProfile: "skeptical",
+        customerName: "",
+        product: "",
+        messages: []
+    };
+
+    // Reset profiles selection styling
+    document.querySelectorAll(".roleplay-profile-grid .profile-card").forEach(card => {
+        card.classList.remove("selected");
+        if (card.dataset.profile === "skeptical") {
+            card.classList.add("selected");
+        }
+    });
+}
+
+// Hook de Eventos para el Roleplay
+function setupRoleplayEventListeners() {
+    // Dashboard card navigation
+    const dbCardRoleplay = document.getElementById("db-card-roleplay");
+    if (dbCardRoleplay) {
+        dbCardRoleplay.addEventListener("click", () => {
+            navigateTo("roleplay");
+        });
+    }
+
+    // Roleplay Setup: Profile Cards Selection
+    document.querySelectorAll(".roleplay-profile-grid .profile-card").forEach(card => {
+        card.addEventListener("click", () => {
+            document.querySelectorAll(".roleplay-profile-grid .profile-card").forEach(c => c.classList.remove("selected"));
+            card.classList.add("selected");
+            if (app.roleplay) {
+                app.roleplay.customerProfile = card.dataset.profile;
+            }
+        });
+    });
+
+    // API Key Input Syncing
+    const globalKeyInput = document.getElementById("gemini-api-key-input");
+    const rpKeyInput = document.getElementById("roleplay-gemini-key");
+    if (globalKeyInput && rpKeyInput) {
+        rpKeyInput.addEventListener("input", (e) => {
+            const key = e.target.value.trim();
+            localStorage.setItem("gemini_api_key", key);
+            globalKeyInput.value = key;
+        });
+        globalKeyInput.addEventListener("input", (e) => {
+            rpKeyInput.value = e.target.value.trim();
+        });
+    }
+
+    // Start Simulation Button
+    const startBtn = document.getElementById("roleplay-start-btn");
+    if (startBtn) {
+        startBtn.addEventListener("click", () => {
+            const productVal = document.getElementById("roleplay-product-input").value.trim();
+            const apiKey = localStorage.getItem("gemini_api_key") || "";
+
+            if (!apiKey) {
+                alert("Por favor, introduce tu Gemini API Key para iniciar la simulación por IA.");
+                const rpKeyField = document.getElementById("roleplay-gemini-key");
+                if (rpKeyField) rpKeyField.focus();
+                return;
+            }
+
+            if (!productVal) {
+                alert("Por favor, especifica el producto que estás vendiendo.");
+                return;
+            }
+
+            app.roleplay.product = productVal;
+            app.roleplay.active = true;
+
+            // Generate Random Customer Name
+            const names = ["Felipe", "Sandra", "Carlos", "Marta", "Roberto", "Laura", "Andrés", "Julia"];
+            app.roleplay.customerName = names[Math.floor(Math.random() * names.length)];
+
+            // Transition screens
+            document.getElementById("roleplay-setup-screen").classList.add("hidden");
+            document.getElementById("roleplay-chat-screen").classList.remove("hidden");
+
+            // Update Chat Header
+            document.getElementById("roleplay-customer-name").innerText = `Cliente: ${app.roleplay.customerName}`;
+            
+            const profileLabels = {
+                skeptical: "Perfil: Escéptico 😒",
+                aggressive: "Perfil: Negociador Duro 😡",
+                indecisive: "Perfil: Indeciso 😰",
+                busy: "Perfil: Ocupado / Seco ⌚"
+            };
+            document.getElementById("roleplay-customer-badge").innerText = profileLabels[app.roleplay.customerProfile] || "Perfil: Desconocido";
+
+            // Clear chat messages
+            const messagesContainer = document.getElementById("roleplay-chat-messages");
+            messagesContainer.innerHTML = "";
+
+            // Call initial greeting
+            generateCustomerResponse(true);
+        });
+    }
+
+    // Back to Dashboard from Setup Screen
+    const backBtn = document.getElementById("roleplay-back-btn");
+    if (backBtn) {
+        backBtn.addEventListener("click", () => {
+            navigateTo("dashboard");
+        });
+    }
+
+    // Send Message Button & Enter Key Press
+    const sendBtn = document.getElementById("roleplay-send-btn");
+    const chatInput = document.getElementById("roleplay-chat-input");
+    if (sendBtn && chatInput) {
+        sendBtn.addEventListener("click", () => {
+            sendUserMessage();
+        });
+        chatInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                sendUserMessage();
+            }
+        });
+    }
+
+    // Evaluate Simulation Button
+    const evalBtn = document.getElementById("roleplay-evaluate-btn");
+    if (evalBtn) {
+        evalBtn.addEventListener("click", () => {
+            if (app.roleplay.messages.length < 2) {
+                alert("Debes intercambiar al menos un par de frases con el cliente antes de evaluar la llamada.");
+                return;
+            }
+            evaluateSimulation();
+        });
+    }
+
+    // Retry Button
+    const retryBtn = document.getElementById("roleplay-retry-btn");
+    if (retryBtn) {
+        retryBtn.addEventListener("click", () => {
+            initRoleplaySetup();
+        });
+    }
+
+    // Finish / Return Home Button
+    const finishBtn = document.getElementById("roleplay-finish-btn");
+    if (finishBtn) {
+        finishBtn.addEventListener("click", () => {
+            navigateTo("dashboard");
+        });
+    }
+}
+
+// User sends message
+function sendUserMessage() {
+    const chatInput = document.getElementById("roleplay-chat-input");
+    const text = chatInput.value.trim();
+    if (!text || !app.roleplay.active) return;
+
+    chatInput.value = "";
+
+    // Append user message to local state and UI
+    app.roleplay.messages.push({ sender: "user", text: text });
+    appendChatMessage("user", text);
+
+    // Call API for customer response
+    generateCustomerResponse(false);
+}
+
+// Append bubble to chat messages container
+function appendChatMessage(sender, text) {
+    const container = document.getElementById("roleplay-chat-messages");
+    if (!container) return;
+
+    const msg = document.createElement("div");
+    msg.className = `roleplay-message ${sender}`;
+    msg.innerText = text;
+    container.appendChild(msg);
+
+    // Auto scroll to bottom
+    container.scrollTop = container.scrollHeight;
+}
+
+// Call Gemini API for customer response
+async function generateCustomerResponse(isInitial = false) {
+    const typingIndicator = document.getElementById("roleplay-typing-indicator");
+    const typingText = document.getElementById("typing-text");
+    const chatInput = document.getElementById("roleplay-chat-input");
+    const sendBtn = document.getElementById("roleplay-send-btn");
+
+    if (typingIndicator) {
+        typingText.innerText = `${app.roleplay.customerName} está pensando...`;
+        typingIndicator.classList.remove("hidden");
+    }
+    if (chatInput) chatInput.disabled = true;
+    if (sendBtn) sendBtn.disabled = true;
+
+    try {
+        const apiKey = localStorage.getItem("gemini_api_key") || "";
+        const activeSectorObj = SECTORS.find(s => s.id === app.state.sectorId);
+        const sectorName = activeSectorObj ? activeSectorObj.name : "Ventas Generales";
+
+        // Build history string
+        let historyStr = "";
+        app.roleplay.messages.forEach(msg => {
+            const senderLabel = msg.sender === "user" ? "Vendedor (User)" : `Cliente (${app.roleplay.customerName})`;
+            historyStr += `${senderLabel}: ${msg.text}\n`;
+        });
+
+        // Prompt configuration
+        let prompt = "";
+        const baseSystem = `Eres un cliente potencial en una llamada de ventas.
+Estás hablando sobre comprar "${app.roleplay.product}" para tu negocio en el sector "${sectorName}".
+Tu nombre es ${app.roleplay.customerName}.
+Tu perfil psicológico y de comportamiento es "${app.roleplay.customerProfile}":
+- skeptical: Escéptico. Dudas de todo, eres muy cauteloso, no confías en el vendedor, pides datos concretos, credenciales y pruebas de inmediato.
+- aggressive: Negociador Duro. Exiges descuentos constantemente, regateas de forma agresiva, eres un poco seco, tajante y dejas claro que buscas el precio más bajo o te irás con la competencia.
+- indecisive: Indeciso. Tienes mucho miedo al cambio, te cuesta tomar decisiones, repites que "te lo tienes que pensar", "es una decisión importante" o "debes hablarlo con socios/pareja".
+- busy: Ocupado / Seco. Tienes prisa, no quieres rodeos, odias las presentaciones de diapositivas o charlas corporativas. Hablas al grano y eres cortante pero eduacado.
+
+REGLAS DE ORO:
+1. Habla de forma extremadamente natural, realista y humana. Usa respuestas cortas (de 1 a 3 frases máximo), como si estuvieras al teléfono o respondiendo un chat de WhatsApp corporativo.
+2. Presenta objeciones difíciles de rebatir. No cedas fácilmente. El vendedor debe ganarse tu confianza aplicando técnicas de empatía táctica (Chris Voss), haciendo preguntas de diagnóstico e identificando tu dolor profundo.
+3. No salgas de tu personaje NUNCA. No menciones que eres una IA o un simulador.`;
+
+        if (isInitial) {
+            prompt = `${baseSystem}\n\nInicia la llamada de ventas presentándote brevemente y soltando tu primera duda u objeción inicial según tu personalidad de "${app.roleplay.customerProfile}" para que el vendedor empiece a hablar. No te enrolles, una o dos frases breves.`;
+        } else {
+            prompt = `${baseSystem}\n\nAquí está la transcripción de la conversación hasta ahora:\n${historyStr}\nResponde al último mensaje del Vendedor (User) de forma coherente con tu personalidad de "${app.roleplay.customerProfile}".`;
+        }
+
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: prompt }] }],
+                generationConfig: { temperature: 0.8, maxOutputTokens: 180 }
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error API (${response.status})`);
+        }
+
+        const data = await response.json();
+        let aiResult = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!aiResult) throw new Error("Respuesta vacía de la IA");
+
+        aiResult = aiResult.trim().replace(/^["'«`]+/, "").replace(/["'»`]+$/, "").trim();
+
+        // Save to state and append to UI
+        app.roleplay.messages.push({ sender: "customer", text: aiResult });
+        appendChatMessage("customer", aiResult);
+
+    } catch (error) {
+        console.error("Error generating roleplay customer response:", error);
+        appendChatMessage("customer", `[Error de conexión: no se pudo obtener respuesta del cliente. Asegúrate de que tu clave de Gemini es válida.]`);
+    } finally {
+        if (typingIndicator) typingIndicator.classList.add("hidden");
+        if (chatInput) {
+            chatInput.disabled = false;
+            chatInput.focus();
+        }
+        if (sendBtn) sendBtn.disabled = false;
+    }
+}
+
+// Call Gemini API for Carlos Scorecard / Evaluation
+async function evaluateSimulation() {
+    const chatScreen = document.getElementById("roleplay-chat-screen");
+    const feedbackScreen = document.getElementById("roleplay-feedback-screen");
+    const typingIndicator = document.getElementById("roleplay-typing-indicator");
+    const typingText = document.getElementById("typing-text");
+
+    if (typingIndicator) {
+        typingText.innerText = "Carlos está redactando tu informe de auditoría... 🤵";
+        typingIndicator.classList.remove("hidden");
+    }
+
+    try {
+        const apiKey = localStorage.getItem("gemini_api_key") || "";
+
+        // Compile Transcript
+        let transcript = "";
+        app.roleplay.messages.forEach(msg => {
+            const sender = msg.sender === "user" ? "Vendedor (User)" : `Cliente (${app.roleplay.customerName})`;
+            transcript += `${sender}: ${msg.text}\n`;
+        });
+
+        const prompt = `Eres Carlos, un closer de ventas con 30 años de experiencia cerrando tratos comerciales de alto nivel. Eres directo, pragmático, sin rodeos, con un sentido del humor ácido pero sumamente profesional. Tu objetivo es auditar una transcripción de llamada de ventas simulada y evaluar el desempeño del vendedor.
+
+Analiza minuciosamente el diálogo entre el Vendedor (User) y el Cliente (AI Customer) a continuación:
+---
+TRANSCRIPIÓN DE LA LLAMADA:
+${transcript}
+---
+
+INSTRUCCIONES DE AUDITORÍA:
+1. Califica el desempeño global de 0 a 100. Sé realista: un 90+ es para un cerrador de nivel mundial; un novato andará por los 50-60.
+2. Evalúa 4 métricas (de 0 a 100):
+   - Empatía Táctica (¿comprendió los dolores y miedos del cliente o se puso a hablar de características técnicas?).
+   - Control del Diálogo (¿hizo preguntas abiertas o dejó que el cliente controlara la llamada?).
+   - Resolución de Objeciones (¿reencuadró los problemas y rebatió eficazmente o cedió terreno?).
+   - Cierre de Oro (¿empujó hacia un compromiso claro o una firma?).
+3. Genera una crítica en tu estilo característico (Carlos). Sé directo. Si el vendedor cometió un error (como hablar demasiado, defender el precio con desesperación, repetir la objeción del cliente, sonar robótico), dilo claramente y cítalo: "Dijiste '[cita]' y eso mató la llamada. Debiste haber dicho...".
+4. Devuelve la respuesta en formato JSON estrictamente válido. No incluyas markdown (como bloques de código \`\`\`json), comentarios, ni texto fuera del objeto JSON. El formato debe ser exactamente:
+{
+  "score": <número>,
+  "empatia": <número>,
+  "control": <número>,
+  "resolucion": <número>,
+  "cierre": <número>,
+  "titulo": "<título de rango, ej. Novato de Cierre, Negociador Prometedor, Closer de Élite>",
+  "critica": "<tu crítica redactada en tu estilo de Carlos, citando partes del diálogo>",
+  "consejos": ["<consejo 1>", "<consejo 2>", "<consejo 3>"]
+}`;
+
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: prompt }] }],
+                generationConfig: { temperature: 0.7, maxOutputTokens: 800 }
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error API (${response.status})`);
+        }
+
+        const data = await response.json();
+        let aiResult = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!aiResult) throw new Error("La IA no devolvió ningún reporte.");
+
+        // Safe JSON parsing
+        let cleanJson = aiResult.trim();
+        if (cleanJson.includes("```")) {
+            const startIdx = cleanJson.indexOf("{");
+            const endIdx = cleanJson.lastIndexOf("}");
+            if (startIdx !== -1 && endIdx !== -1) {
+                cleanJson = cleanJson.substring(startIdx, endIdx + 1);
+            }
+        }
+        
+        const evalData = JSON.parse(cleanJson);
+
+        // Transition screens
+        if (chatScreen) chatScreen.classList.add("hidden");
+        if (feedbackScreen) feedbackScreen.classList.remove("hidden");
+
+        // Render evaluation results
+        document.getElementById("roleplay-score-value").innerText = evalData.score || 0;
+        document.getElementById("roleplay-feedback-tag").innerText = evalData.titulo || "Evaluado";
+        document.getElementById("roleplay-carlos-critique").innerText = `"${evalData.critica || ''}"`;
+
+        // Update progress bars
+        updateMetricProgress("empathy", evalData.empatia || 50);
+        updateMetricProgress("control", evalData.control || 50);
+        updateMetricProgress("objection", evalData.resolucion || 50);
+        updateMetricProgress("closing", evalData.cierre || 50);
+
+        // Radial progress border calculation
+        const scoreGlow = document.getElementById("roleplay-score-glow");
+        if (scoreGlow) {
+            const deg = (evalData.score / 100) * 360;
+            scoreGlow.style.transform = `rotate(${deg}deg)`;
+            if (evalData.score >= 70) {
+                scoreGlow.style.borderColor = "#10b981";
+                scoreGlow.style.boxShadow = "0 0 20px rgba(16,185,129,0.4)";
+            } else {
+                scoreGlow.style.borderColor = "#ef4444";
+                scoreGlow.style.boxShadow = "0 0 20px rgba(239,68,68,0.4)";
+            }
+        }
+
+        // Render tips list
+        const tipsContainer = document.getElementById("roleplay-tips-list");
+        tipsContainer.innerHTML = "";
+        if (evalData.consejos && Array.isArray(evalData.consejos)) {
+            evalData.consejos.forEach(tip => {
+                const li = document.createElement("li");
+                li.innerText = tip;
+                tipsContainer.appendChild(li);
+            });
+        }
+
+        // Gamification reward
+        const xpRewardContainer = document.getElementById("roleplay-xp-reward");
+        if (evalData.score >= 70) {
+            app.addXP(50);
+            if (xpRewardContainer) {
+                xpRewardContainer.innerHTML = `<span>🏆 ¡Aprobado! +50 XP</span>`;
+                xpRewardContainer.style.display = "inline-flex";
+                xpRewardContainer.style.color = "#10b981";
+                xpRewardContainer.style.background = "rgba(16,185,129,0.08)";
+                xpRewardContainer.style.borderColor = "rgba(16,185,129,0.2)";
+            }
+            
+            showCelebrationModal(
+                "🎭 ¡Roleplay Superado!",
+                `Has cerrado con éxito a ${app.roleplay.customerName} (${evalData.titulo}) con una puntuación de ${evalData.score}. Carlos está satisfecho. Sumas +50 XP.`,
+                [{ emoji: "🎭", name: "Cerrador IA" }]
+            );
+        } else {
+            if (xpRewardContainer) {
+                xpRewardContainer.innerHTML = `<span>❌ No aprobado (<70). ¡Sigue entrenando!</span>`;
+                xpRewardContainer.style.display = "inline-flex";
+                xpRewardContainer.style.color = "#ef4444";
+                xpRewardContainer.style.background = "rgba(239,68,68,0.08)";
+                xpRewardContainer.style.borderColor = "rgba(239,68,68,0.2)";
+            }
+        }
+
+    } catch (error) {
+        console.error("Error evaluating roleplay simulation:", error);
+        alert("Error al procesar la auditoría de la llamada. Inténtalo nuevamente o verifica tu conexión.");
+        if (chatScreen) chatScreen.classList.remove("hidden");
+    } finally {
+        if (typingIndicator) typingIndicator.classList.add("hidden");
+    }
+}
+
+// Update individual progress bar helper
+function updateMetricProgress(metricId, val) {
+    const valEl = document.getElementById(`metric-${metricId}-val`);
+    const barEl = document.getElementById(`metric-${metricId}-bar`);
+    if (valEl) valEl.innerText = `${val}%`;
+    if (barEl) {
+        barEl.style.width = `${val}%`;
+        if (val >= 70) {
+            barEl.style.background = "linear-gradient(90deg, #10b981, #34d399)";
+        } else {
+            barEl.style.background = "linear-gradient(90deg, #ef4444, #f87171)";
+        }
+    }
+}
+
