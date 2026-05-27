@@ -2032,7 +2032,7 @@ SalesQuest.prototype.generateAI = async function(profileId) {
             .replace(/{enfoque}/g, enfoque);
 
         // Make Gemini API call (Gemini 1.5 Flash model)
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -2091,8 +2091,10 @@ function initRoleplaySetup() {
     const setupScreen = document.getElementById("roleplay-setup-screen");
     const chatScreen = document.getElementById("roleplay-chat-screen");
     const feedbackScreen = document.getElementById("roleplay-feedback-screen");
+    const placeholderEl = document.getElementById("roleplay-placeholder-card");
 
     if (setupScreen) setupScreen.classList.remove("hidden");
+    if (placeholderEl) placeholderEl.classList.remove("hidden");
     if (chatScreen) chatScreen.classList.add("hidden");
     if (feedbackScreen) feedbackScreen.classList.add("hidden");
 
@@ -2202,8 +2204,21 @@ function setupRoleplayEventListeners() {
             const names = ["Felipe", "Sandra", "Carlos", "Marta", "Roberto", "Laura", "Andrés", "Julia"];
             app.roleplay.customerName = names[Math.floor(Math.random() * names.length)];
 
+            // Clear messages array
+            app.roleplay.messages = [];
+            
+            // Cancel voice synthesis if speaking
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+            }
+
             // Transition screens
-            document.getElementById("roleplay-setup-screen").classList.add("hidden");
+            const placeholderEl = document.getElementById("roleplay-placeholder-card");
+            if (placeholderEl) placeholderEl.classList.add("hidden");
+            
+            const feedbackEl = document.getElementById("roleplay-feedback-screen");
+            if (feedbackEl) feedbackEl.classList.add("hidden");
+            
             document.getElementById("roleplay-chat-screen").classList.remove("hidden");
 
             // Update Chat Header
@@ -2367,6 +2382,15 @@ function setupRoleplayEventListeners() {
             });
         }
     }
+
+    // Shortcut call button inside placeholder
+    const shortcutCallBtn = document.getElementById("roleplay-shortcut-call-btn");
+    if (shortcutCallBtn) {
+        shortcutCallBtn.addEventListener("click", () => {
+            const startBtn = document.getElementById("roleplay-start-btn");
+            if (startBtn) startBtn.click();
+        });
+    }
 }
 
 // User sends message
@@ -2450,7 +2474,7 @@ REGLAS DE ORO:
             prompt = `${baseSystem}\n\nAquí está la transcripción de la conversación hasta ahora:\n${historyStr}\nResponde al último mensaje del Vendedor (User) de forma coherente con tu personalidad de "${app.roleplay.customerProfile}".`;
         }
 
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -2548,7 +2572,7 @@ INSTRUCCIONES DE AUDITORÍA:
   "consejos": ["<consejo 1>", "<consejo 2>", "<consejo 3>"]
 }`;
 
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -2705,7 +2729,7 @@ async function testGeminiApiKey(apiKey, statusElementId) {
     statusEl.innerHTML = `<span style="color: var(--text-muted); font-size: 11px;">Verificando... 🔄</span>`;
     
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

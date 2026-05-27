@@ -551,228 +551,248 @@
             </section>
 
             <!-- VIEW: SIMULADOR DE ROLEPLAY IA -->
-            <section id="view-roleplay" class="view hidden">
-                <!-- SETUP SCREEN -->
-                <div id="roleplay-setup-screen" class="roleplay-card glass-panel">
-                    <div class="roleplay-setup-header" style="margin-bottom: 24px; text-align: center;">
-                        <span class="tag-status" style="background: rgba(14,165,233,0.1); color: var(--primary); border: 1px solid rgba(14,165,233,0.2);">MESA DE CIERRE</span>
-                        <h2 style="font-family: var(--font-display); font-size: 28px; margin-top: 10px;">Simulador de Roleplay IA</h2>
-                        <p style="color: var(--text-muted); font-size: 14px; max-width: 500px; margin: 8px auto 0;">Enfréntate a un cliente difícil controlado por IA. Chatea en vivo para rebatir sus objeciones y obtén una calificación formal y retroalimentación de Carlos.</p>
-                    </div>
+            <section id="view-roleplay" class="view hidden" style="max-width: 1200px; margin: 0 auto; padding: 10px 0;">
+                <div class="roleplay-workspace" style="display: flex; gap: 24px; min-height: 600px; flex-wrap: wrap;">
+                    
+                    <!-- LEFT COLUMN: CONTROLS & CONFIGURATION -->
+                    <div id="roleplay-setup-screen" class="roleplay-sidebar glass-panel" style="flex: 1; min-width: 320px; max-width: 380px; padding: 24px; border-radius: 16px; display: flex; flex-direction: column; gap: 20px;">
+                        <div class="roleplay-setup-header" style="text-align: center; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 16px;">
+                            <span class="tag-status" style="background: rgba(14,165,233,0.1); color: var(--primary); border: 1px solid rgba(14,165,233,0.2); font-size: 11px;">MESA DE CIERRE</span>
+                            <h2 style="font-family: var(--font-display); font-size: 22px; margin-top: 8px; color: var(--text-main);">Simulador de Roleplay</h2>
+                            <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px; line-height: 1.4;">Chatea en vivo y supera objeciones difíciles de clientes reales.</p>
+                        </div>
 
-                    <div style="max-width: 500px; margin: 0 auto; text-align: left;">
-                        <div class="form-group" style="margin-bottom: 20px;">
-                            <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text-main);">1. Selecciona la Personalidad del Cliente:</label>
-                            <div class="roleplay-profile-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-                                <div class="profile-card selected" data-profile="skeptical" style="padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; cursor: pointer; transition: var(--transition-smooth);">
-                                    <div style="font-size: 20px; margin-bottom: 8px;">😒</div>
-                                    <h4 style="margin: 0; font-size: 14px;">Escéptico</h4>
-                                    <p style="margin: 4px 0 0; font-size: 11px; color: var(--text-muted);">Duda de todo, exige datos/pruebas de inmediato.</p>
+                        <!-- 1. Personality -->
+                        <div class="form-group">
+                            <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--text-main);">1. Personalidad del Cliente:</label>
+                            <div class="roleplay-profile-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                                <div class="profile-card selected" data-profile="skeptical" style="padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; cursor: pointer; transition: var(--transition-smooth);">
+                                    <div style="font-size: 18px; margin-bottom: 4px;">😒</div>
+                                    <h4 style="margin: 0; font-size: 13px;">Escéptico</h4>
+                                    <p style="margin: 2px 0 0; font-size: 10px; color: var(--text-muted); line-height: 1.2;">Duda y exige pruebas.</p>
                                 </div>
-                                <div class="profile-card" data-profile="aggressive" style="padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; cursor: pointer; transition: var(--transition-smooth);">
-                                    <div style="font-size: 20px; margin-bottom: 8px;">😡</div>
-                                    <h4 style="margin: 0; font-size: 14px;">Negociador Duro</h4>
-                                    <p style="margin: 4px 0 0; font-size: 11px; color: var(--text-muted);">Presiona con precios y pide rebajas agresivas.</p>
+                                <div class="profile-card" data-profile="aggressive" style="padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; cursor: pointer; transition: var(--transition-smooth);">
+                                    <div style="font-size: 18px; margin-bottom: 4px;">😡</div>
+                                    <h4 style="margin: 0; font-size: 13px;">Negociador</h4>
+                                    <p style="margin: 2px 0 0; font-size: 10px; color: var(--text-muted); line-height: 1.2;">Pide rebajas agresivas.</p>
                                 </div>
-                                <div class="profile-card" data-profile="indecisive" style="padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; cursor: pointer; transition: var(--transition-smooth);">
-                                    <div style="font-size: 20px; margin-bottom: 8px;">😰</div>
-                                    <h4 style="margin: 0; font-size: 14px;">Indeciso</h4>
-                                    <p style="margin: 4px 0 0; font-size: 11px; color: var(--text-muted);">Tiene miedo al cambio, quiere pensarlo indefinidamente.</p>
+                                <div class="profile-card" data-profile="indecisive" style="padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; cursor: pointer; transition: var(--transition-smooth);">
+                                    <div style="font-size: 18px; margin-bottom: 4px;">😰</div>
+                                    <h4 style="margin: 0; font-size: 13px;">Indeciso</h4>
+                                    <p style="margin: 2px 0 0; font-size: 10px; color: var(--text-muted); line-height: 1.2;">Miedo a decidir.</p>
                                 </div>
-                                <div class="profile-card" data-profile="busy" style="padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; cursor: pointer; transition: var(--transition-smooth);">
-                                    <div style="font-size: 20px; margin-bottom: 8px;">⌚</div>
-                                    <h4 style="margin: 0; font-size: 14px;">Ocupado / Seco</h4>
-                                    <p style="margin: 4px 0 0; font-size: 11px; color: var(--text-muted);">Sin rodeos, directo, se aburre con explicaciones.</p>
+                                <div class="profile-card" data-profile="busy" style="padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; cursor: pointer; transition: var(--transition-smooth);">
+                                    <div style="font-size: 18px; margin-bottom: 4px;">⌚</div>
+                                    <h4 style="margin: 0; font-size: 13px;">Ocupado</h4>
+                                    <p style="margin: 2px 0 0; font-size: 10px; color: var(--text-muted); line-height: 1.2;">Al grano y cortante.</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="form-group" style="margin-bottom: 24px;">
-                            <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text-main);">2. Producto/Servicio que Vendes:</label>
-                            <input type="text" id="roleplay-product-input" value="Software de Gestión Integral B2B" placeholder="¿Qué estás vendiendo?" style="width: 100%; padding: 12px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-main); font-size: 14px; outline: none; transition: var(--transition-smooth);" />
+                        <!-- 2. Product -->
+                        <div class="form-group">
+                            <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-main);">2. Producto o Servicio que Vendes:</label>
+                            <input type="text" id="roleplay-product-input" value="Software de Gestión Integral B2B" placeholder="¿Qué estás vendiendo?" style="width: 100%; padding: 10px 12px; border-radius: 8px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: var(--text-main); font-size: 13px; outline: none; transition: var(--transition-smooth);" />
                         </div>
 
-                        <!-- Gemini API Key (Shared) -->
-                        <div class="form-group" id="roleplay-key-container" style="margin-bottom: 24px;">
-                            <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text-main);">3. Clave Gemini (Requerida):</label>
+                        <!-- 3. Key -->
+                        <div class="form-group" id="roleplay-key-container">
+                            <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-main);">3. Clave Gemini (Requerida):</label>
                             <div style="display: flex; gap: 8px;">
-                                <input type="password" id="roleplay-gemini-key" placeholder="Introduce tu Gemini API Key..." style="flex: 1; padding: 12px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-main); font-size: 14px; outline: none; transition: var(--transition-smooth);" />
-                                <button type="button" id="test-roleplay-key-btn" style="padding: 12px 18px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; color: var(--text-main); cursor: pointer; transition: var(--transition-smooth);">Probar Clave</button>
+                                <input type="password" id="roleplay-gemini-key" placeholder="Gemini API Key..." style="flex: 1; padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: var(--text-main); font-size: 13px; outline: none; transition: var(--transition-smooth);" />
+                                <button type="button" id="test-roleplay-key-btn" style="padding: 10px 14px; font-size: 12px; font-weight: 600; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; color: var(--text-main); cursor: pointer; transition: var(--transition-smooth);">Probar</button>
                             </div>
-                            <span id="roleplay-key-status" style="display: block; font-size: 12px; margin-top: 6px; font-weight: 500;"></span>
-                            <p style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">Tus datos se guardan localmente. Si ya la introdujiste en el Copiloto, se sincronizará automáticamente.</p>
+                            <span id="roleplay-key-status" style="display: block; font-size: 11px; margin-top: 4px; font-weight: 500;"></span>
                         </div>
 
-                        <div style="display: flex; gap: 12px;">
-                            <button type="button" id="roleplay-back-btn" class="btn btn-secondary" style="flex: 1;">
-                                <span>Volver</span>
-                            </button>
-                            <button type="button" id="roleplay-start-btn" class="btn btn-primary btn-glow" style="flex: 2;">
+                        <!-- Navigation / Action buttons -->
+                        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: auto; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 16px;">
+                            <button type="button" id="roleplay-start-btn" class="btn btn-primary btn-glow btn-block" style="padding: 12px 16px; font-size: 14px;">
                                 <span>Llamar al Prospecto 📞</span>
                             </button>
+                            <button type="button" id="roleplay-back-btn" class="btn btn-secondary btn-block" style="padding: 10px 16px; font-size: 13px;">
+                                <span>Volver al Dashboard</span>
+                            </button>
                         </div>
                     </div>
-                </div>
 
-                <!-- CHAT ACTIVE SCREEN -->
-                <div id="roleplay-chat-screen" class="hidden" style="display: flex; flex-direction: column; height: calc(100vh - 180px); min-height: 500px; max-width: 800px; margin: 0 auto;">
-                    <!-- Customer Header Info -->
-                    <div class="glass-panel" style="padding: 16px 20px; border-radius: 16px 16px 0 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); background: rgba(13,17,29,0.7); gap: 12px;">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div id="roleplay-customer-avatar" style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 0 15px rgba(14,165,233,0.3); flex-shrink: 0;">
-                                👤
-                            </div>
-                            <div>
-                                <div style="display: flex; align-items: center; gap: 8px;">
-                                    <h3 id="roleplay-customer-name" style="margin: 0; font-size: 16px; font-family: var(--font-display);">Cliente: Pedro</h3>
-                                    <button type="button" id="roleplay-mute-btn" class="btn-mute" title="Silenciar/Activar voz del cliente" style="background: none; border: none; padding: 4px; cursor: pointer; color: var(--primary); display: flex; align-items: center; justify-content: center; transition: var(--transition-smooth); outline: none;">
-                                        <svg class="icon" viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: currentColor; margin: 0;"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                    <!-- RIGHT COLUMN: MAIN WORKSPACE (CHAT / SCORECARD) -->
+                    <div class="roleplay-main" style="flex: 2; min-width: 320px; display: flex; flex-direction: column;">
+                        
+                        <!-- CALL-TO-ACTION PLACEHOLDER -->
+                        <div id="roleplay-placeholder-card" class="glass-panel" style="padding: 60px 40px; border-radius: 16px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; height: 100%; min-height: 480px; background: rgba(13,17,29,0.3); border: 1px solid rgba(255,255,255,0.06);">
+                            <div style="font-size: 64px; animation: float 3s ease-in-out infinite;">📞</div>
+                            <h2 style="font-family: var(--font-display); font-size: 26px; margin: 0; color: var(--text-main);">¿Listo para cerrar la venta?</h2>
+                            <p style="color: var(--text-muted); font-size: 14.5px; max-width: 480px; margin: 0 auto; line-height: 1.6;">
+                                Configura el perfil de tu prospecto y el producto que ofreces en el panel lateral, y pulsa <strong>Llamar al Prospecto</strong> para iniciar una llamada de simulación de ventas interactiva.
+                            </p>
+                            <button type="button" id="roleplay-shortcut-call-btn" class="btn btn-primary btn-glow" style="padding: 14px 28px; font-size: 15px; margin-top: 10px;">
+                                <span>Iniciar Llamada de Ventas 🚀</span>
+                            </button>
+                        </div>
+
+                        <!-- CHAT ACTIVE SCREEN -->
+                        <div id="roleplay-chat-screen" class="hidden" style="display: flex; flex-direction: column; height: 100%; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.06);">
+                            <!-- Customer Header Info -->
+                            <div class="glass-panel" style="padding: 16px 20px; border-radius: 16px 16px 0 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); background: rgba(13,17,29,0.7); gap: 12px;">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div id="roleplay-customer-avatar" style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 0 15px rgba(14,165,233,0.3); flex-shrink: 0;">
+                                        👤
+                                    </div>
+                                    <div>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <h3 id="roleplay-customer-name" style="margin: 0; font-size: 16px; font-family: var(--font-display);">Cliente: Pedro</h3>
+                                            <button type="button" id="roleplay-mute-btn" class="btn-mute" title="Silenciar/Activar voz del cliente" style="background: none; border: none; padding: 4px; cursor: pointer; color: var(--primary); display: flex; align-items: center; justify-content: center; transition: var(--transition-smooth); outline: none;">
+                                                <svg class="icon" viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: currentColor; margin: 0;"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                                            </button>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                                            <span class="pulse-dot" style="width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block;"></span>
+                                            <span id="roleplay-customer-badge">Perfil: Escéptico</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="text-align: right;">
+                                    <button type="button" id="roleplay-evaluate-btn" class="btn btn-primary btn-glow" style="padding: 10px 16px; font-size: 13px;">
+                                        <span>Cerrar Llamada & Evaluar 🎯</span>
                                     </button>
                                 </div>
-                                <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); margin-top: 2px;">
-                                    <span class="pulse-dot" style="width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block;"></span>
-                                    <span id="roleplay-customer-badge">Perfil: Escéptico</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="text-align: right;">
-                            <button type="button" id="roleplay-evaluate-btn" class="btn btn-primary btn-glow" style="padding: 10px 16px; font-size: 13px;">
-                                <span>Cerrar Llamada & Evaluar 🎯</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Messages Window -->
-                    <div id="roleplay-chat-messages" class="glass-panel" style="flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; border-radius: 0; border-top: none; border-bottom: none; background: rgba(9,12,22,0.4); max-height: calc(100vh - 320px);">
-                        <!-- Dynamic Messages -->
-                    </div>
-
-                    <!-- Loading / Typing Indicator -->
-                    <div id="roleplay-typing-indicator" class="hidden" style="padding: 12px 24px; background: rgba(9,12,22,0.4); border-left: 1px solid var(--panel-border); border-right: 1px solid var(--panel-border); display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted);">
-                        <div class="typing-bubble" style="display: flex; gap: 4px;">
-                            <span class="dot" style="width: 6px; height: 6px; background: var(--text-muted); border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both;"></span>
-                            <span class="dot" style="width: 6px; height: 6px; background: var(--text-muted); border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; animation-delay: 0.2s;"></span>
-                            <span class="dot" style="width: 6px; height: 6px; background: var(--text-muted); border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; animation-delay: 0.4s;"></span>
-                        </div>
-                        <span id="typing-text">Pedro está hablando...</span>
-                    </div>
-
-                    <!-- Input Bar -->
-                    <div class="glass-panel" style="padding: 16px; border-radius: 0 0 16px 16px; border-top: 1px solid rgba(255,255,255,0.08); background: rgba(13,17,29,0.7); display: flex; gap: 12px; align-items: center;">
-                        <button type="button" id="roleplay-mic-btn" class="btn-mic" title="Hablar por micrófono" style="width: 44px; height: 44px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--primary); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-smooth); outline: none; flex-shrink: 0;">
-                            <svg class="icon" viewBox="0 0 24 24" style="margin: 0; width: 20px; height: 20px; fill: currentColor;"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
-                        </button>
-                        <input type="text" id="roleplay-chat-input" placeholder="Escribe tu respuesta de venta..." style="flex: 1; padding: 12px 16px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-main); font-size: 14px; outline: none; transition: var(--transition-smooth);" />
-                        <button type="button" id="roleplay-send-btn" class="btn btn-primary" style="padding: 12px; min-width: 50px; display: flex; align-items: center; justify-content: center; height: 44px; flex-shrink: 0;">
-                            <svg class="icon" viewBox="0 0 24 24" style="margin: 0; width: 20px; height: 20px;"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- FEEDBACK / SCORECARD SCREEN -->
-                <div id="roleplay-feedback-screen" class="hidden" style="max-width: 800px; margin: 0 auto;">
-                    <div class="glass-panel" style="padding: 36px; border-radius: 20px; position: relative; overflow: hidden; margin-bottom: 24px;">
-                        
-                        <!-- Top Summary (Score & Rank) -->
-                        <div style="display: flex; gap: 32px; align-items: center; margin-bottom: 36px; flex-wrap: wrap;">
-                            <!-- Radial Score Indicator -->
-                            <div class="score-circle-container" style="position: relative; width: 140px; height: 140px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                                <div style="position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 6px solid rgba(255,255,255,0.05); box-shadow: inset 0 0 20px rgba(0,0,0,0.5);"></div>
-                                <div id="roleplay-score-glow" style="position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 6px solid var(--primary); clip-path: polygon(50% 50%, -50% -50%, 150% -50%, 150% 150%, -50% 150%); transform: rotate(0deg); box-shadow: 0 0 20px rgba(14,165,233,0.4); filter: drop-shadow(0 0 5px var(--primary));"></div>
-                                <div style="z-index: 2; text-align: center;">
-                                    <span id="roleplay-score-value" style="font-size: 38px; font-weight: 800; font-family: var(--font-display); color: var(--text-main); text-shadow: 0 0 10px rgba(255,255,255,0.2);">85</span>
-                                    <span style="display: block; font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-top: -2px;">PUNTOS</span>
-                                </div>
                             </div>
 
-                            <!-- Level & Award info -->
-                            <div style="flex: 1; min-width: 250px;">
-                                <span class="tag-status tag-cyan" id="roleplay-feedback-tag" style="background: rgba(14,165,233,0.1); color: var(--primary); border: 1px solid rgba(14,165,233,0.2);">Cerrador Prometedor</span>
-                                <h2 style="font-family: var(--font-display); font-size: 26px; margin: 10px 0 6px;">Auditoría Finalizada</h2>
-                                <p style="color: var(--text-muted); font-size: 13.5px; line-height: 1.5;" id="roleplay-summary-text">El cliente no te lo puso fácil, pero has demostrado buenas tablas. Aquí está el veredicto de Carlos sobre tu llamada de ventas.</p>
-                                <div id="roleplay-xp-reward" style="display: inline-flex; align-items: center; gap: 8px; margin-top: 12px; font-weight: 700; color: #10b981; font-size: 14px; background: rgba(16,185,129,0.08); padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(16,185,129,0.2);">
-                                    <span>🏆 ¡Aprobado! +50 XP</span>
+                            <!-- Messages Window -->
+                            <div id="roleplay-chat-messages" class="glass-panel" style="flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; border-radius: 0; border-top: none; border-bottom: none; background: rgba(9,12,22,0.4); max-height: calc(100vh - 320px);">
+                                <!-- Dynamic Messages -->
+                            </div>
+
+                            <!-- Loading / Typing Indicator -->
+                            <div id="roleplay-typing-indicator" class="hidden" style="padding: 12px 24px; background: rgba(9,12,22,0.4); border-left: 1px solid var(--panel-border); border-right: 1px solid var(--panel-border); display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted);">
+                                <div class="typing-bubble" style="display: flex; gap: 4px;">
+                                    <span class="dot" style="width: 6px; height: 6px; background: var(--text-muted); border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both;"></span>
+                                    <span class="dot" style="width: 6px; height: 6px; background: var(--text-muted); border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; animation-delay: 0.2s;"></span>
+                                    <span class="dot" style="width: 6px; height: 6px; background: var(--text-muted); border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; animation-delay: 0.4s;"></span>
                                 </div>
+                                <span id="typing-text">Pedro está hablando...</span>
+                            </div>
+
+                            <!-- Input Bar -->
+                            <div class="glass-panel" style="padding: 16px; border-radius: 0 0 16px 16px; border-top: 1px solid rgba(255,255,255,0.08); background: rgba(13,17,29,0.7); display: flex; gap: 12px; align-items: center;">
+                                <button type="button" id="roleplay-mic-btn" class="btn-mic" title="Hablar por micrófono" style="width: 44px; height: 44px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--primary); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-smooth); outline: none; flex-shrink: 0;">
+                                    <svg class="icon" viewBox="0 0 24 24" style="margin: 0; width: 20px; height: 20px; fill: currentColor;"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
+                                </button>
+                                <input type="text" id="roleplay-chat-input" placeholder="Escribe tu respuesta de venta..." style="flex: 1; padding: 12px 16px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-main); font-size: 14px; outline: none; transition: var(--transition-smooth);" />
+                                <button type="button" id="roleplay-send-btn" class="btn btn-primary" style="padding: 12px; min-width: 50px; display: flex; align-items: center; justify-content: center; height: 44px; flex-shrink: 0;">
+                                    <svg class="icon" viewBox="0 0 24 24" style="margin: 0; width: 20px; height: 20px;"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                                </button>
                             </div>
                         </div>
 
-                        <!-- Grid Breakdowns -->
-                        <div class="roleplay-metrics-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 32px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 24px;">
-                            <!-- Progress Bars -->
-                            <div style="display: flex; flex-direction: column; gap: 16px;">
-                                <h4 style="margin: 0 0 8px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted);">Métricas Tácticas</h4>
+                        <!-- FEEDBACK / SCORECARD SCREEN -->
+                        <div id="roleplay-feedback-screen" class="hidden" style="max-width: 800px; margin: 0 auto; width: 100%;">
+                            <div class="glass-panel" style="padding: 36px; border-radius: 16px; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); background: rgba(13,17,29,0.5);">
                                 
-                                <div>
-                                    <div style="display: flex; justify-content: space-between; font-size: 12.5px; margin-bottom: 6px;">
-                                        <span style="color: var(--text-main); font-weight: 500;">Empatía Táctica</span>
-                                        <span id="metric-empathy-val" style="color: var(--primary); font-weight: 700;">80%</span>
+                                <!-- Top Summary (Score & Rank) -->
+                                <div style="display: flex; gap: 32px; align-items: center; margin-bottom: 24px; flex-wrap: wrap;">
+                                    <!-- Radial Score Indicator -->
+                                    <div class="score-circle-container" style="position: relative; width: 120px; height: 120px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                        <div style="position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 6px solid rgba(255,255,255,0.05); box-shadow: inset 0 0 20px rgba(0,0,0,0.5);"></div>
+                                        <div id="roleplay-score-glow" style="position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 6px solid var(--primary); clip-path: polygon(50% 50%, -50% -50%, 150% -50%, 150% 150%, -50% 150%); transform: rotate(0deg); box-shadow: 0 0 20px rgba(14,165,233,0.4); filter: drop-shadow(0 0 5px var(--primary));"></div>
+                                        <div style="z-index: 2; text-align: center;">
+                                            <span id="roleplay-score-value" style="font-size: 32px; font-weight: 800; font-family: var(--font-display); color: var(--text-main); text-shadow: 0 0 10px rgba(255,255,255,0.2);">85</span>
+                                            <span style="display: block; font-size: 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-top: -2px;">PUNTOS</span>
+                                        </div>
                                     </div>
-                                    <div style="height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden;">
-                                        <div id="metric-empathy-bar" style="height: 100%; width: 80%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 3px; box-shadow: 0 0 8px rgba(14,165,233,0.5);"></div>
+
+                                    <!-- Level & Award info -->
+                                    <div style="flex: 1; min-width: 200px;">
+                                        <span class="tag-status tag-cyan" id="roleplay-feedback-tag" style="background: rgba(14,165,233,0.1); color: var(--primary); border: 1px solid rgba(14,165,233,0.2); font-size: 11px;">Cerrador Prometedor</span>
+                                        <h2 style="font-family: var(--font-display); font-size: 24px; margin: 8px 0 4px; color: var(--text-main);">Auditoría Finalizada</h2>
+                                        <p style="color: var(--text-muted); font-size: 13px; line-height: 1.5; margin: 0;" id="roleplay-summary-text">El cliente no te lo puso fácil. Aquí está el veredicto de Carlos sobre tu llamada de ventas.</p>
+                                        <div id="roleplay-xp-reward" style="display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; font-weight: 700; color: #10b981; font-size: 13px; background: rgba(16,185,129,0.08); padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(16,185,129,0.2);">
+                                            <span>🏆 ¡Aprobado! +50 XP</span>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div>
-                                    <div style="display: flex; justify-content: space-between; font-size: 12.5px; margin-bottom: 6px;">
-                                        <span style="color: var(--text-main); font-weight: 500;">Control del Diálogo</span>
-                                        <span id="metric-control-val" style="color: var(--primary); font-weight: 700;">70%</span>
+                                <!-- Grid Breakdowns -->
+                                <div class="roleplay-metrics-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 24px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 16px;">
+                                    <!-- Progress Bars -->
+                                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                                        <h4 style="margin: 0 0 4px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted);">Métricas Tácticas</h4>
+                                        
+                                        <div>
+                                            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                                                <span style="color: var(--text-main); font-weight: 500;">Empatía Táctica</span>
+                                                <span id="metric-empathy-val" style="color: var(--primary); font-weight: 700;">80%</span>
+                                            </div>
+                                            <div style="height: 5px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden;">
+                                                <div id="metric-empathy-bar" style="height: 100%; width: 80%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 3px;"></div>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                                                <span style="color: var(--text-main); font-weight: 500;">Control del Diálogo</span>
+                                                <span id="metric-control-val" style="color: var(--primary); font-weight: 700;">70%</span>
+                                            </div>
+                                            <div style="height: 5px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden;">
+                                                <div id="metric-control-bar" style="height: 100%; width: 70%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 3px;"></div>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                                                <span style="color: var(--text-main); font-weight: 500;">Resolución de Objeciones</span>
+                                                <span id="metric-objection-val" style="color: var(--primary); font-weight: 700;">90%</span>
+                                            </div>
+                                            <div style="height: 5px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden;">
+                                                <div id="metric-objection-bar" style="height: 100%; width: 90%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 3px;"></div>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                                                <span style="color: var(--text-main); font-weight: 500;">Persuasión & Cierre</span>
+                                                <span id="metric-closing-val" style="color: var(--primary); font-weight: 700;">60%</span>
+                                            </div>
+                                            <div style="height: 5px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden;">
+                                                <div id="metric-closing-bar" style="height: 100%; width: 60%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 3px;"></div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div style="height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden;">
-                                        <div id="metric-control-bar" style="height: 100%; width: 70%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 3px; box-shadow: 0 0 8px rgba(14,165,233,0.5);"></div>
+
+                                    <!-- Recommendations / Checklists -->
+                                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                                        <h4 style="margin: 0 0 4px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted);">Puntos Clave a Mejorar</h4>
+                                        <ul id="roleplay-tips-list" style="margin: 0; padding-left: 16px; color: var(--text-muted); font-size: 12px; display: flex; flex-direction: column; gap: 8px; line-height: 1.4;">
+                                            <li>Evita repetir la objeción del cliente; valida su punto y continúa.</li>
+                                            <li>Haz preguntas abiertas para mantener el control y obligar al cliente a elaborar.</li>
+                                            <li>Crea urgencia basada en el coste de la inacción y no en presionar con firmas rápidas.</li>
+                                        </ul>
                                     </div>
                                 </div>
 
-                                <div>
-                                    <div style="display: flex; justify-content: space-between; font-size: 12.5px; margin-bottom: 6px;">
-                                        <span style="color: var(--text-main); font-weight: 500;">Resolución de Objeciones</span>
-                                        <span id="metric-objection-val" style="color: var(--primary); font-weight: 700;">90%</span>
-                                    </div>
-                                    <div style="height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden;">
-                                        <div id="metric-objection-bar" style="height: 100%; width: 90%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 3px; box-shadow: 0 0 8px rgba(14,165,233,0.5);"></div>
+                                <!-- Carlos Critique Card -->
+                                <div class="carlos-critique-card" style="padding: 16px; background: rgba(239,68,68,0.04); border: 1px solid rgba(239,68,68,0.15); border-radius: 12px; margin-bottom: 24px; position: relative;">
+                                    <div style="position: absolute; top: -10px; left: 16px; background: #ef4444; color: var(--text-main); font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.5px;">LA AUDITORÍA DE CARLOS</div>
+                                    <div style="display: flex; gap: 12px; align-items: flex-start; margin-top: 4px;">
+                                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #ef4444, #f59e0b); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;">🤵</div>
+                                        <div style="flex: 1;">
+                                            <p id="roleplay-carlos-critique" style="color: var(--text-main); font-size: 13px; line-height: 1.5; margin: 0; font-style: italic;">"Mira, no lo has hecho mal del todo, pero has caído en la trampa de defender el precio de inmediato..."</p>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div>
-                                    <div style="display: flex; justify-content: space-between; font-size: 12.5px; margin-bottom: 6px;">
-                                        <span style="color: var(--text-main); font-weight: 500;">Persuasión & Cierre</span>
-                                        <span id="metric-closing-val" style="color: var(--primary); font-weight: 700;">60%</span>
-                                    </div>
-                                    <div style="height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden;">
-                                        <div id="metric-closing-bar" style="height: 100%; width: 60%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 3px; box-shadow: 0 0 8px rgba(14,165,233,0.5);"></div>
-                                    </div>
+                                <!-- Actions footer -->
+                                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                                    <button type="button" id="roleplay-retry-btn" class="btn btn-secondary" style="flex: 1; min-width: 120px;">
+                                        <span>Nueva Simulación 🔄</span>
+                                    </button>
+                                    <button type="button" id="roleplay-finish-btn" class="btn btn-primary btn-glow" style="flex: 1; min-width: 120px;">
+                                        <span>Volver al Inicio 🏠</span>
+                                    </button>
                                 </div>
+
                             </div>
-
-                            <!-- Recommendations / Checklists -->
-                            <div style="display: flex; flex-direction: column; gap: 16px;">
-                                <h4 style="margin: 0 0 8px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted);">Puntos Clave a Mejorar</h4>
-                                <ul id="roleplay-tips-list" style="margin: 0; padding-left: 20px; color: var(--text-muted); font-size: 13px; display: flex; flex-direction: column; gap: 10px; line-height: 1.4;">
-                                    <li>Evita repetir la objeción del cliente; valida su punto y continúa.</li>
-                                    <li>Haz preguntas abiertas para mantener el control y obligar al cliente a elaborar.</li>
-                                    <li>Crea urgencia basada en el coste de la inacción y no en presionar con firmas rápidas.</li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <!-- Carlos Critique Card -->
-                        <div class="carlos-critique-card" style="padding: 20px; background: rgba(239,68,68,0.04); border: 1px solid rgba(239,68,68,0.15); border-radius: 14px; margin-bottom: 24px; position: relative;">
-                            <div style="position: absolute; top: -10px; left: 20px; background: #ef4444; color: var(--text-main); font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 4px; letter-spacing: 0.5px;">LA AUDITORÍA DE CARLOS</div>
-                            <div style="display: flex; gap: 16px; align-items: flex-start; margin-top: 6px;">
-                                <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #ef4444, #f59e0b); display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0;">🤵</div>
-                                <div style="flex: 1;">
-                                    <p id="roleplay-carlos-critique" style="color: var(--text-main); font-size: 13.5px; line-height: 1.6; margin: 0; font-style: italic;">"Mira, no lo has hecho mal del todo, pero has caído en la trampa de defender el precio de inmediato en vez de indagar el dolor real. Recuerda: en una venta de alto nivel, el que habla primero sobre justificaciones técnicas pierde. Sigue practicando."</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Actions footer -->
-                        <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-                            <button type="button" id="roleplay-retry-btn" class="btn btn-secondary" style="flex: 1; min-width: 150px;">
-                                <span>Nueva Simulación 🔄</span>
-                            </button>
-                            <button type="button" id="roleplay-finish-btn" class="btn btn-primary btn-glow" style="flex: 1; min-width: 150px;">
-                                <span>Volver al Inicio 🏠</span>
-                            </button>
                         </div>
 
                     </div>
