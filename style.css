@@ -2028,6 +2028,10 @@ input[type="text"]:focus {
     width: 100%;
     margin-top: 10px;
     align-items: stretch;
+    height: calc(100vh - 240px);
+    min-height: 500px;
+    margin-bottom: 0px; /* Space is handled by .app-container padding */
+    box-sizing: border-box;
 }
 
 .roleplay-sidebar {
@@ -2044,6 +2048,7 @@ input[type="text"]:focus {
     box-shadow: var(--shadow-lg);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
+    overflow-y: auto;
 }
 
 .roleplay-main {
@@ -2052,6 +2057,7 @@ input[type="text"]:focus {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    height: 100%;
 }
 
 .roleplay-placeholder {
@@ -2078,10 +2084,18 @@ input[type="text"]:focus {
 @media (max-width: 900px) {
     .roleplay-workspace {
         flex-direction: column;
+        height: auto;
+        margin-bottom: 120px;
     }
     .roleplay-sidebar {
         max-width: 100%;
         min-width: 100%;
+    }
+    .roleplay-main {
+        height: auto;
+    }
+    #roleplay-chat-messages {
+        max-height: 350px !important;
     }
 }
 

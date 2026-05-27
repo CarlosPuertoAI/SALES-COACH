@@ -2322,9 +2322,12 @@ function setupRoleplayEventListeners() {
         
         if (SpeechRecognition) {
             recognition = new SpeechRecognition();
+            window.roleplayRecognition = recognition;
             recognition.lang = "es-ES";
             recognition.interimResults = true;
-            recognition.continuous = false;
+            recognition.continuous = true;
+            recognition.isRecordingRequested = false;
+            recognition.baseTranscript = "";
 
             recognition.onstart = () => {
                 if (window.speechSynthesis) {
@@ -2344,20 +2347,52 @@ function setupRoleplayEventListeners() {
                 
                 const inputField = document.getElementById("roleplay-chat-input");
                 if (inputField) {
-                    inputField.value = transcript;
+                    const base = recognition.baseTranscript || "";
+                    inputField.value = base + (base && transcript ? " " : "") + transcript;
                 }
             };
 
             recognition.onerror = (e) => {
                 console.error("Speech recognition error:", e.error);
+                if (e.error === 'no-speech') {
+                    // Do not treat no-speech as terminal error, let onend restart it if requested
+                    return;
+                }
+                recognition.isRecordingRequested = false;
                 stopRecognition();
             };
 
             recognition.onend = () => {
-                stopRecognition();
+                if (recognition.isRecordingRequested) {
+                    // Save current text as baseTranscript and restart
+                    const inputField = document.getElementById("roleplay-chat-input");
+                    if (inputField) {
+                        recognition.baseTranscript = inputField.value;
+                    }
+                    try {
+                        recognition.start();
+                    } catch (err) {
+                        console.error("Failed to auto-restart speech recognition:", err);
+                        // Retry after a short delay in case start was called too fast
+                        setTimeout(() => {
+                            if (recognition.isRecordingRequested) {
+                                try {
+                                    recognition.start();
+                                } catch (ex) {
+                                    console.error("Auto-restart retry also failed:", ex);
+                                    recognition.isRecordingRequested = false;
+                                    stopRecognition();
+                                }
+                            }
+                        }, 400);
+                    }
+                } else {
+                    stopRecognition();
+                }
             };
 
             function stopRecognition() {
+                recognition.isRecordingRequested = false;
                 micBtn.classList.remove("recording");
                 const inputField = document.getElementById("roleplay-chat-input");
                 if (inputField) {
@@ -2367,8 +2402,12 @@ function setupRoleplayEventListeners() {
 
             micBtn.addEventListener("click", () => {
                 if (micBtn.classList.contains("recording")) {
+                    recognition.isRecordingRequested = false;
                     recognition.stop();
                 } else {
+                    const inputField = document.getElementById("roleplay-chat-input");
+                    recognition.baseTranscript = inputField ? inputField.value : "";
+                    recognition.isRecordingRequested = true;
                     try {
                         recognition.start();
                     } catch (err) {
@@ -2397,6 +2436,11 @@ function setupRoleplayEventListeners() {
 function sendUserMessage() {
     if (window.speechSynthesis) {
         window.speechSynthesis.cancel();
+    }
+    // Stop recording if speaking
+    if (window.roleplayRecognition) {
+        window.roleplayRecognition.isRecordingRequested = false;
+        window.roleplayRecognition.stop();
     }
     const chatInput = document.getElementById("roleplay-chat-input");
     const text = chatInput.value.trim();
@@ -2445,41 +2489,66 @@ async function generateCustomerResponse(isInitial = false) {
         const activeSectorObj = SECTORS.find(s => s.id === app.state.sectorId);
         const sectorName = activeSectorObj ? activeSectorObj.name : "Ventas Generales";
 
-        // Build history string
-        let historyStr = "";
-        app.roleplay.messages.forEach(msg => {
-            const senderLabel = msg.sender === "user" ? "Vendedor (User)" : `Cliente (${app.roleplay.customerName})`;
-            historyStr += `${senderLabel}: ${msg.text}\n`;
+        // Build native multi-turn conversation history starting with user trigger
+        const contents = [];
+        
+        // Initial trigger setup
+        contents.push({
+            role: "user",
+            parts: [{ text: `Hola, preséntate brevemente en una sola frase corta e inicia la conversación con una objeción de entrada acorde a tu personalidad de "${app.roleplay.customerProfile}".` }]
         });
 
-        // Prompt configuration
-        let prompt = "";
-        const baseSystem = `Eres un cliente potencial en una llamada de ventas.
-Estás hablando sobre comprar "${app.roleplay.product}" para tu negocio en el sector "${sectorName}".
-Tu nombre es ${app.roleplay.customerName}.
-Tu perfil psicológico y de comportamiento es "${app.roleplay.customerProfile}":
-- skeptical: Escéptico. Dudas de todo, eres muy cauteloso, no confías en el vendedor, pides datos concretos, credenciales y pruebas de inmediato.
-- aggressive: Negociador Duro. Exiges descuentos constantemente, regateas de forma agresiva, eres un poco seco, tajante y dejas claro que buscas el precio más bajo o te irás con la competencia.
-- indecisive: Indeciso. Tienes mucho miedo al cambio, te cuesta tomar decisiones, repites que "te lo tienes que pensar", "es una decisión importante" o "debes hablarlo con socios/pareja".
-- busy: Ocupado / Seco. Tienes prisa, no quieres rodeos, odias las presentaciones de diapositivas o charlas corporativas. Hablas al grano y eres cortante pero eduacado.
+        // Add actual dialog history
+        app.roleplay.messages.forEach(msg => {
+            contents.push({
+                role: msg.sender === "user" ? "user" : "model",
+                parts: [{ text: msg.text }]
+            });
+        });
 
-REGLAS DE ORO:
-1. Habla de forma extremadamente natural, realista y humana. Usa respuestas cortas (de 1 a 3 frases máximo), como si estuvieras al teléfono o respondiendo un chat de WhatsApp corporativo.
-2. Presenta objeciones difíciles de rebatir. No cedas fácilmente. El vendedor debe ganarse tu confianza aplicando técnicas de empatía táctica (Chris Voss), haciendo preguntas de diagnóstico e identificando tu dolor profundo.
-3. No salgas de tu personaje NUNCA. No menciones que eres una IA o un simulador.`;
-
-        if (isInitial) {
-            prompt = `${baseSystem}\n\nInicia la llamada de ventas presentándote brevemente y soltando tu primera duda u objeción inicial según tu personalidad de "${app.roleplay.customerProfile}" para que el vendedor empiece a hablar. No te enrolles, una o dos frases breves.`;
-        } else {
-            prompt = `${baseSystem}\n\nAquí está la transcripción de la conversación hasta ahora:\n${historyStr}\nResponde al último mensaje del Vendedor (User) de forma coherente con tu personalidad de "${app.roleplay.customerProfile}".`;
+        // Prompt configuration: Resolve active customer profile description & tone dynamically
+        let profileDescription = "";
+        let profileTone = "";
+        if (app.roleplay.customerProfile === "skeptical") {
+            profileDescription = "Eres una persona escéptica, desconfiada y cautelosa. No te fías de los comerciales ni de sus promesas. Exiges datos concretos, pruebas tangibles, garantías o testimonios reales de inmediato. No crees en promesas vacías. Si te hacen preguntas directas o de diagnóstico (como cuánto gastas, qué presupuesto tienes, etc.), reaccionas de forma evasiva, diciendo que es información confidencial o preguntando con sospecha por qué necesitan saber eso antes de confiar.";
+            profileTone = "desconfiado, inquisitivo, dudoso y precavido";
+        } else if (app.roleplay.customerProfile === "aggressive") {
+            profileDescription = "Eres un negociador duro y exigente. Buscas el precio más bajo a toda costa y presionas constantemente pidiendo descuentos, rebajas o mejores condiciones comerciales. Hablas con tono firme, seco y dejas claro que si no te convence la oferta económica te irás a la competencia de inmediato.";
+            profileTone = "exigente, firme, regateador y directo";
+        } else if (app.roleplay.customerProfile === "indecisive") {
+            profileDescription = "Eres una persona muy indecisa, insegura y temerosa de cometer un error. Te cuesta muchísimo tomar una decisión de compra y siempre pones excusas para dilatar el proceso ('tengo que consultarlo con mis socios', 'es una inversión muy grande', 'ahora mismo no sé qué hacer', 'déjame pensarlo una semana más', etc.).";
+            profileTone = "inseguro, indeciso, lleno de dudas y dubitativo";
+        } else if (app.roleplay.customerProfile === "busy") {
+            profileDescription = "Eres una persona extremadamente ocupada y con prisa. Odias que los comerciales den rodeos, hagan presentaciones largas o tengan discursos estándar de venta. Quieres respuestas cortas, directas y que vayan al grano de inmediato. Eres cortante pero educado, y exiges rapidez y concreción.";
+            profileTone = "cortante, directo, impaciente pero profesional";
         }
+
+        const baseSystem = `Instrucciones del Sistema para el Simulador de Ventas:
+Tu papel: Eres ${app.roleplay.customerName}, un cliente potencial real e independiente en una conversación telefónica con un vendedor.
+Contexto: El vendedor te está llamando para ofrecerte "${app.roleplay.product}" en el sector "${sectorName}".
+Tu personalidad de comportamiento es: ${profileDescription}
+Tu tono de voz es: ${profileTone}
+
+REGLAS ABSOLUTAS DE COMPORTAMIENTO:
+1. Actúa al 100% como un ser humano real e independiente en una conversación fluida. NUNCA digas o insinúes que eres una IA, un modelo de lenguaje, una simulación o un bot.
+2. Responde directamente y con total coherencia al último mensaje del vendedor. Lee sus argumentos y preguntas con atención y responde en consecuencia.
+3. Si el vendedor te hace una pregunta de diagnóstico comprometida (como tu presupuesto actual, gastos o consumo), reacciona de forma humana y coherente según tu personalidad de negocio (por ejemplo, si eres escéptico, pregúntale para qué quiere saberlo antes de confiar; si estás ocupado, dile que te dé un rango de precios primero).
+4. Termina siempre tus oraciones y pensamientos. NUNCA dejes una respuesta incompleta, cortada o con frases a medio terminar (como "un poco" o "un"). Cada respuesta debe terminar con su punto final y tener coherencia gramatical absoluta.
+5. Mantén tus respuestas cortas (de 1 a 3 frases máximo), simulando una conversación de chat de voz fluida y dinámica.
+6. Sé un cliente difícil de cerrar, pero sé receptivo si el vendedor demuestra empatía táctica (Chris Voss), hace preguntas abiertas y demuestra el valor de su propuesta.`;
 
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                contents: [{ parts: [{ text: prompt }] }],
-                generationConfig: { temperature: 0.8, maxOutputTokens: 180 }
+                contents: contents,
+                systemInstruction: {
+                    parts: [{ text: baseSystem }]
+                },
+                generationConfig: {
+                    temperature: 0.85,
+                    maxOutputTokens: 250
+                }
             })
         });
 
