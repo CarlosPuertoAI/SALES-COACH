@@ -694,9 +694,9 @@ function startQuoteRotation() {
 }
 
 function initUI() {
-    // Initialize default API key if not set
-    if (!localStorage.getItem("gemini_api_key")) {
-        localStorage.setItem("gemini_api_key", "AIzaSyAh6rnDonSPELb3MqhE-zSBAoo0ExVyr6o");
+    // Clear leaked/revoked key from localStorage if present
+    if (localStorage.getItem("gemini_api_key") === "AIzaSyAh6rnDonSPELb3MqhE-zSBAoo0ExVyr6o") {
+        localStorage.removeItem("gemini_api_key");
     }
     renderSectorSelectionGrid();
     setupEventListeners();
