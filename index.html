@@ -610,7 +610,12 @@
                                 👤
                             </div>
                             <div>
-                                <h3 id="roleplay-customer-name" style="margin: 0; font-size: 16px; font-family: var(--font-display);">Cliente: Pedro</h3>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <h3 id="roleplay-customer-name" style="margin: 0; font-size: 16px; font-family: var(--font-display);">Cliente: Pedro</h3>
+                                    <button type="button" id="roleplay-mute-btn" class="btn-mute" title="Silenciar/Activar voz del cliente" style="background: none; border: none; padding: 4px; cursor: pointer; color: var(--primary); display: flex; align-items: center; justify-content: center; transition: var(--transition-smooth); outline: none;">
+                                        <svg class="icon" viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: currentColor; margin: 0;"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                                    </button>
+                                </div>
                                 <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); margin-top: 2px;">
                                     <span class="pulse-dot" style="width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block;"></span>
                                     <span id="roleplay-customer-badge">Perfil: Escéptico</span>
@@ -641,8 +646,11 @@
 
                     <!-- Input Bar -->
                     <div class="glass-panel" style="padding: 16px; border-radius: 0 0 16px 16px; border-top: 1px solid rgba(255,255,255,0.08); background: rgba(13,17,29,0.7); display: flex; gap: 12px; align-items: center;">
+                        <button type="button" id="roleplay-mic-btn" class="btn-mic" title="Hablar por micrófono" style="width: 44px; height: 44px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--primary); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-smooth); outline: none; flex-shrink: 0;">
+                            <svg class="icon" viewBox="0 0 24 24" style="margin: 0; width: 20px; height: 20px; fill: currentColor;"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
+                        </button>
                         <input type="text" id="roleplay-chat-input" placeholder="Escribe tu respuesta de venta..." style="flex: 1; padding: 12px 16px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-main); font-size: 14px; outline: none; transition: var(--transition-smooth);" />
-                        <button type="button" id="roleplay-send-btn" class="btn btn-primary" style="padding: 12px; min-width: 50px; display: flex; align-items: center; justify-content: center; height: 44px;">
+                        <button type="button" id="roleplay-send-btn" class="btn btn-primary" style="padding: 12px; min-width: 50px; display: flex; align-items: center; justify-content: center; height: 44px; flex-shrink: 0;">
                             <svg class="icon" viewBox="0 0 24 24" style="margin: 0; width: 20px; height: 20px;"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
                         </button>
                     </div>
