@@ -1921,11 +1921,7 @@ function showCelebrationModal(title, desc, badges = []) {
 
 // 11. Utility: Generate response with Gemini API
 SalesQuest.prototype.generateAI = async function() {
-    const apiKey = localStorage.getItem("gemini_api_key") || "";
-    if (!apiKey) {
-        alert("Por favor, introduce tu Clave Gemini API en el campo 'Clave Gemini' en la barra de configuración.");
-        return;
-    }
+    // Secure Serverless Proxy API used (no client-side API Key required)
 
     const obj = this.currentObjection;
     if (!obj) {
@@ -2021,7 +2017,7 @@ Devuelve la respuesta en formato JSON estrictamente válido. No devuelvas ningú
 }`;
 
         // Make Gemini API call
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+        const response = await fetch(`/api/gemini`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -2189,14 +2185,7 @@ function setupRoleplayEventListeners() {
     if (startBtn) {
         startBtn.addEventListener("click", () => {
             const productVal = document.getElementById("roleplay-product-input").value.trim();
-            const apiKey = localStorage.getItem("gemini_api_key") || "";
 
-            if (!apiKey) {
-                alert("Por favor, introduce tu Gemini API Key para iniciar la simulación por IA.");
-                const rpKeyField = document.getElementById("roleplay-gemini-key");
-                if (rpKeyField) rpKeyField.focus();
-                return;
-            }
 
             if (!productVal) {
                 alert("Por favor, especifica el producto que estás vendiendo.");
@@ -2491,7 +2480,7 @@ async function generateCustomerResponse(isInitial = false) {
     if (sendBtn) sendBtn.disabled = true;
 
     try {
-        const apiKey = localStorage.getItem("gemini_api_key") || "";
+        // Secure Serverless Proxy API used (no client-side API Key required)
         const activeSectorObj = SECTORS.find(s => s.id === app.state.sectorId);
         const sectorName = activeSectorObj ? activeSectorObj.name : "Ventas Generales";
 
@@ -2543,7 +2532,7 @@ REGLAS ABSOLUTAS DE COMPORTAMIENTO:
 5. Mantén tus respuestas cortas (de 1 a 3 frases máximo), simulando una conversación de chat de voz fluida y dinámica.
 6. Sé un cliente difícil de cerrar, pero sé receptivo si el vendedor demuestra empatía táctica (Chris Voss), hace preguntas abiertas y demuestra el valor de su propuesta.`;
 
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+        const response = await fetch(`/api/gemini`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -2610,7 +2599,7 @@ async function evaluateSimulation() {
     }
 
     try {
-        const apiKey = localStorage.getItem("gemini_api_key") || "";
+        // Secure Serverless Proxy API used (no client-side API Key required)
 
         // Compile Transcript
         let transcript = "";
@@ -2647,7 +2636,7 @@ INSTRUCCIONES DE AUDITORÍA (APLICA ESTRICTAMENTE EL ADN DEL CLOSER ÉLITE):
   "consejos": ["<consejo 1 sobre Cierres Parciales/Hábitos Élite>", "<consejo 2>", "<consejo 3>"]
 }`;
 
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+        const response = await fetch(`/api/gemini`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -2804,7 +2793,7 @@ async function testGeminiApiKey(apiKey, statusElementId) {
     statusEl.innerHTML = `<span style="color: var(--text-muted); font-size: 11px;">Verificando... 🔄</span>`;
     
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+        const response = await fetch(`/api/gemini`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
