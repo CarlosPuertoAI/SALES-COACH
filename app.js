@@ -2,16 +2,26 @@
    SalesQuest - Main Application Logic (ES6 Vanilla JS)
    ========================================================================== */
 
-const CARLOS_SYSTEM_PROMPT = `Eres Carlos un closer de ventas con 30 años de experiencia 
-en {sector}. No eres un bot — eres una persona real que 
-ha cerrado miles de ventas y sabe leer a la gente.
+const CARLOS_SYSTEM_PROMPT = `Eres Carlos, un closer de ventas con 30 años de experiencia en {sector}. No eres un bot — eres una persona real que ha cerrado miles de ventas y sabe leer a la gente.
 
-QUIÉN ERES:
-Mezcla de Chris Voss, Alex Hormozi y el mejor vendedor 
-que hayas conocido en tu vida. Eres directo pero humano. 
-Tienes sentido del humor cuando la situación lo permite. 
-Sabes cuándo presionar y cuándo callarte. Y sobre todo — 
-escuchas de verdad.
+QUIÉN ERES Y CÓMO ACTÚAS (EL ADN DEL CLOSER ÉLITE):
+Tus respuestas e indicaciones de ventas siempre se basan en el SISTEMA DE ENTRENAMIENTO ÉLITE:
+
+1. LA MENTALIDAD DEL CLOSER ÉLITE: Cierras con certeza absoluta y obsesión por tu oficio. Sabes que pequeñas mejoras técnicas en momentos clave marcan la diferencia.
+2. LO QUE EL CLIENTE REALMENTE COMPRA: Nadie compra un producto por sus especificaciones; compran la versión mejorada de sí mismos y la eliminación de su dolor de cabeza. Diagnosticas antes de prescribir (Ecuación de Hormozi: sueño, certeza, tiempo, esfuerzo).
+3. ANATOMÍA DE LA OBJECIÓN: Descubres el miedo real detrás de las palabras (miedo a equivocarse, falta de urgencia, desconfianza, timing). Usas empatía táctica etiquetando la emoción ("Parece que lo que realmente te preocupa es...").
+4. EL CIERRE COMO PROCESO: Conduces al cliente a través de la Línea Recta de certeza absoluta (en el producto, en la empresa y en ti). Creas urgencia haciendo sentir el dolor de seguir igual.
+5. LOS 7 HÁBITOS DEL TOP 1%: Escuchas el 70% del tiempo y hablas el 30%. Haces preguntas potentes en lugar de monólogos.
+6. EVITAS LAS FRASES QUE MATAN LA VENTA:
+   - NUNCA uses: "¿Le parece bien el precio?", "Somos los mejores del mercado", "Entiendo perfectamente que..." o "¿Qué le parece?".
+   - SIEMPRE usas frases que abren cierres: "¿Qué tendría que ver para estar seguro?", "¿Cuánto te cuesta este problema hoy?", "Si resolvemos esto, ¿lo hacemos?".
+7. CIERRES PARCIALES: Tu regla de oro es conseguir micro-compromisos (síes pequeños) a lo largo de toda la conversación:
+   - Cierre de Problema: "¿Este problema lleva tiempo afectando a tus resultados, verdad?"
+   - Cierre de Criterio: "Si encontrásemos una solución que resolviera X en menos de Y tiempo, ¿eso sería lo que buscas?"
+   - Cierre de Valor: "¿Tiene sentido que esto reduciría el tiempo que perdéis ahora en Y?"
+   - Cierre de Lógica: "Entonces si entiendo bien — tienes el problema X, necesitas resolverlo en Y, y buscas Z. ¿Es correcto?"
+8. REGLA DE ORO DEL CIERRE PARCIAL: Nunca hagas una afirmación donde puedas hacer una pregunta. Las preguntas exigen respuesta y compromiso.
+9. EL ESTÁNDAR: Vendes certeza. Si la certeza está al máximo, solo necesitas callarte y dejar que el cliente compre.
 
 CONTEXTO COMPLETO DE ESTA CONVERSACIÓN:
 - Sector: {sector}
@@ -24,85 +34,40 @@ CONTEXTO COMPLETO DE ESTA CONVERSACIÓN:
 
 CÓMO PIENSAS ANTES DE RESPONDER:
 Antes de hablar, te haces estas preguntas internamente:
-
-1. ¿Qué está sintiendo realmente este cliente ahora mismo?
-2. ¿Esta objeción es real o es una cortina de humo?
-3. ¿Qué dijo antes que conecta con lo que dice ahora?
-4. ¿Qué necesita escuchar — no lo que quiere escuchar?
-5. ¿Es momento de presionar, de escuchar o de hacer una pregunta?
+1. ¿Qué está sintiendo realmente este cliente y cuál es su miedo subyacente?
+2. ¿Cómo puedo responder no a sus palabras, sino al dolor real?
+3. ¿Cómo puedo orientar mi respuesta hacia una pregunta que obtenga un micro-compromiso (cierre parcial)?
+4. ¿Estoy afirmando algo que podría formular como pregunta?
+5. ¿Esta respuesta suena robótica y complaciente o busca la verdad del negocio?
 
 PATRONES QUE RECONOCES:
-
-Si repite objeciones similares → hay un miedo profundo no dicho.
-Responde: "Noto que volvemos al mismo punto. ¿Qué es lo que 
-realmente te preocupa de tomar esta decisión?"
-
-Si la objeción es precio después de haber mostrado interés → 
-es excusa, no objeción real.
-Responde desde el valor, no desde el precio.
-
-Si es la primera objeción → no cierres todavía, diagnostica primero.
-
-Si lleva 3+ objeciones → el dolor no es suficiente todavía o 
-hay un bloqueador externo. Pregunta por él directamente.
-
-Si el cliente pregunta algo en vez de objetar → señal de interés.
-Responde brevemente y devuelve una pregunta de cierre.
+- Si repite la misma duda → hay un miedo profundo no dicho. Usa empatía táctica.
+- Si la objeción es precio tras mostrar interés → busca un cierre parcial de valor o lógica.
+- Si es la primera objeción → aplica un cierre parcial de problema para validar el dolor.
+- Si el cliente pregunta algo → responde brevemente e iguala con una pregunta de cierre parcial.
 
 CÓMO HABLAS:
-- Frases cortas. Nunca más de 4.
-- Sin jerga corporativa. Sin "sinergia", "valor añadido", "solución integral"
-- Con pausas implícitas — cada frase tiene peso propio
-- A veces una sola pregunta es más poderosa que un párrafo entero
-- Cuando algo es incómodo para el cliente, no lo evitas — lo nombras
-- Usas el silencio como herramienta: terminas con una pregunta 
-  y esperas. No llenas el silencio.
+- Frases cortas y potentes. Máximo 4 frases.
+- Sin jerga corporativa inútil.
+- Usas el silencio implícito y terminas siempre con una pregunta potente que busque la verdad del negocio.
 
-EJEMPLOS DE CÓMO SUENAS:
+EJEMPLOS DE TU VOZ ÉLITE:
+❌ Robótico: "Entiendo perfectamente su preocupación por el costo, pero si analizamos el retorno de inversión..."
+✅ Closer Élite: "¿Caro comparado con qué? Porque seguir perdiendo clientes cada semana también tiene un precio. ¿Este problema os está costando dinero real hoy?"
 
-❌ Robótico:
-"Entiendo perfectamente que el precio puede parecer elevado 
-en un primer momento, pero si analizamos el retorno de 
-inversión veremos que..."
-
-✅ Humano:
-"¿Caro comparado con qué? Porque seguir como estás 
-también tiene un precio — solo que nadie te lo manda 
-en factura. ¿Cuánto te está costando este problema ahora?"
-
-❌ Robótico:
-"Es completamente normal querer consultarlo. Le recomiendo 
-que hable con su pareja y me contacte cuando hayan tomado 
-una decisión conjunta."
-
-✅ Humano:
-"Por supuesto. ¿Qué crees que te va a decir? 
-Porque si hay una duda detrás de esa respuesta, 
-prefiero que la hablemos ahora."
-
-❌ Robótico:
-"Comprendo su situación. Muchos clientes en su posición 
-han encontrado que nuestra solución..."
-
-✅ Humano:
-"Espera — antes de seguir. ¿Qué es lo que más te frena 
-realmente? Porque no parece que sea el precio."
+❌ Robótico: "Es normal que quiera consultarlo. Hable con su socio y me avisa cuando tome una decisión."
+✅ Closer Élite: "Por supuesto. ¿Qué crees que te va a decir? Porque si hay alguna duda sobre si esto resuelve vuestro problema X, prefiero que la hablemos ahora."
 
 REGLAS ABSOLUTAS:
-- NUNCA repitas la objeción textualmente
-- NUNCA uses signos de exclamación
-- NUNCA empieces con "Entiendo que..." ni "Es normal que..."
-- NUNCA des una respuesta de más de 4 frases
-- NUNCA ignores lo que dijo antes — conecta siempre con el historial
-- NUNCA suenes a plantilla — cada respuesta es única para este cliente
-- Si tu respuesta podría servir para cualquier cliente, es mala. 
-  Reescríbelo para este cliente específico.
+- NUNCA repitas la objeción de forma literal.
+- NUNCA uses signos de exclamación.
+- NUNCA uses frases robóticas de plantilla como "Entiendo que..." o "Es normal que...".
+- NUNCA excedas las 4 frases por respuesta.
+- Conecta siempre con el historial de chat para demostrar escucha activa 70/30.
+- Busca que tu propuesta de guión culmine con una pregunta directa que actúe como un cierre parcial o de lógica.
 
 FORMATO DE RESPUESTA:
-Solo el guión. Sin explicaciones, sin títulos, sin comillas, 
-sin "Aquí tienes tu respuesta:". 
-Directamente las frases que dice el vendedor.
-Como si ya estuvieras en la llamada.`;
+Solo el guión exacto que debe decir el vendedor en la llamada. Sin introducciones, sin comentarios, sin comillas, sin explicaciones adicionales.`;
 
 const PROMPTS = {
     agresivo: CARLOS_SYSTEM_PROMPT,
@@ -1009,11 +974,6 @@ function setupEventListeners() {
                 app.state.completedStages.push(stageKey);
                 app.addXP(30);
                 
-                // Add stage 7 (Objections) to completed roadmap
-                if (!app.state.completedStages.includes("stage-7")) {
-                    app.state.completedStages.push("stage-7");
-                }
-                
                 showCelebrationModal(
                     "¡Objeción Superada! 🧠", 
                     "Has practicado esta objeción con éxito. Sumas +30 XP a tu perfil.",
@@ -1060,8 +1020,8 @@ function setupEventListeners() {
     const completeRoadmapBtn = document.getElementById("complete-roadmap-btn");
     if (completeRoadmapBtn) {
         completeRoadmapBtn.addEventListener("click", () => {
-            if (!app.state.completedStages.includes("stage-8")) {
-                app.state.completedStages.push("stage-8");
+            if (!app.state.completedStages.includes("stage-9")) {
+                app.state.completedStages.push("stage-9");
                 app.addXP(100);
                 showCelebrationModal(
                     "🏆 ¡Cierre de Ruta Exitoso!",
@@ -1161,16 +1121,17 @@ function renderRoadmap() {
     
     path.innerHTML = "";
     
-    // Core Stages definition (8 modules mapped to 14 core sales competencies)
+    // Core Stages definition (9 modules mapped to the ADN del Closer Élite blocks)
     const stages = [
-        { id: "stage-1", title: "1. Mentalidad & Preparación de Acero", emoji: "🧠", desc: "Forja resiliencia, psicología y preparación previa" },
-        { id: "stage-2", title: "2. Sintonía & Diálogo Activo", emoji: "🗣️", desc: "Conecta en su sintonía y evita monólogos" },
-        { id: "stage-3", title: "3. Descubrimiento del Dolor", emoji: "🔎", desc: "Identifica el motor real de compra" },
-        { id: "stage-4", title: "4. El Reencuadre & Visión", emoji: "🔄", desc: "Enseña una nueva perspectiva comercial" },
-        { id: "stage-5", title: "5. Adaptación & Deseo", emoji: "🔥", desc: "Ajusta tu discurso y enciende la emoción" },
-        { id: "stage-6", title: "6. La Oferta Irresistible", emoji: "💎", desc: "Reduce fricción y maximiza valor percibido" },
-        { id: "stage-7", title: "7. Copiloto de Objeciones", emoji: "🛡️", desc: "Usa el asistente en vivo para rebatir objeciones" },
-        { id: "stage-8", title: "8. Perfilado & Cierre de Oro", emoji: "🎯", desc: "Genera el guión final adaptado al cliente" }
+        { id: "stage-1", title: "1. La Mentalidad Élite", emoji: "🧠", desc: "Forja resiliencia, psicología y el concepto ganador" },
+        { id: "stage-2", title: "2. Qué compra el Cliente", emoji: "🤝", desc: "Las personas deciden emocionalmente y justifican lógicamente" },
+        { id: "stage-3", title: "3. Anatomía de la Objeción", emoji: "🛡️", desc: "Descubre el miedo real detrás de las palabras" },
+        { id: "stage-4", title: "4. El Cierre como Proceso", emoji: "🔄", desc: "Conduce al cliente por la línea recta de certeza" },
+        { id: "stage-5", title: "5. Los 7 Hábitos Élite", emoji: "🔥", desc: "Escuchar 70/30, hacer las preguntas correctas y actuar 10X" },
+        { id: "stage-6", title: "6. Frases Élite vs Prohibidas", emoji: "💬", desc: "Evita frases que matan ventas y usa las que abren cierres" },
+        { id: "stage-7", title: "7. Cierres Parciales", emoji: "🔗", desc: "Obtén micro-compromisos de problema, criterio, valor y lógica" },
+        { id: "stage-8", title: "8. El Estándar", emoji: "💎", desc: "Vende certeza absoluta, habla de transformaciones y calla al final" },
+        { id: "stage-9", title: "9. Misión del Closer (Simulador)", emoji: "🎯", desc: "Práctica real: supera al cliente escéptico y cierra el trato" }
     ];
     
     stages.forEach((stage, idx) => {
@@ -1221,12 +1182,10 @@ function renderRoadmap() {
             }
             
             // Interaction logic per node click
-            if (stage.id === "stage-7") {
-                navigateTo("objections");
-            } else if (stage.id === "stage-8") {
+            if (stage.id === "stage-9") {
                 navigateTo("profiler");
             } else {
-                // Interactive Mini-challenge for Stages 1 to 6
+                // Interactive Mini-challenge for Stages 1 to 8
                 if (status === "active") {
                     handleMiniChallenge(stage.id, stage.title, false);
                 } else {
@@ -1241,12 +1200,12 @@ function renderRoadmap() {
 
 const REPETITION_QUOTES = [
     { text: "La repetición es la madre de la maestría.", author: "Tony Robbins" },
-    { text: "Somos lo que hacemos repetidamente. La excelencia, entonces, no es un acto, sino un hábito.", author: "Aristóteles" },
+    { text: "Somos lo que hacemos repetidamente. La excelencia, entonces, no es un hábito.", author: "Aristóteles" },
     { text: "No temo al hombre que ha practicado 10,000 patadas una vez, sino al que ha practicado una patada 10,000 veces.", author: "Bruce Lee" },
     { text: "La repetición es la madre del aprendizaje, el padre de la acción, lo que la convierte en el arquitecto del éxito.", author: "Zig Ziglar" },
     { text: "Cualquier cosa que practiques repetidamente se convertirá en un nuevo hábito de pensamiento y acción.", author: "Brian Tracy" },
     { text: "La clave para dominar cualquier habilidad es la repetición constante hasta que se convierta en una segunda naturaleza.", author: "Joe Girard" },
-    { text: "La práctica no hace la perfección. Solo la práctica perfecta hace la perfección.", author: "Vince Lombardi" },
+    { text: "La prácica no hace la perfección. Solo la práctica perfecta hace la perfección.", author: "Vince Lombardi" },
     { text: "El conocimiento no es poder hasta que se aplica y se practica repetidamente.", author: "Dale Carnegie" }
 ];
 
@@ -1258,53 +1217,69 @@ function handleMiniChallenge(stageId, stageTitle, isReview = false) {
     let theory = "";
 
     if (stageId === "stage-1") {
-        theory = "<strong>🧠 Mentalidad & Preparación:</strong> La venta de alto nivel no empieza en el producto, sino en la psicología del vendedor. La clave es adoptar un estado de curiosidad genuina: en lugar de presionarte para 'cerrar una venta', prepárate investigando brevemente al prospecto para ver sinceramente si puedes aportarle valor y resolver su dolor de cabeza. Esto reduce la ansiedad y elimina la actitud de vendedor desesperado.";
-        question = "Estás a punto de iniciar una jornada de llamadas de ventas en frío. Tu mente empieza a dudar y temes el rechazo. ¿Cuál es la preparación y mentalidad correcta antes de marcar?";
+        theory = "<strong>🧠 Bloque 1 - La Mentalidad Élite:</strong> La diferencia entre el vendedor promedio y el élite no está en el producto ni en el mercado, está en la cabeza. Brian Tracy destaca 'el concepto ganador': pequeñas diferencias en habilidad producen diferencias enormes. El 20% de los vendedores hace el 80% de las ventas porque piensan diferente y se entrenan cuando los demás descansan. Grant Cardone lo resume: no hay atajos, hay obsesión o mediocridad. Principio: Entrena como si cada llamada fuera la más importante de tu vida.";
+        question = "¿Cuál es el núcleo del 'concepto ganador' en la mentalidad de ventas élite y cómo influye en los resultados?";
         options = [
-            { text: "Te mentalizas en que debes cerrar a todos a toda costa para ser exitoso, y empiezas a llamar sin investigar a los leads para ahorrar tiempo.", correct: false, reason: "Incorrecto. Esta mentalidad de desesperación se transmite y saltarse la investigación te hace sonar genérico." },
-            { text: "Adoptas una mentalidad de curiosidad genuina (quieres ver si puedes ayudarles) e investigas brevemente a cada empresa para personalizar el ángulo de entrada.", correct: true, reason: "¡Excelente! La curiosidad genuina reduce la presión y la preparación previa te posiciona como un profesional valioso." }
+            { text: "Tener un producto excelente y hacer el doble de horas de llamadas que el vendedor promedio.", correct: false, reason: "Incorrecto. Los élite no trabajan 4 veces más de promedio, sino que piensan y actúan diferente, perfeccionando momentos clave." },
+            { text: "Pequeñas diferencias y mejoras en habilidades clave que producen diferencias gigantescas en resultados, impulsadas por una obsesión por el oficio.", correct: true, reason: "¡Excelente! Ese es el 'concepto ganador' de Brian Tracy: ser solo un poco mejor en cada momento crucial." }
         ];
-        tip = "La venta empieza en tu mente: busca entender antes de intentar ser entendido.";
+        tip = "Entrena como si cada llamada fuera la más importante de tu vida; la obsesión por tu oficio marca la diferencia.";
     } else if (stageId === "stage-2") {
-        theory = "<strong>🗣️ Sintonía & Diálogo Activo:</strong> Para conectar con un cliente potencial, debes evitar los monólogos de presentación y lograr una conversación bidireccional de calidad. Aplica la regla del 70/30: escucha activamente el 70% del tiempo y habla el 30%. Sintoniza tu ritmo y tono de voz con los del cliente (técnica de espejamiento) para generar confianza instantánea y responder con precisión.";
-        question = "Comienzas la llamada y el cliente te dice: 'Hola, sí, dime rápido qué quieres'. ¿Cómo manejas la conversación para evitar un monólogo técnico y conectar en su misma sintonía?";
+        theory = "<strong>🤝 Bloque 2 - Lo que el Cliente realmente compra:</strong> Nadie compra un producto o servicio por sus características técnicas. Compran la versión mejorada de sí mismos después de tenerlo, cómo se van a sentir y la eliminación de un dolor. Las personas deciden emocionalmente y justifican lógicamente. Alex Hormozi propone identificar antes de hablar de precio: el sueño del cliente, la probabilidad que cree de lograrlo, el tiempo que tardará y el esfuerzo requerido. Principio: Diagnostica antes de prescribir.";
+        question = "Un cliente potencial te pregunta de entrada por el precio y características. ¿Cómo debe actuar el closer élite?";
         options = [
-            { text: "Igualas sutilmente su ritmo y tono de voz (espejamiento) para transmitir urgencia respetuosa, respondes brevemente y le devuelves el control con una pregunta abierta para iniciar un diálogo bidireccional.", correct: true, reason: "¡Perfecto! El tono y el diálogo interactivo desarman las defensas. La regla es: habla el 30%, escucha el 70%." },
-            { text: "Aprovechas que te dio la palabra para recitar de golpe todo tu discurso de ventas de 3 minutos sin pausar, para que conozca todas las características de tu producto.", correct: false, reason: "Incorrecto. Los monólogos largos aburren al prospecto y destruyen cualquier posibilidad de conexión humana." }
+            { text: "Diagnostica antes de prescribir: hace preguntas para identificar el sueño, el dolor de cabeza, el tiempo y el esfuerzo que el cliente quiere poner.", correct: true, reason: "¡Perfecto! El médico que receta sin explorar mata pacientes. Debes entender sus necesidades profundas antes de ofrecer una solución." },
+            { text: "Proporciona de inmediato el precio y una lista de las especificaciones técnicas completas para sonar lógico y transparente.", correct: false, reason: "Incorrecto. Las especificaciones aburren y el precio sin valor percibido mata la venta. Las personas compran transformaciones." }
         ];
-        tip = "Quien hace las preguntas correctas controla la conversación. Escucha activamente.";
+        tip = "Nadie compra características, compran la eliminación de un dolor y una versión mejorada de sí mismos.";
     } else if (stageId === "stage-3") {
-        theory = "<strong>🔎 Descubrimiento del Dolor:</strong> Las personas compran por sus propias razones (emocionales), no por las tuyas (lógicas). En las ventas B2B, no hay transacción si no hay dolor u oportunidad clara. En lugar de atacar a su proveedor actual o vender características, haz preguntas de contraste que ayuden al cliente a identificar por sí mismo sus principales cuellos de botella.";
-        question = "El cliente te dice: 'Actualmente estamos bien con nuestro proveedor de software'. ¿Cómo descubres si hay un dolor real o motor de compra latente bajo esa aparente tranquilidad?";
+        theory = "<strong>🛡️ Bloque 3 - La Anatomía de una Objeción Real:</strong> El vendedor promedio responde a las palabras del cliente. El closer élite responde al miedo detrás de las palabras. Toda objeción esconde uno de estos temores: 1) Miedo a equivocarse (se soluciona eliminando el riesgo con garantías/pruebas), 2) Falta de urgencia (se soluciona aumentando el coste de la inacción), 3) Desconfianza en ti (requiere más conexión humana, no argumentos) o 4) Objeción real (precio/timing). Chris Voss enseña a usar empatía táctica etiquetando la emoción: 'Parece que lo que realmente te preocupa es...'.";
+        question = "El cliente dice: 'Me lo tengo que pensar, no es el momento'. ¿Cómo interpreta esta objeción el closer élite y cómo responde?";
         options = [
-            { text: "Le dices que tu software es mucho mejor y más barato que el de su proveedor actual y le insistes en hacer una demo.", correct: false, reason: "Incorrecto. Atacar al proveedor actual genera reactancia defensiva en el cliente por haber tomado esa decisión." },
-            { text: "Validación empática: 'Entiendo, cambiar de proveedor es un dolor de cabeza. Si tuviera que elegir una sola cosa que le gustaría que fuera un 10% más rápida o simple con ellos, ¿cuál sería?'", correct: true, reason: "¡Brillante! Esta pregunta de contraste indirecto revela fricciones operativas ocultas sin confrontar." }
+            { text: "La trata como falta de urgencia, hace ver el dolor de no actuar hoy y etiqueta la emoción para descubrir el miedo real.", correct: true, reason: "¡Magnífico! Toda objeción es miedo. Debes cavar bajo la superficie y agrandar el coste de no actuar hoy para romper la falta de urgencia." },
+            { text: "Respeta su tiempo, se despide amablemente y le pide que le llame cuando lo tenga decidido para evitar presionar.", correct: false, reason: "Incorrecto. 'Me lo tengo que pensar' suele significar que el dolor de cambiar supera al dolor del problema actual. Si no actúas hoy, la venta muere." }
         ];
-        tip = "No hay venta sin dolor. Si no duele, no hay motivación para cambiar de estado.";
+        tip = "La objeción que escuchas rara vez es la objeción real. Excava hasta encontrar el miedo verdadero.";
     } else if (stageId === "stage-4") {
-        theory = "<strong>🔄 El Reencuadre & Visión:</strong> Los mejores vendedores del mundo no repiten las bondades de un producto; enseñan una nueva perspectiva comercial. Ayuda al cliente a ver un problema en su negocio desde un ángulo que no había considerado antes (Challenger Sale) y pinta con claridad el puente hacia su futuro ideal, en lugar de vender las especificaciones técnicas actuales.";
-        question = "En lugar de limitarte a enumerar los beneficios de tu producto, quieres reencuadrar la visión del cliente. ¿Cómo le enseñas una nueva perspectiva del problema (Challenger Sale)?";
+        theory = "<strong>🔄 Bloque 4 - El Cierre como Proceso:</strong> El cierre no es un evento al final de la llamada; es un proceso que se inicia desde el primer segundo. Jordan Belfort enseña el concepto de la línea recta: cada palabra debe dirigir al cliente hacia la certeza absoluta en tres áreas: el producto, la empresa y tú. Además, Grant Cardone destaca que el 80% de las ventas ocurren entre el 5º y 12º contacto, mientras que el 44% de vendedores desiste en el primero. Alex Hormozi recalca que no debes vender antes de que el cliente sienta el dolor.";
+        question = "¿Cuál es el enfoque correcto del closer élite sobre cuándo y cómo se produce el cierre?";
         options = [
-            { text: "Presentas datos del sector que demuestran un riesgo invisible que su empresa está corriendo hoy: 'La mayoría de empresas de su sector pierden un 15% de margen por X. ¿Cómo se protegen de esto?'", correct: true, reason: "¡Excelente! Enseñar una nueva perspectiva comercial despierta interés intelectual y te posiciona como un consultor de confianza." },
-            { text: "Le dices que tu producto tiene inteligencia artificial integrada y le describes detalladamente cómo funciona el algoritmo de tu plataforma.", correct: false, reason: "Incorrecto. Vender características técnicas no cambia la perspectiva del cliente sobre su propio negocio." }
+            { text: "Espera pacientemente al final de la conversación e intenta aplicar técnicas de presión psicológica de golpe.", correct: false, reason: "Incorrecto. Intentar cerrar al final con presión sin haber construido certeza a lo largo de la llamada destruye la venta." },
+            { text: "Cierra desde el primer segundo, construyendo certeza en la línea recta y haciendo que el cliente sienta el coste de seguir igual.", correct: true, reason: "¡Brillante! El cierre es una conclusión lógica del proceso. Cuando la certeza en ti, en la empresa y en el producto está al máximo, el cierre sucede solo." }
         ];
-        tip = "No vendas el producto; vende una nueva forma de ver y resolver su dolor de cabeza.";
+        tip = "El cierre más poderoso es una pregunta, no un argumento: ¿Qué necesitarías para tomar la decisión hoy?";
     } else if (stageId === "stage-5") {
-        theory = "<strong>🔥 Adaptación & Deseo:</strong> Cada cliente procesa la información de forma diferente según su tipo de personalidad. Para generar deseo y emoción, debes adaptar tu vocabulario al instante: usa datos cuantitativos para perfiles Analíticos y ve directo al grano centrado en velocidad y resultados para perfiles Directos. El deseo nace al contrastar su frustración presente con la solución de su dolor.";
-        question = "Identificas que tu interlocutor es un perfil sumamente directo y enfocado en resultados rápidos (comprador Directo). ¿Cómo adaptas tu discurso y generas deseo y emoción?";
+        theory = "<strong>🔥 Bloque 5 - Los 7 Hábitos del Top 1%:</strong> Tras estudiar a miles de vendedores, Brian Tracy y los líderes identificaron los hábitos del top 1%: 1) Preparación previa detallada de cada llamada (dolor y objeciones); 2) Escuchar el 70% del tiempo y hablar el 30% (preguntas, no monólogos); 3) Preguntas correctas de dolor/coste; 4) Control de su estado emocional (la certeza se contagia); 5) Formación continua (auditarse diariamente); 6) Volumen 10X (el rechazo es matemática); 7) Inversión en autoconcepto e identidad.";
+        question = "Estás en una conversación de ventas. ¿Cuál de estos comportamientos refleja los hábitos del top 1% de cerradores?";
         options = [
-            { text: "Le explicas la historia de fundación de tu empresa y el ambiente de soporte familiar y cercano que ofreces a largo plazo.", correct: false, reason: "Incorrecto. El perfil Directo se impacienta con las historias de soporte y relaciones personales al inicio." },
-            { text: "Vas al grano, enfocas la presentación en el impacto financiero, reducción de tiempos muertos y metas competitivas, usando contrastes claros.", correct: true, reason: "¡Espectacular! Adaptar el lenguaje al perfil psicológico del cliente enciende sus disparadores de deseo emocional." }
+            { text: "Hablas el 70% del tiempo describiendo tu empresa e improvisas tu estado emocional y preparación al marcar.", correct: false, reason: "Incorrecto. El vendedor promedio improvisa y habla sin parar. El élite prepara, escucha el 70% del tiempo y hace preguntas potentes." },
+            { text: "Escuchas el 70% del tiempo haciendo preguntas que revelen el coste del problema, entras en la llamada con certeza absoluta y te preparas previamente.", correct: true, reason: "¡Extraordinario! Estos hábitos configuran la identidad y el éxito de un closer del top 1%." }
         ];
-        tip = "El deseo se genera mostrando el contraste entre el dolor actual y el placer del futuro deseado.";
+        tip = "Regla del 70/30: El cliente habla el 70% del tiempo. Tú guías con preguntas el otro 30%.";
     } else if (stageId === "stage-6") {
-        theory = "<strong>💎 La Oferta Irresistible:</strong> Según los principios de la ecuación de valor, una oferta es irresistible cuando maximiza la probabilidad del resultado deseado por el cliente, minimizando tanto el tiempo de entrega como el esfuerzo y fricción necesarios por su parte, sumado a una clara garantía que retire todo el riesgo de su decisión.";
-        question = "Llega el momento de presentar la oferta. ¿Cómo la estructuras para que se perciba como una propuesta irresistible basada en la ecuación de valor de los mejores del mundo?";
+        theory = "<strong>💬 Bloque 6 - Frases que Cierran y Frases que Matan:</strong> Las palabras importan. Las frases prohibidas matan la venta porque buscan aprobación o suenan falsas (ej: '¿Le parece bien el precio?', 'Entiendo perfectamente...', 'Somos los mejores del mercado', '¿Qué le parece?'). El closer élite usa frases que abren cierres y buscan la verdad del negocio (ej: '¿Qué tendría que ver para estar seguro?', '¿Cuánto le cuesta este problema hoy?', '¿Qué pasa si en 6 meses seguís igual?', 'Si resolvemos eso, ¿lo hacemos?').";
+        question = "Terminas de presentar la solución y quieres pasar al siguiente paso. ¿Qué frase de cierre deberías utilizar?";
         options = [
-            { text: "Presentas el resultado final deseado garantizado, minimizando el tiempo para conseguirlo y reduciendo el esfuerzo requerido con garantías claras de devolución de riesgo.", correct: true, reason: "¡Extraordinario! Valor = (Resultado Deseado * Certeza) / (Tiempo de Entrega * Esfuerzo/Sacrificio). Cuanto menor sea el esfuerzo y tiempo, mayor es el valor percibido." },
-            { text: "Dices el precio total, describes las 40 horas de formación que el cliente tendrá que pasar para aprender a usarlo y añades que no se aceptan devoluciones.", correct: false, reason: "Incorrecto. Exigir mucho esfuerzo/tiempo y transferir todo el riesgo al cliente destruye el valor percibido." }
+            { text: "Dices: '¿Qué le parece nuestra propuesta? ¿Le parece bien el precio que le hemos ofrecido?'", correct: false, reason: "Incorrecto. Estas frases matan la venta porque abren debates inútiles y crean dudas sobre el valor del producto." },
+            { text: "Dices: 'Si logramos resolver ese problema exacto de X tal como te he mostrado, ¿lo hacemos?'", correct: true, reason: "¡Exacto! Esta frase busca un compromiso condicionado real basado en la verdad y el valor aportado." }
         ];
-        tip = "Una oferta irresistible elimina el miedo al fracaso del cliente y acelera la toma de decisión.";
+        tip = "Las frases que matan buscan aprobación. Las frases que cierran buscan la verdad del negocio.";
+    } else if (stageId === "stage-7") {
+        theory = "<strong>🔗 Bloque 7 - Cierres Parciales y Micro-compromisos:</strong> El vendedor promedio busca un único cierre al final (todo o nada) y a menudo fracasa. El closer élite obtiene micro-compromisos (síes pequeños) a lo largo de toda la conversación. Existen 4 tipos de cierres parciales: 1) De Problema: '¿Este problema os está costando dinero hoy?'; 2) De Criterio: 'Si resolvemos X en plazo Y, ¿sería lo que buscas?'; 3) De Valor: '¿Ves cómo esto elimina ese dolor?'; 4) De Lógica (resumen): 'Tienes X, necesitas Y y buscas Z, ¿correcto?'. Al final, el cierre final es solo una conclusión lógica.";
+        question = "¿Por qué son tan efectivos los cierres parciales a nivel psicológico en la mente del cliente?";
+        options = [
+            { text: "Porque cansan al cliente de tanto responder preguntas y termina aceptando para terminar rápido la llamada.", correct: false, reason: "Incorrecto. No se trata de agobiar al cliente, sino de ayudarle a ser coherente con su propia reality diagnosticada." },
+            { text: "Porque construyen inercia positiva y activan la necesidad de consistencia: tras dar 7 pequeños síes, decir no al final generaría disonancia cognitiva.", correct: true, reason: "¡Perfecto! Los cierres parciales eliminan el miedo al paso final porque el cliente ya ha validado su propia necesidad paso a paso." }
+        ];
+        tip = "Regla de oro: Nunca hagas una afirmación donde puedas hacer una pregunta. Cada sí pequeño construye inercia.";
+    } else if (stageId === "stage-8") {
+        theory = "<strong>💎 Bloque 8 - El Estándar Élite:</strong> El closer élite no sale a trabajar, sale a ganar. No habla de características, habla de transformaciones. No maneja objeciones pasivamente, sino que descubre los miedos y los elimina. No espera motivación, construye disciplina diaria y usa el rechazo como simple información estadística. Vende certeza. Y cuando el cliente tiene esa certeza al máximo en el producto, en la empresa y en ti, no necesitas presionar: solo te callas y dejas que diga que sí.";
+        question = "El cliente está totalmente convencido del valor, asiente con la cabeza y el ambiente es de certeza absoluta. ¿Qué debe hacer el closer de élite en ese preciso momento?";
+        options = [
+            { text: "Mantener el silencio absoluto, no interrumpir y permitir que el cliente tome la iniciativa para cerrar o formalizar la compra.", correct: true, reason: "¡Brillante! Cuando la certeza está al máximo, el silencio es tu mejor aliado. Callarse y dejar que compren demuestra respeto y seguridad profesional." },
+            { text: "Seguir argumentando, enumerar más ventajas y ofrecer otro servicio adicional para no perder el impulso de la llamada.", correct: false, reason: "Incorrecto. Sobrevender o seguir hablando cuando el trato está listo introduce dudas adicionales y puede arruinar el cierre." }
+        ];
+        tip = "El closer élite vende certeza. Cuando el cliente está convencido, guarda silencio y deja que firme.";
     }
 
     // Get elements
@@ -1364,7 +1339,7 @@ function handleMiniChallenge(stageId, stageTitle, isReview = false) {
                     setTimeout(() => {
                         modal.classList.add("hidden");
                         showCelebrationModal(
-                            "¡Excelente Repaso! 🔁", 
+                            "¡Excelente Repaso! 🔄", 
                             "La repetición constante graba el conocimiento en tu subconsciente. ¡Sigue repasando para alcanzar la maestría!",
                             [{ emoji: "🔄", name: "Repetición Diaria" }]
                         );
@@ -2613,22 +2588,22 @@ async function evaluateSimulation() {
             transcript += `${sender}: ${msg.text}\n`;
         });
 
-        const prompt = `Eres Carlos, un closer de ventas con 30 años de experiencia cerrando tratos comerciales de alto nivel. Eres directo, pragmático, sin rodeos, con un sentido del humor ácido pero sumamente profesional. Tu objetivo es auditar una transcripción de llamada de ventas simulada y evaluar el desempeño del vendedor.
+                const prompt = `Eres Carlos, un closer de ventas con 30 años de experiencia cerrando tratos comerciales de alto nivel. Eres directo, pragmático, sin rodeos, con un sentido del humor ácido pero sumamente profesional. Tu objetivo es auditar una transcripción de llamada de ventas simulada y evaluar el desempeño del vendedor de acuerdo con el SISTEMA DE ENTRENAMIENTO ÉLITE.
 
 Analiza minuciosamente el diálogo entre el Vendedor (User) y el Cliente (AI Customer) a continuación:
 ---
-TRANSCRIPIÓN DE LA LLAMADA:
+TRANSCRIPCIÓN DE LA LLAMADA:
 ${transcript}
 ---
 
-INSTRUCCIONES DE AUDITORÍA:
-1. Califica el desempeño global de 0 a 100. Sé realista: un 90+ es para un cerrador de nivel mundial; un novato andará por los 50-60.
+INSTRUCCIONES DE AUDITORÍA (APLICA ESTRICTAMENTE EL ADN DEL CLOSER ÉLITE):
+1. Califica el desempeño global de 0 a 100. Sé sumamente exigente: un 90+ es para un cerrador de nivel mundial que usa empatía táctica y cierres parciales; un novato andará por los 50-60.
 2. Evalúa 4 métricas (de 0 a 100):
-   - Empatía Táctica (¿comprendió los dolores y miedos del cliente o se puso a hablar de características técnicas?).
-   - Control del Diálogo (¿hizo preguntas abiertas o dejó que el cliente controlara la llamada?).
-   - Resolución de Objeciones (¿reencuadró los problemas y rebatió eficazmente o cedió terreno?).
-   - Cierre de Oro (¿empujó hacia un compromiso claro o una firma?).
-3. Genera una crítica en tu estilo característico (Carlos). Sé directo. Si el vendedor cometió un error (como hablar demasiado, defender el precio con desesperación, repetir la objeción del cliente, sonar robótico), dilo claramente y cítalo: "Dijiste '[cita]' y eso mató la llamada. Debiste haber dicho...".
+   - Empatía Táctica (¿comprendió el miedo subyacente y dolor real del cliente o repitió la objeción y habló de características? ¿Etiquetó las emociones?).
+   - Control del Diálogo (¿siguió la regla del 70/30 hablando solo el 30% y guio con preguntas correctas, o soltó monólogos e intentó convencer?).
+   - Resolución de Objeciones (¿reencuadró el problema mostrando una nueva perspectiva o defendió el precio/producto con desesperación y frases robóticas?).
+   - Cierre de Oro (¿consiguió micro-compromisos y Cierres Parciales -de Problema, Criterio, Valor y Lógica- durante toda la llamada, o esperó de forma pasiva al final para presionar de golpe?).
+3. Genera una crítica en tu estilo característico de Carlos. Sé directo y ácido. Si el vendedor cometió un error (como hablar demasiado, rellenar silencios, sonar falso/robótico, o usar frases prohibidas como "¿Qué le parece?", "Entiendo perfectamente que..." o "Somos los mejores"), dilo claramente y cítalo: "Dijiste '[cita]' y eso mató la llamada. Debiste haber dicho...".
 4. Devuelve la respuesta en formato JSON estrictamente válido. No incluyas markdown (como bloques de código \`\`\`json), comentarios, ni texto fuera del objeto JSON. El formato debe ser exactamente:
 {
   "score": <número>,
@@ -2637,8 +2612,8 @@ INSTRUCCIONES DE AUDITORÍA:
   "resolucion": <número>,
   "cierre": <número>,
   "titulo": "<título de rango, ej. Novato de Cierre, Negociador Prometedor, Closer de Élite>",
-  "critica": "<tu crítica redactada en tu estilo de Carlos, citando partes del diálogo>",
-  "consejos": ["<consejo 1>", "<consejo 2>", "<consejo 3>"]
+  "critica": "<tu crítica redactada en tu estilo de Carlos, citando partes del diálogo y auditando en base al ADN Élite>",
+  "consejos": ["<consejo 1 sobre Cierres Parciales/Hábitos Élite>", "<consejo 2>", "<consejo 3>"]
 }`;
 
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
