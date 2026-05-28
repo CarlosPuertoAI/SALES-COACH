@@ -1380,7 +1380,6 @@ function handleMiniChallenge(stageId, stageTitle, isReview = false) {
     modal.classList.remove("hidden");
 }
 
-// 5. Component: Objection Simulator UI
 function renderObjections() {
     // Synchronize Gemini API Key input
     const geminiApiKeyInput = document.getElementById("gemini-api-key-input");
@@ -1447,27 +1446,6 @@ function renderObjections() {
         });
         
         listContainer.appendChild(btn);
-    });
-    
-    updateActiveObjectionDisplay();
-});
-        
-        listContainer.appendChild(btn);
-    });
-    
-    // Set the correct active tab in the DOM according to the state
-    const activeTab = app.state.activeTab || "agresivo";
-    document.querySelectorAll(".tab-btn").forEach(btn => {
-        btn.classList.remove("active");
-        if (btn.dataset.tab === activeTab) {
-            btn.classList.add("active");
-        }
-    });
-    document.querySelectorAll(".tab-content").forEach(content => {
-        content.classList.remove("active");
-        if (content.id === `tab-${activeTab}`) {
-            content.classList.add("active");
-        }
     });
     
     updateActiveObjectionDisplay();
