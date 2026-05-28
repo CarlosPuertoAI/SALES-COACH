@@ -53,13 +53,13 @@ CÓMO HABLAS:
 
 EJEMPLOS DE TU VOZ ÉLITE:
 ❌ Robótico: "Entiendo perfectamente su preocupación por el costo, pero si analizamos el retorno de inversión..."
-✅ Closer Élite: "¿Caro comparado con qué? Porque seguir perdiendo clientes cada semana también tiene un precio. ¿Este problema os está costando dinero real hoy?"
+✅ Closer Élite: "Seguir perdiendo clientes cada semana tiene un precio muy alto. ¿Este problema de captación os está costando dinero real hoy?"
 
 ❌ Robótico: "Es normal que quiera consultarlo. Hable con su socio y me avisa cuando tome una decisión."
 ✅ Closer Élite: "Por supuesto. ¿Qué crees que te va a decir? Porque si hay alguna duda sobre si esto resuelve vuestro problema X, prefiero que la hablemos ahora."
 
 REGLAS ABSOLUTAS:
-- NUNCA repitas la objeción de forma literal.
+- NUNCA repitas ni valides la objeción del cliente ni uses sus palabras clave de forma defensiva o complaciente (si el cliente dice "es caro", no uses las palabras "caro", "precio", "coste" o "presupuesto" de forma defensiva; reencuadra la conversación inmediatamente al valor, al ROI o a una pregunta de contraste). Repetir la objeción es un error amateur de novato.
 - NUNCA uses signos de exclamación.
 - NUNCA uses frases robóticas de plantilla como "Entiendo que..." o "Es normal que...".
 - NUNCA excedas las 4 frases por respuesta.
@@ -76,7 +76,6 @@ const PROMPTS = {
     solucionador: CARLOS_SYSTEM_PROMPT
 };
 
-// 1. Database Definitions
 const SECTORS = [
     {
         id: "saas",
@@ -85,24 +84,24 @@ const SECTORS = [
         objections: [
             {
                 title: "Es muy caro / No hay presupuesto disponible",
-                analitico: "Si este software te cuesta mil euros pero te ahorra tres mil en tiempo y optimización, ¿sigue siendo caro? No es un gasto, es una decisión matemática básica. ¿Te parece si miramos los números y juzgas por ti mismo?",
-                emocional: "Dime algo: ¿el presupuesto es el problema real, o es que no tienes la total certeza de que esto os va a dar resultado? Si te demuestro que el equipo ahorra tiempo desde el primer día y asumo yo el riesgo inicial, ¿estarías dispuesto a probarlo?",
-                agresivo: "Claro que es caro. Si fuera barato, cualquiera lo tendría y no marcaría la diferencia en tu negocio. La pregunta no es el precio, sino si quieres seguir perdiendo horas y dinero con sistemas obsoletos. ¿Hacemos el alta y empezamos a recuperar tu inversión hoy?",
-                solucionador: "Si no cambiáis nada hoy, ¿cuánto presupuesto estimas que se seguirá perdiendo en procesos manuales este trimestre? Si eliminamos esa ineficiencia esta semana, ¿avanzamos con la prueba piloto?"
+                analitico: "Si esta herramienta te automatiza el trabajo y te devuelve tres veces su valor en horas productivas, ¿lo considerarías una decisión rentable? Miremos los números y juzgas por ti mismo.",
+                emocional: "Dime algo con total honestidad: ¿es un tema de liquidez en este instante, o es que aún no tienes la total certeza de que esto os va a dar resultado? Si te demuestro que el equipo ahorra tiempo desde el primer día y asumo yo el riesgo inicial, ¿estarías dispuesto a probarlo?",
+                agresivo: "Las soluciones de alto rendimiento marcan la diferencia precisamente porque no están al alcance de cualquiera. Si sigues perdiendo horas y dinero con sistemas obsoletos, el impacto real a final de mes es enorme. ¿Hacemos el alta y empezamos a solucionar esto hoy?",
+                solucionador: "Si decidís mantener los procesos manuales actuales este trimestre, ¿cuánto tiempo y capital calculas que se seguirá perdiendo por el camino? Si eliminamos esa ineficiencia esta semana, ¿avanzamos con la prueba piloto?"
             },
             {
                 title: "Es difícil de integrar con nuestras herramientas actuales",
                 analitico: "Nuestra API conecta con vuestro ecosistema actual en pocos clics de forma automática. Si te garantizo por escrito compatibilidad absoluta desde el primer día, ¿estarías listo para avanzar?",
                 emocional: "Sé que da pereza pensar en cambiar de sistemas y que a veces da dolores de cabeza. Si asumo la responsabilidad por contrato de que la transición sea limpia y sin fricciones, ¿nos darías el beneficio de la duda?",
-                agresivo: "Ningún cambio es cómodo, pero quedarse atrás por miedo a la integración os costará mucho más. Nuestro equipo técnico se encarga de todo el proceso en dos horas sin parar vuestras operaciones. ¿Comenzamos con la migración este jueves?",
+                agresivo: "Ningún cambio es cómodo, pero quedarse atrás por miedo a la migración os costará mucho más. Nuestro equipo técnico se encarga de todo el proceso en dos horas sin parar vuestras operaciones. ¿Comenzamos con la puesta en marcha este jueves?",
                 solucionador: "¿Qué problemas operativos os causa tener la información fragmentada hoy en día? Si {product} unifica vuestros datos de inmediato, ¿crees que el equipo trabajará mejor? ¿Hacemos una llamada técnica rápida de cinco minutos?"
             },
             {
                 title: "No tenemos tiempo para aprender a usar una plataforma nueva",
-                analitico: "Aprender a usar {product} lleva quince minutos y te ahorra ocho horas semanales para siempre. La rentabilidad del tiempo es obvia. ¿Activamos vuestro acceso para que empecéis a ahorrar tiempo desde mañana?",
+                analitico: "La curva de aprendizaje es de quince minutos y te devuelve ocho horas semanales de por vida. Las matemáticas son sencillas. ¿Activamos vuestro acceso desde mañana?",
                 emocional: "Parece que el equipo está al límite y temes sobrecargarlos con más tareas. Si nos encargamos de darles una formación en vivo personalizada de diez minutos adaptada a sus horarios para que la transición sea fluida, ¿estarías más tranquilo para dar el paso?",
-                agresivo: "Si no tienes tiempo hoy para automatizar, ¿cuándo lo vas a tener? Seguirás igual de saturado el mes que viene si no tomas el control ahora. ¿Dejamos la cuenta activa y te enviamos la guía rápida de tres pasos?",
-                solucionador: "¿Cuánto tiempo pierde tu equipo a la semana en tareas repetitivas? Si eliminamos esa carga administrativa, ¿cuánto margen ganaríais para proyectos importantes? ¿Agendamos una breve demo guiada de cinco minutos?"
+                agresivo: "Seguirás igual de saturado el mes que viene si no tomas el control y automatizas hoy mismo. El día a día te consumirá. ¿Dejamos la cuenta activa y te enviamos la guía rápida de tres pasos?",
+                solucionador: "¿Cuántas horas a la semana pierde tu equipo en tareas repetitivas? Si eliminamos esa carga administrativa, ¿cuánto margen ganaríais para proyectos importantes? ¿Agendamos una breve demo guiada de cinco minutos?"
             }
         ]
     },
@@ -113,24 +112,24 @@ const SECTORS = [
         objections: [
             {
                 title: "Los tipos de interés y las hipotecas están muy altos ahora",
-                analitico: "Miremos los números objetivos: la inflación se come tu dinero en el banco, mientras que el ladrillo se revaloriza cada año. Aunque el tipo de interés sea del cinco por ciento, estás construyendo tu propio patrimonio en lugar de pagar el de otro. ¿Nos sentamos a revisar el plan de amortización?",
-                emocional: "La hipoteca se puede renegociar con el banco en el futuro, pero esta casa en esta ubicación no se va a repetir. Si la cuota mensual se ajusta a lo que gastas hoy de alquiler, ¿dejarías escapar el hogar de tu familia por esperar un porcentaje? ¿Hacemos una oferta provisional?",
-                agresivo: "Los tipos están altos, pero el precio de esta casa es el mejor que vas a encontrar. Si esperas a que las tasas bajen, la demanda se disparará y el precio del ladrillo subirá un diez por ciento. Compra al precio de hoy y refinancias mañana, ¿tiene sentido la estrategia?",
-                solucionador: "Si sigues pagando alquiler mientras esperáis a que bajen los tipos, ¿cuánto dinero habrás perdido en dos años sin construir ningún activo? ¿No sería mejor adquirir la propiedad ya y subrogar la hipoteca más adelante? ¿Evaluamos las opciones financieras?"
+                analitico: "Miremos los números objetivos: la inflación deprecia tu dinero en el banco, mientras que las propiedades se revalorizan cada año. Estás construyendo un patrimonio propio en lugar de pagar el de otro. ¿Nos sentamos a revisar el plan de amortización?",
+                emocional: "Las condiciones financieras se pueden renegociar con el banco en el futuro, pero esta casa en esta ubicación no se va a repetir. Si la cuota mensual se ajusta a lo que gastas hoy de alquiler, ¿dejarías escapar el hogar de tu familia por esperar que varíe el mercado? ¿Hacemos una oferta provisional?",
+                agresivo: "El valor de esta casa es el mejor que vas a encontrar ahora mismo. Si esperas a que el mercado financiero cambie, la demanda se disparará y el coste del metro cuadrado subirá un diez por ciento. Compra al valor de hoy y refinancias más adelante. ¿Tiene sentido la estrategia?",
+                solucionador: "Si sigues pagando alquiler mientras esperas a ver qué pasa con el mercado, ¿cuánto dinero habrás perdido en dos años sin construir ningún activo? ¿No sería mejor adquirir la propiedad ya y renegociar más adelante? ¿Evaluamos las opciones financieras?"
             },
             {
                 title: "Necesito consultarlo con mi pareja o socio primero",
                 analitico: "Si os presento un desglose financiero claro y la rentabilidad del inmueble para que podáis tomar una decisión basada en datos lógicos, ¿crees que facilitará la conversación? ¿Te preparo el dossier técnico ahora?",
-                emocional: "Es una decisión familiar importante y debéis estar de acuerdo. Si preparamos una visita privada mañana a las seis para que tu pareja pueda sentir el espacio y resolver todas sus dudas conmigo, ¿os vendría bien esa hora?",
-                agresivo: "Por supuesto, consúltalo. Pero sé honesto: si a ti te encanta, ellos van a confiar en tu criterio. Si esperamos a mañana, esta casa se habrá vendido porque tenemos tres visitas esta tarde. ¿Hacemos una reserva reembolsable hoy para asegurar la vivienda mientras lo hablas?",
-                solucionador: "¿Cuáles son los puntos críticos que tu pareja o socio valorará más en esta propiedad? Si organizamos una llamada de cinco minutos para aclarar esos temas directamente con ellos, ¿crees que ayudaría a tomar la decisión?"
+                emocional: "Es una decisión muy importante y debéis estar de acuerdo. Si preparamos una visita privada mañana a las seis para ver el espacio juntos y resolver todas las dudas en directo, ¿os vendría bien esa hora?",
+                agresivo: "Sé honesto: si a ti te encanta, van a confiar plenamente en tu criterio. Si esperamos a mañana, esta propiedad se habrá vendido porque tenemos tres visitas esta tarde. ¿Hacemos una reserva reembolsable hoy para asegurar la vivienda mientras lo presentas?",
+                solucionador: "¿Cuáles son los puntos críticos que más se valorarán en esta decisión? Si organizamos una llamada de cinco minutos para aclarar esos temas de inmediato, ¿crees que ayudaría a resolver el trato?"
             },
             {
                 title: "La casa me gusta, pero la zona no me convence del todo",
                 analitico: "Los datos de desarrollo municipal muestran una nueva línea de transporte y zonas verdes planificadas a pocos metros. Esto revalorizará el inmueble un quince por ciento a corto plazo. ¿Revisamos el informe urbanístico para ver el potencial real?",
-                emocional: "Te preocupa la seguridad y el entorno donde va a crecer tu familia, lo entiendo perfectamente. Si damos un paseo rápido por los alrededores para que veas los parques, colegios y hables con algún vecino, ¿te daría más tranquilidad?",
-                agresivo: "La casa es espectacular y el precio es inmejorable, pero la ubicación no la puedes cambiar. Ahora bien, esta zona está en pleno plan de desarrollo y su valor subirá rápido en dos años. Si compras barato hoy en un barrio al alza, ¿no estarías haciendo una jugada brillante? ¿Reservamos la vivienda?",
-                solucionador: "¿Qué servicios o características específicas de tu barrio ideal echas en falta aquí? Si buscamos este mismo nivel de vivienda en tu zona preferida, ¿cuánto presupuesto adicional tendrías que invertir? ¿Hacemos la comparativa?"
+                emocional: "Es vital estar seguro del entorno donde va a crecer tu familia. Si damos un paseo rápido por los alrededores para ver los parques, colegios y la tranquilidad del barrio, ¿te daría más paz mental?",
+                agresivo: "La casa es espectacular y la oportunidad es inmejorable. Además, el entorno está en pleno plan de desarrollo y su valor subirá rápido en dos años. Si compras hoy en un barrio al alza, ¿no estarías haciendo una jugada brillante? ¿Reservamos la vivienda?",
+                solucionador: "¿Qué servicios o características indispensables echas en falta en los alrededores? Si buscamos este mismo nivel de vivienda en el centro, ¿cuánto capital adicional tendrías que invertir? ¿Hacemos la comparativa?"
             }
         ]
     },
@@ -143,22 +142,22 @@ const SECTORS = [
                 title: "El coche eléctrico/híbrido perderá mucho valor de reventa",
                 analitico: "El ahorro mensual en combustible y mantenimiento compensa con creces cualquier depreciación teórica futura. Hagamos números: si ahorras cien euros al mes en gasolina, son casi cinco mil euros en cuatro años. ¿Comenzamos con la reserva de la unidad?",
                 emocional: "Si estructuramos la operación con un sistema de multi-opción para que decidas si te lo quedas, lo devuelves o lo cambias al terminar el contrato, ¿te daría la tranquilidad de no arriesgar tu capital? ¿Hacemos la prueba?",
-                agresivo: "Los de combustión perderán aún más valor debido a las restricciones que vienen. Este modelo híbrido mantiene su demanda y te asegura libre acceso a la ciudad. Si te garantizo el valor mínimo de recompra por contrato a los cuatro años, ¿hacemos el pedido hoy?",
-                solucionador: "¿Cuánto gastas al mes en combustible y reparaciones con tu vehículo actual? Si sustituimos ese gasto por el ahorro del híbrido, ¿cuánto dinero estarías recuperando cada mes? ¿Hacemos una prueba de conducción esta tarde?"
+                agresivo: "Los de combustión se devaluarán aún más debido a las restricciones que vienen. Este modelo de nueva tecnología mantiene su demanda y te asegura libre acceso a la ciudad. Si te garantizo el valor mínimo de recompra por contrato a los cuatro años, ¿hacemos el pedido hoy?",
+                solucionador: "¿Cuánto gastas al mes en combustible y reparaciones con tu vehículo actual? Si sustituimos ese gasto por el ahorro del motor moderno, ¿cuánto dinero estarías recuperando cada mes? ¿Hacemos una prueba de conducción esta tarde?"
             },
             {
                 title: "Las cuotas mensuales son demasiado elevadas",
-                analitico: "Si calculas la cuota diaria, verás que equivale a tomar un par de cafés al día por tener un coche con garantía total y cero problemas de taller. Es una inversión en tu tranquilidad diaria. ¿Te parece si hacemos la simulación con diferentes plazos?",
-                emocional: "Asumir un pago mensual alto genera estrés, lo sé. Si ajustamos el pago inicial o la cuota final para que el recibo mensual encaje perfectamente en tus gastos actuales sin agobios, ¿darías el paso con este modelo?",
-                agresivo: "La calidad, seguridad y fiabilidad tienen un precio. No reduzcas tu comodidad por una cuota, mejor adaptemos el plazo financiero a tu medida para que conduzcas el coche que de verdad quieres. ¿Procedemos a calcular la financiación a tu medida?",
-                solucionador: "Si tu coche actual sufre una avería grave el próximo mes, ¿cuánto te costará repararlo de golpe? Con esta cuota fija tienes todo incluido y te olvidas de imprevistos. ¿Revisamos las opciones financieras para optimizar el pago?"
+                analitico: "Si calculas el coste por día, verás que equivale a tomar un par de cafés por tener un coche con garantía total y cero problemas de taller. Es una inversión en tu tranquilidad. ¿Te parece si hacemos la simulación con diferentes plazos?",
+                emocional: "Asumir un compromiso financiero elevado genera estrés. Si ajustamos la aportación inicial o el valor futuro para que el recibo encaje perfectamente en tus gastos actuales sin agobios, ¿darías el paso con este modelo?",
+                agresivo: "La calidad, seguridad y fiabilidad tienen un valor. No reduzcas tu comodidad por un número mensual, mejor adaptemos el plazo financiero a tu medida para que conduzcas el coche que de verdad quieres. ¿Procedemos a calcular la financiación?",
+                solucionador: "Si tu coche actual sufre una avería grave el próximo mes, ¿cuánto te costará repararlo de golpe? Con esta mensualidad fija tienes todo incluido y te olvidas de imprevistos. ¿Revisamos las opciones financieras para optimizar?"
             },
             {
                 title: "Tengo que mirar otras opciones antes de decidirme",
-                analitico: "Si analizas la relación entre equipamiento, seguridad y la oferta de financiación que tenemos activa hoy, verás que no hay alternativa comparable en {sector}. Si dejas una reserva reembolsable hoy, aseguras este precio exclusivo mientras lo piensas. ¿Hacemos el depósito?",
-                emocional: "Es una decisión importante y quieres estar seguro de no equivocarte. ¿Qué equipamiento o precio específico necesitas encontrar en otros vehículos para convencerte de que este es el tuyo? ¿Lo configuramos juntos?",
-                agresivo: "Compara lo que quieras, pero sabes que este modelo te ha hecho sonreír al conducirlo. El tiempo que vas a perder yendo a otros concesionarios vale más que cualquier pequeña diferencia que puedas encontrar. ¿Reservamos esta unidad antes de que se la quede otro comprador?",
-                solucionador: "¿Qué características de este modelo son indispensables para tu rutina diaria? Si al volver el coche ya se ha vendido, ¿cuánto tiempo estarías dispuesto a esperar a que llegue otra unidad igual de fábrica? ¿Cerramos la reserva hoy?"
+                analitico: "Si analizas la relación entre equipamiento, seguridad y la oferta de financiación que tenemos activa hoy, verás que no hay alternativa comparable. Si dejas una reserva reembolsable hoy, aseguras este valor exclusivo mientras lo piensas. ¿Hacemos el depósito?",
+                emocional: "Es una decisión importante y quieres estar seguro de no equivocarte. ¿Qué equipamiento o condiciones específicas necesitas encontrar en otros vehículos para convencerte de que este es el tuyo? ¿Lo configuramos juntos?",
+                agresivo: "Compara lo que quieras, pero sabes que este modelo te ha hecho sonreír al conducirlo. El tiempo que vas a perder yendo a otros lugares vale más que cualquier pequeña diferencia que puedas encontrar. ¿Reservamos esta unidad antes de que se la quede otro comprador?",
+                solucionador: "¿Qué características de este modelo son indispensables para tu rutina diaria? Si al volver ya se ha vendido, ¿cuánto tiempo estarías dispuesto a esperar a que llegue otra unidad igual de fábrica? ¿Cerramos la reserva hoy?"
             }
         ]
     },
@@ -171,21 +170,21 @@ const SECTORS = [
                 title: "No podéis garantizarnos un ROI exacto por contrato",
                 analitico: "Nuestro histórico muestra un retorno medio de tres a uno en los primeros seis meses. Si invertimos diez mil y recuperamos treinta mil, la lógica de negocio es clara. ¿Tiene sentido que iniciemos la primera fase de análisis técnico esta semana?",
                 emocional: "Parece que te preocupa contratar un servicio y tener que justificar una mala inversión ante tu junta. Si definimos métricas de éxito y KPIs mensuales para que audites nuestro trabajo de forma transparente, ¿te daría la seguridad necesaria para empezar?",
-                agresivo: "Nadie serio en consultoría de {sector} te va a garantizar un retorno de inversión exacto debido a las variables del mercado. Lo que sí te garantizo es nuestro método y el histórico de resultados con clientes similares. ¿Firmamos el piloto por fases y empezamos a mejorar tus números esta semana?",
-                solucionador: "¿Qué coste mensual tiene para vuestra empresa mantener la fuga de eficiencia que detectamos en la auditoría? Si no solucionamos ese problema hoy, ¿cuánto dinero habréis desperdiciado a fin de año? ¿Comenzamos con la fase de diagnóstico?"
+                agresivo: "Cualquiera que te prometa rentabilidad exacta por escrito miente debido a las variables del mercado. Lo que nosotros ponemos sobre la mesa es un método y el histórico de resultados con clientes similares. ¿Firmamos el piloto por fases y empezamos a mejorar tus números esta semana?",
+                solucionador: "¿Qué impacto mensual tiene para vuestra empresa mantener la fuga de eficiencia que detectamos en la auditoría? Si no solucionamos ese problema hoy, ¿cuánto capital habréis desperdiciado a fin de año? ¿Comenzamos con la fase de diagnóstico?"
             },
             {
                 title: "Ya trabajamos con otra agencia/proveedor y nos va bien",
                 analitico: "Si realizamos una auditoría rápida de diez minutos sin coste que demuestre que podemos mejorar el rendimiento actual un veinte por ciento con {product}, ¿no tendrías la obligación profesional de evaluarlo? ¿Agendamos la llamada de análisis técnico?",
-                emocional: "Sé que valoras la lealtad con tu proveedor actual y no quieres generar tensiones innecesarias. Si planteamos una colaboración complementaria para un área específica donde ellos no tengan cobertura, ¿estarías dispuesto a ver la diferencia?",
+                emocional: "Sé que valoras la lealtad de las relaciones comerciales a largo plazo. Si planteamos una colaboración complementaria para un área específica donde no tengáis cobertura hoy, ¿estarías dispuesto a ver la diferencia?",
                 agresivo: "Ir 'bien' es el enemigo de ir excelente. Tu competencia no se va a conformar con un rendimiento aceptable y tú tampoco deberías hacerlo. Te propongo que nos des un proyecto piloto pequeño para comparar resultados directamente. ¿Comenzamos con el contrato del piloto?",
-                solucionador: "¿Qué limitaciones o plazos de entrega incumplidos habéis detectado con vuestro proveedor en los últimos meses? Si esas ineficiencias se continúan a largo plazo, ¿cómo afectarán a vuestros proyectos clave? ¿Probamos nuestro soporte especializado?"
+                solucionador: "¿Qué limitaciones o retrasos habéis detectado en vuestras campañas en los últimos meses? Si esas ineficiencias continúan a largo plazo, ¿cómo afectarán a vuestros proyectos clave? ¿Probamos nuestro soporte especializado?"
             },
             {
                 title: "Vuestra propuesta parece muy genérica para nuestro negocio",
                 analitico: "Este borrador es solo el marco de trabajo. Si decidimos avanzar hoy, el primer paso será realizar dos talleres técnicos de inmersión para tallar a medida vuestra hoja de ruta. ¿Te parece si agendamos la primera sesión para el lunes?",
-                emocional: "Te preocupa recibir una solución enlatada que no entienda las particularidades de tu equipo, lo comprendo perfectamente. ¿Qué aspectos específicos de vuestro flujo de trabajo en {sector} deberíamos priorizar en el diseño final para darte total tranquilidad? ¿Lo definimos ahora?",
-                agresivo: "Las bases de una estrategia sólida en {sector} son universales, lo que cambia es la velocidad y calidad de la ejecución. En {product} adaptamos la implementación a tu modelo operativo real en la primera semana de trabajo. ¿Firmamos el acuerdo marco y definimos los detalles del plan mañana?",
+                emocional: "El éxito de este proyecto reside en entender las particularidades de tu equipo. ¿Qué aspectos específicos de vuestro flujo de trabajo deberíamos priorizar en el diseño final? ¿Lo definimos ahora?",
+                agresivo: "Las bases de una estrategia sólida son universales, lo que cambia es la velocidad y calidad de la ejecución. En {product} adaptamos la implementación a tu modelo operativo real en la primera semana de trabajo. ¿Firmamos el acuerdo marco y definimos los detalles del plan mañana?",
                 solucionador: "¿Qué consecuencias tendría para vuestra eficiencia operativa implantar una solución que no respete vuestros procesos internos? Si diseñamos juntos un flujo adaptado a vuestros objetivos de negocio, ¿crees que facilitaría el trabajo de tu equipo? ¿Comenzamos?"
             }
         ]
@@ -197,23 +196,23 @@ const SECTORS = [
         objections: [
             {
                 title: "Ya tengo una póliza básica y no quiero gastar más",
-                analitico: "Por solo un diez por ciento más de cuota con {product}, eliminas el noventa por ciento de los riesgos financieros a los que estás expuesto. La relación coste-beneficio es incuestionable. ¿Revisamos la comparativa de coberturas detallada para que veas la diferencia?",
-                emocional: "Te preocupa gastar dinero en coberturas que tal vez nunca uses, lo entiendo. Pero si mañana ocurre un imprevisto grave, ¿cómo afectaría a tus planes familiares tener que costearlo tú solo? ¿No sería mejor transferir ese riesgo hoy?",
-                agresivo: "Una póliza básica te da una falsa sensación de seguridad, pero el riesgo real aparece cuando ocurre un siniestro no cubierto y debes pagar miles de euros de tu bolsillo. La tranquilidad de tu familia no es algo en lo que debas escatimar unos pocos euros al mes. ¿Dejamos activa la cobertura ampliada hoy?",
-                solucionador: "Si sufrieras una baja laboral prolongada y tus ingresos se reduceran a la mitad, ¿de qué recursos dispondrías para pagar la hipoteca? Con esta póliza blindamos tus ingresos familiares ante cualquier eventualidad. ¿Hacemos el estudio de viabilidad esta tarde?"
+                analitico: "Por solo un diez por ciento más con {product}, eliminas el noventa por ciento de los riesgos financieros a los que estás expuesto. La relación coste-beneficio es incuestionable. ¿Revisamos la comparativa de coberturas detallada para que veas la diferencia?",
+                emocional: "Si mañana ocurre un imprevisto grave, ¿cómo afectaría a tus planes familiares tener que costearlo tú solo? ¿No sería mejor transferir ese riesgo hoy?",
+                agresivo: "Un contrato mínimo te da una falsa sensación de seguridad, pero el riesgo real aparece cuando ocurre un siniestro no cubierto y debes pagar miles de euros de tu bolsillo. La tranquilidad de tu familia no es algo en lo que debas escatimar unos pocos euros al mes. ¿Dejamos activa la cobertura ampliada hoy?",
+                solucionador: "Si sufrieras una baja laboral prolongada y tus ingresos se redujeran a la mitad, ¿de qué recursos dispondrías para pagar la hipoteca? Con esta cobertura blindamos tus ingresos familiares ante cualquier eventualidad. ¿Hacemos el estudio de viabilidad esta tarde?"
             },
             {
                 title: "No confío en que las aseguradoras paguen cuando pase algo",
-                analitico: "{product} cuenta con un índice de resolución favorable del noventa y ocho por ciento auditado por organismos reguladores de {sector}. Si redactamos una cláusula clara con las coberturas detalladas y firmadas, ¿estarías dispuesto a formalizar tu póliza?",
-                emocional: "Parece que has tenido malas experiencias previas y te preocupa sentirte desamparado al reclamar una cobertura. Si yo me comprometo a ser tu asesor personal directo para realizar cualquier trámite si algo ocurre, ¿te daría la seguridad necesaria?",
-                agresivo: "La desconfianza es normal si compras a través de un contestador automático, pero aquí cuentas con mi respaldo profesional directo y un contrato transparente sin letra pequeña. Mi trabajo es asegurar que la compañía responda de inmediato cuando lo necesites. ¿Cerramos el acuerdo de la póliza hoy?",
+                analitico: "{product} cuenta con un índice de resolución favorable del noventa y ocho por ciento auditado por organismos reguladores. Si redactamos una cláusula clara con las coberturas detalladas y firmadas, ¿estarías dispuesto a formalizar tu póliza?",
+                emocional: "Cuando has tenido incidentes en el pasado donde no respondieron, es normal ser escéptico. Si yo me comprometo a ser tu asesor personal directo para gestionar cualquier trámite en tu nombre, ¿te daría la seguridad necesaria?",
+                agresivo: "Es comprensible dudar cuando compras a través de un contestador automático, pero aquí cuentas con mi respaldo directo y un contrato sin letra pequeña. Mi trabajo es asegurar que la compañía responda de inmediato cuando lo necesites. ¿Cerramos el acuerdo hoy?",
                 solucionador: "¿Qué consecuencias económicas tendrías que afrontar si ocurre un siniestro grave y no cuentas con un respaldo financiero sólido? Si repasamos juntos las garantías legales de este contrato para que compruebes las condiciones de pago, ¿te ayudaría a decidir? ¿Empezamos por ahí?"
             },
             {
                 title: "Todavía soy joven y saludable, no necesito esto ahora",
-                analitico: "Las aseguradoras ofrecen las tarifas más bajas y sin exclusiones médicas precisamente cuando estás sano. Esperar a enfermarte hará que te cueste el triple. ¿Hacemos el cálculo de tu tarifa preferencial congelada a largo plazo?",
-                emocional: "Ahora que estás sano y fuerte sientes que contratar un seguro es tirar el dinero, lo comprendo. Pero, ¿qué pasaría si un accidente deportivo te obliga a parar y tu trabajo se ve afectado? ¿No prefieres tener una red de seguridad desde ya?",
-                agresivo: "La salud no se puede comprar una vez que se ha perdido, y esperar a tener un problema médico solo hará que la póliza sea mucho más cara o que te rechacen. Contratar hoy es una muestra de previsión financiera inteligente. ¿Dejamos tu cobertura activa para proteger tu futuro?",
+                analitico: "Las compañías del sector ofrecen las tarifas más bajas precisamente antes de que aparezcan los problemas de salud. Esperar a mañana hará que te cueste el triple. ¿Hacemos el cálculo de tu tarifa preferencial congelada a largo plazo?",
+                emocional: "Es normal sentirse invencible ahora. Pero, ¿qué pasaría si un accidente deportivo te obliga a parar y tu fuente de ingresos se ve afectado? ¿No prefieres tener una red de seguridad desde ya?",
+                agresivo: "El momento de proteger tu patrimonio es antes de que ocurra la tormenta, no después. Tomar acción hoy es una muestra de previsión financiera inteligente. ¿Dejamos tu cobertura activa para proteger tu futuro?",
                 solucionador: "Si sufrieras una lesión imprevista que requiriera cirugía inmediata, ¿cuánto tiempo de espera podrías permitirte en la sanidad pública? Si con {product} accedes a especialistas privados en veinticuatro horas, ¿no merecería la pena la inversión? ¿Te parece bien?"
             }
         ]
@@ -227,21 +226,21 @@ const SECTORS = [
                 title: "Puedo encontrar un producto similar online más barato",
                 analitico: "Esta pieza de edición limitada mantiene e incrementa su valor de tasación un cinco por ciento anual debido a su escasez. No es un gasto efímero, es un activo estético tangible. ¿Quieres que preparemos la compra como inversión patrimonial?",
                 emocional: "Te preocupa pagar un sobreprecio injustificado por la marca en lugar de por el valor real del producto. Si aprecias el tacto de este cuero italiano y la costura artesanal hecha a mano, verás que la diferencia es abismal. ¿Te gustaría probártela de nuevo?",
-                agresivo: "Claro que hay cosas más baratas online, pero tú no buscas lo común. Aquí estás adquiriendo estatus, costura artesanal y la autenticidad de una pieza de colección original. El lujo no se compara con la gama baja. ¿Te la empaquetamos para que la disfrutes hoy?",
-                solucionador: "Si optas por una imitación más barata en {sector} y se deteriora en pocos meses, ¿qué imagen proyectarás y cuánto habrás gastado al tener que reemplazarla? Adquirir la pieza original te garantiza durabilidad de por vida. ¿La preparamos para ti?"
+                agresivo: "En el mercado abunda lo genérico, pero tú no buscas lo común. Aquí estás adquiriendo estatus, costura artesanal y la autenticidad de una pieza de colección original. El valor real no se compara con la gama baja. ¿Te la empaquetamos para que la disfrutes hoy?",
+                solucionador: "Si optas por una alternativa de bajo coste y se deteriora en pocos meses, ¿qué imagen proyectarás y cuánto habrás gastado al tener que reemplazarla? Adquirir la pieza original te garantiza durabilidad de por vida. ¿La preparamos para ti?"
             },
             {
                 title: "Solo estoy mirando de momento, no voy a comprar hoy",
                 analitico: "Al ser una edición limitada en {sector}, solo nos quedan dos piezas disponibles en stock europeo. Si de verdad te interesa, podemos hacer una reserva provisional de veinticuatro horas sin coste para asegurar que no te quedes sin ella. ¿Te parece una buena idea?",
                 emocional: "La colección es para admirarla sin presiones, tómate tu tiempo. Pero si te pruebas la pieza simplemente para apreciar la caída del material sobre tu piel, sin compromiso hoy, ¿te parecería una buena experiencia?",
-                agresivo: "Mirar es un placer, pero cuando encuentras la pieza perfecta que resalta tu estilo, posponer la decisión no tiene sentido. Te has ganado el derecho a disfrutar de este premio por tu esfuerzo personal. ¿La añadimos a tu colección y preparamos la entrega hoy?",
+                agresivo: "Cuando encuentras la pieza perfecta que resalta tu estilo, posponer la decisión no tiene sentido. Te has ganado el derecho a disfrutar de este premio por tu esfuerzo personal. ¿La añadimos a tu colección y preparamos la entrega hoy?",
                 solucionador: "Si decides esperar y cuando regreses esta pieza de edición limitada ya se ha agotado, ¿cómo te sentirías al haber perdido la oportunidad? Si verificamos la disponibilidad de tu talla en este momento para evitar que te quedes sin ella, ¿lo comprobamos?"
             },
             {
                 title: "La marca tiene prestigio, pero el precio es desorbitado",
                 analitico: "La escasez de producción y el coste de los materiales nobles justifican el valor de mercado de esta pieza. Además, su valor de tasación tiende a subir a largo plazo. ¿Quieres que preparemos la compra?",
-                emocional: "Te preocupa estar pagando solo por el renombre de la marca en lugar de por la calidad y exclusividad reales de la pieza. Si te muestro el proceso de confección artesanal que lleva más de ochenta horas de trabajo, ¿te ayudaría a valorar su coste?",
-                agresivo: "El precio es elevado porque el prestigio y la exclusividad que aporta esta marca son de primer nivel. No estás adquiriendo un simple producto, sino un símbolo del éxito que has alcanzado en tu carrera. ¿Estarías de acuerdo en darte este capricho hoy?",
+                emocional: "Te preocupa estar pagando un sobreprecio injustificado en lugar de valorar la calidad y exclusividad reales de la pieza. Si te muestro el proceso de confección artesanal que lleva más de ochenta horas de trabajo, ¿te ayudaría a valorar su coste?",
+                agresivo: "El valor es elevado porque el estatus y la exclusividad de esta pieza son de primer nivel. No estás adquiriendo un simple producto, sino un símbolo del éxito que has alcanzado en tu carrera. ¿Estarías de acuerdo en darte este capricho hoy?",
                 solucionador: "¿Qué valor le das al prestigio que te acompañará al lucir esta pieza en tus eventos profesionales de {sector}? Si esta adquisición representa un activo que mantendrá su valor a largo plazo, ¿no crees que justifica la inversión? ¿Iniciamos el trámite?"
             }
         ]
@@ -2001,6 +2000,7 @@ Tu misión:
    - Enfoque Solucionador (Diagnóstico profundo y preguntas consultivas).
 3. Escribe la justificación pedagógica breve de por qué elegiste este perfil (ej: "El cliente expresa dudas sobre... por tanto...").
 4. Genera una respuesta exacta (guión de Closer Élite) en español que use el ADN Élite (regla 70/30, curiosidad genuina, no afirmar si se puede preguntar, y un cierre parcial o llamado a la acción de alta certeza).
+   REGLA DE ORO DE UN CERRADOR TIBURÓN: El guión de respuesta exacto ('script') NUNCA, bajo ningún concepto, debe repetir, validar o hacer eco de las palabras clave o sinónimos de la objeción del cliente (por ejemplo, si la objeción del cliente es 'es muy caro', el script NUNCA debe incluir términos como 'caro', 'precio', 'coste' o 'presupuesto' de forma defensiva; debe ir de inmediato a reencuadrar con valor, retorno de inversión o una pregunta de contraste de Chris Voss). Repetir la objeción es un error de novato. Muéstrate como el mayor tiburón de las ventas que ha existido: asertivo y con total convicción.
 5. Proporciona el Radar de Empatía (qué piensa subconscientemente el prospecto).
 6. Proporciona el Consejo de Mentor.
 7. Explica qué error clásico cometería el Vendedor Promedio en esta situación específica.
@@ -2621,9 +2621,9 @@ INSTRUCCIONES DE AUDITORÍA (APLICA ESTRICTAMENTE EL ADN DEL CLOSER ÉLITE):
 2. Evalúa 4 métricas (de 0 a 100):
    - Empatía Táctica (¿comprendió el miedo subyacente y dolor real del cliente o repitió la objeción y habló de características? ¿Etiquetó las emociones?).
    - Control del Diálogo (¿siguió la regla del 70/30 hablando solo el 30% y guio con preguntas correctas, o soltó monólogos e intentó convencer?).
-   - Resolución de Objeciones (¿reencuadró el problema mostrando una nueva perspectiva o defendió el precio/producto con desesperación y frases robóticas?).
+   - Resolución de Objeciones (¿reencuadró el problema mostrando una nueva perspectiva o defendió el precio/producto con desesperación y frases robóticas? CRÍTICO: Si el vendedor cometió el error amateur de repetir o validar la objeción del cliente utilizando sus palabras clave —por ejemplo, diciendo "sé que es caro" o "entiendo que el coste es alto" ante una objeción de precio— penaliza fuertemente esta métrica restando al menos 25 puntos. Un cerrador tiburón NUNCA repite la objeción).
    - Cierre de Oro (¿consiguió micro-compromisos y Cierres Parciales -de Problema, Criterio, Valor y Lógica- durante toda la llamada, o esperó de forma pasiva al final para presionar de golpe?).
-3. Genera una crítica en tu estilo característico de Carlos. Sé directo y ácido. Si el vendedor cometió un error (como hablar demasiado, rellenar silencios, sonar falso/robótico, o usar frases prohibidas como "¿Qué le parece?", "Entiendo perfectamente que..." o "Somos los mejores"), dilo claramente y cítalo: "Dijiste '[cita]' y eso mató la llamada. Debiste haber dicho...".
+3. Genera una crítica en tu estilo característico de Carlos. Sé directo y ácido. Si el vendedor cometió un error (como hablar demasiado, rellenar silencios, sonar falso/robótico, usar frases prohibidas, o cometer el error amateur de repetir los términos de la objeción del cliente en su respuesta), dilo claramente y cítalo: "Dijiste '[cita]' y eso mató la llamada porque repetiste la objeción como un novato. Debiste haber dicho...".
 4. Devuelve la respuesta en formato JSON estrictamente válido. No incluyas markdown (como bloques de código \`\`\`json), comentarios, ni texto fuera del objeto JSON. El formato debe ser exactamente:
 {
   "score": <número>,
