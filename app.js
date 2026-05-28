@@ -2030,7 +2030,7 @@ Devuelve la respuesta en formato JSON estrictamente válido. No devuelvas ningú
 
         if (!response.ok) {
             const errData = await response.json();
-            throw new Error(errData.error?.message || `HTTP ${response.status}`);
+            throw new Error(errData.error?.message || errData.error || `HTTP ${response.status}`);
         }
 
         const data = await response.json();
@@ -2556,8 +2556,8 @@ REGLAS ABSOLUTAS DE COMPORTAMIENTO:
             let errorMsg = `HTTP ${response.status}`;
             try {
                 const errData = await response.json();
-                if (errData.error?.message) {
-                    errorMsg = errData.error.message;
+                if (errData.error) {
+                    errorMsg = typeof errData.error === 'object' ? (errData.error.message || JSON.stringify(errData.error)) : errData.error;
                 }
             } catch (e) {}
             throw new Error(errorMsg);
@@ -2654,8 +2654,8 @@ INSTRUCCIONES DE AUDITORÍA (APLICA ESTRICTAMENTE EL ADN DEL CLOSER ÉLITE):
             let errorMsg = `HTTP ${response.status}`;
             try {
                 const errData = await response.json();
-                if (errData.error?.message) {
-                    errorMsg = errData.error.message;
+                if (errData.error) {
+                    errorMsg = typeof errData.error === 'object' ? (errData.error.message || JSON.stringify(errData.error)) : errData.error;
                 }
             } catch (e) {}
             throw new Error(errorMsg);
@@ -2811,8 +2811,8 @@ async function testGeminiApiKey(apiKey, statusElementId) {
             let errorDetails = `HTTP ${response.status}`;
             try {
                 const errData = await response.json();
-                if (errData.error?.message) {
-                    errorDetails = errData.error.message;
+                if (errData.error) {
+                    errorDetails = typeof errData.error === 'object' ? (errData.error.message || JSON.stringify(errData.error)) : errData.error;
                 }
             } catch (e) {}
             throw new Error(errorDetails);
