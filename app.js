@@ -912,21 +912,7 @@ function setupEventListeners() {
         });
     }
 
-    // Objection Tab Switches
-    document.querySelectorAll(".tab-btn").forEach(button => {
-        button.addEventListener("click", () => {
-            document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
-            button.classList.add("active");
-            
-            const tabId = button.dataset.tab;
-            app.state.activeTab = tabId;
-            
-            document.querySelectorAll(".tab-content").forEach(content => {
-                content.classList.remove("active");
-            });
-            document.getElementById(`tab-${tabId}`).classList.add("active");
-        });
-    });
+    // Objection Tab Switches removed (hybrid model now auto-detects profile)
 
     // Copilot Configuration: Sector Select
     const copilotSectorSelect = document.getElementById("copilot-sector-select");
@@ -1463,6 +1449,12 @@ function renderObjections() {
         listContainer.appendChild(btn);
     });
     
+    updateActiveObjectionDisplay();
+});
+        
+        listContainer.appendChild(btn);
+    });
+    
     // Set the correct active tab in the DOM according to the state
     const activeTab = app.state.activeTab || "agresivo";
     document.querySelectorAll(".tab-btn").forEach(btn => {
@@ -1605,37 +1597,65 @@ function updateActiveObjectionDisplay() {
             .replace(/{sector}/g, app.currentSector ? app.currentSector.name : "tu sector");
     };
 
-    const scriptAgresivo = document.getElementById("script-agresivo-text");
-    const scriptEmocional = document.getElementById("script-emocional-text");
-    const scriptAnalitico = document.getElementById("script-analitico-text");
-    const scriptSolucionador = document.getElementById("script-solucionador-text");
+    const title = obj.title.toLowerCase();
+    
+    // Automatic local fallback detection of profile based on keywords
+    const isPrice = title.includes("caro") || title.includes("presupuesto") || title.includes("dinero") || title.includes("cuota") || title.includes("precio") || title.includes("gastar") || title.includes("gastas") || title.includes("coste") || title.includes("euros");
+    const isTimeOrDecision = title.includes("tiempo") || title.includes("pareja") || title.includes("socio") || title.includes("mirar") || title.includes("hoy") || title.includes("decidir") || title.includes("momento") || title.includes("esperar");
+    const isTechnicalOrTrust = title.includes("integrar") || title.includes("zona") || title.includes("eléctrico") || title.includes("similar") || title.includes("proveedor") || title.includes("genérica") || title.includes("garantizar") || title.includes("aseguradoras") || title.includes("confío") || title.includes("saludable") || title.includes("marca");
 
-    if (scriptAgresivo) scriptAgresivo.innerText = compile(obj.agresivo);
-    if (scriptEmocional) scriptEmocional.innerText = compile(obj.emocional);
-    if (scriptAnalitico) scriptAnalitico.innerText = compile(obj.analitico);
-    if (scriptSolucionador) scriptSolucionador.innerText = compile(obj.solucionador);
+    let profileId = "emocional";
+    let profileName = "Relacional 🧡";
+    let approachName = "Rapport Táctico / Empatía Emocional";
+    let why = "La objeción denota una barrera general de desconfianza o inercia emocional. Carlos elige el enfoque emocional para calmar los miedos, validar la situación con empatía táctica y crear rapport.";
+    let averageError = "Decir 'entiendo perfectamente que te parezca caro, somos los mejores' o rellenar de inmediato el silencio por pura incomodidad, regalando el control de la llamada.";
 
-    // Update Empathy Radar
-    const radarAgresivo = document.getElementById("empathy-radar-agresivo-text");
-    const radarEmocional = document.getElementById("empathy-radar-emocional-text");
-    const radarAnalitico = document.getElementById("empathy-radar-analitico-text");
-    const radarSolucionador = document.getElementById("empathy-radar-solucionador-text");
+    if (isPrice) {
+        profileId = "analitico";
+        profileName = "Analítico 📊";
+        approachName = "McKinsey / Datos & ROI";
+        why = "El prospecto expresa una preocupación financiera o presupuestaria. El Closer Élite sabe que la objeción de precio es en realidad una falta de certeza en el valor. Por eso, Carlos elige el enfoque analítico para desglosar el retorno de inversión y mitigar el riesgo.";
+        averageError = "Hacer afirmaciones vacías, decir que vuestro producto es 'el más barato' en lugar de mostrar el retorno financiero real, o justificar el precio sin hacer preguntas de contraste.";
+    } else if (isTimeOrDecision) {
+        profileId = "agresivo";
+        profileName = "Directo 💥";
+        approachName = "Cierre Directo / Alta Convicción";
+        why = "El cliente pide tiempo o quiere consultarlo, lo cual es una excusa típica para ocultar la falta de confianza o el miedo a tomar decisiones. Carlos selecciona el enfoque de cierre directo para empujar asertivamente y generar la urgencia de resolverlo hoy.";
+        averageError = "Discutir con el cliente, intentar imponer tu punto de vista de forma descortés o rendirte rápido regalando una cita para 'otro día' en la que nunca se presentará.";
+    } else if (isTechnicalOrTrust) {
+        profileId = "solucionador";
+        profileName = "Solucionador 🛠️";
+        approachName = "Diagnóstico Operativo / Consultivo";
+        why = "El prospecto duda de la viabilidad técnica o de la credibilidad frente a competidores. Carlos elige el enfoque de solucionador consultivo para diagnosticar a fondo sus fricciones actuales y ofrecer soluciones por contrato.";
+        averageError = "Atacar al proveedor actual del cliente (lo cual invalida su decisión anterior), o recetar la solución de inmediato sin hacer un diagnóstico riguso de su dolor operativo.";
+    }
 
-    if (radarAgresivo) radarAgresivo.innerHTML = getEmpathyRadar("agresivo", obj.title);
-    if (radarEmocional) radarEmocional.innerHTML = getEmpathyRadar("emocional", obj.title);
-    if (radarAnalitico) radarAnalitico.innerHTML = getEmpathyRadar("analitico", obj.title);
-    if (radarSolucionador) radarSolucionador.innerHTML = getEmpathyRadar("solucionador", obj.title);
+    // Update UI elements
+    const badgeEl = document.getElementById("detected-profile-badge");
+    const whyEl = document.getElementById("detected-profile-why");
+    const scriptEl = document.getElementById("suggested-script-text");
+    const radarEl = document.getElementById("empathy-radar-text");
+    const wisdomEl = document.getElementById("mentor-wisdom-text");
+    const errorEl = document.getElementById("vendedor-promedio-error-text");
+    const alertContainer = document.getElementById("vendedor-promedio-alert-container");
 
-    // Update Mentor Wisdom
-    const wisdomAgresivo = document.getElementById("mentor-wisdom-agresivo-text");
-    const wisdomEmocional = document.getElementById("mentor-wisdom-emocional-text");
-    const wisdomAnalitico = document.getElementById("mentor-wisdom-analitico-text");
-    const wisdomSolucionador = document.getElementById("mentor-wisdom-solucionador-text");
+    if (badgeEl) badgeEl.innerText = `${profileName} - ${approachName}`;
+    if (whyEl) whyEl.innerText = why;
+    
+    // Pre-configured scripts fallbacks
+    let fallbackScript = "";
+    if (profileId === "analitico") fallbackScript = obj.analitico;
+    else if (profileId === "agresivo") fallbackScript = obj.agresivo;
+    else if (profileId === "solucionador") fallbackScript = obj.solucionador;
+    else fallbackScript = obj.emocional;
 
-    if (wisdomAgresivo) wisdomAgresivo.innerHTML = getMentorWisdom("agresivo", obj.title);
-    if (wisdomEmocional) wisdomEmocional.innerHTML = getMentorWisdom("emocional", obj.title);
-    if (wisdomAnalitico) wisdomAnalitico.innerHTML = getMentorWisdom("analitico", obj.title);
-    if (wisdomSolucionador) wisdomSolucionador.innerHTML = getMentorWisdom("solucionador", obj.title);
+    if (scriptEl) scriptEl.innerText = compile(fallbackScript);
+    
+    if (radarEl) radarEl.innerHTML = getEmpathyRadar(profileId, obj.title);
+    if (wisdomEl) wisdomEl.innerHTML = getMentorWisdom(profileId, obj.title);
+    
+    if (errorEl) errorEl.innerText = averageError;
+    if (alertContainer) alertContainer.classList.remove("hidden");
 }
 
 
@@ -1922,7 +1942,7 @@ function showCelebrationModal(title, desc, badges = []) {
 }
 
 // 11. Utility: Generate response with Gemini API
-SalesQuest.prototype.generateAI = async function(profileId) {
+SalesQuest.prototype.generateAI = async function() {
     const apiKey = localStorage.getItem("gemini_api_key") || "";
     if (!apiKey) {
         alert("Por favor, introduce tu Clave Gemini API en el campo 'Clave Gemini' en la barra de configuración.");
@@ -1935,16 +1955,22 @@ SalesQuest.prototype.generateAI = async function(profileId) {
         return;
     }
 
-    const button = document.getElementById(`btn-gen-ai-${profileId}`);
-    const scriptEl = document.getElementById(`script-${profileId}-text`);
+    const button = document.getElementById("btn-gen-ai-copilot");
+    const scriptEl = document.getElementById("suggested-script-text");
+    const badgeEl = document.getElementById("detected-profile-badge");
+    const whyEl = document.getElementById("detected-profile-why");
+    const radarEl = document.getElementById("empathy-radar-text");
+    const wisdomEl = document.getElementById("mentor-wisdom-text");
+    const errorEl = document.getElementById("vendedor-promedio-error-text");
+    const alertContainer = document.getElementById("vendedor-promedio-alert-container");
+
     if (!button || !scriptEl) return;
 
     // Set loading state
     button.classList.add("loading");
     const originalBtnText = button.innerHTML;
-    button.innerHTML = "<span>Pensando... 🧠</span>";
-    const originalScriptText = scriptEl.innerText;
-    scriptEl.innerText = "Generando respuesta táctica con Inteligencia Artificial...";
+    button.innerHTML = "<span>Analizando... 🧠</span>";
+    scriptEl.innerText = "Carlos está analizando la objeción, detectando el perfil y eligiendo la mejor estrategia de cierre...";
 
     try {
         // Collect Call Context variables
@@ -1962,11 +1988,6 @@ SalesQuest.prototype.generateAI = async function(profileId) {
             ? this.state.previousFilters.map(f => filterNamesMap[f] || f).join(", ")
             : "Ninguno";
             
-        const perfil = this.state.detectedProfileId 
-            ? (PROFILES[this.state.detectedProfileId] ? PROFILES[this.state.detectedProfileId].name : "No perfilado")
-            : "No perfilado aún";
-            
-        // Objections history: list objections practiced so far
         const completedObjections = this.state.completedStages
             .filter(s => s.startsWith("objection-"))
             .map(s => {
@@ -1976,7 +1997,6 @@ SalesQuest.prototype.generateAI = async function(profileId) {
             })
             .filter(Boolean);
             
-        // Construct full conversation history
         let historialCompleto = "";
         if (temperatura === "Caliente") {
             historialCompleto += `Llamada con un lead caliente. Contactos y filtros anteriores: ${filtrosStr}. `;
@@ -1984,38 +2004,45 @@ SalesQuest.prototype.generateAI = async function(profileId) {
             historialCompleto += "Llamada fría inicial (primer contacto). ";
         }
         if (completedObjections.length > 0) {
-            historialCompleto += `El cliente ha planteado y superado las siguientes objeciones anteriormente en esta llamada: ${completedObjections.join(", ")}.`;
-        } else {
-            historialCompleto += "No se han planteado objeciones anteriores en esta conversación.";
+            historialCompleto += `El cliente ya ha planteado y superado estas objeciones: ${completedObjections.join(", ")}.`;
         }
         
         const objecionActual = obj.title;
 
-        // Map active closing style
-        const enfoquesMap = {
-            agresivo: "Agresivo (Cierre Directo, asertividad y alta convicción)",
-            emocional: "Emocional (Rapport Táctico, empatía profunda de Chris Voss)",
-            analitico: "Analítico (McKinsey, lógica, números y eliminación de riesgo)",
-            solucionador: "Solucionador (Consultivo de dolor, enfoque médico)"
-        };
-        const enfoque = enfoquesMap[profileId] || profileId;
+        const prompt = `Eres Carlos, un closer de ventas con 30 años de experiencia cerrando tratos comerciales de alto nivel.
+Analiza la siguiente objeción planteada por un prospecto en el sector de ${sector} para el producto "${this.state.productName || 'nuestro servicio'}" (lead tipo: ${temperatura}, historial de contactos: ${historialCompleto}).
 
-        // Build the system prompt using templates from global PROMPTS
-        const promptTemplate = PROMPTS[profileId];
-        if (!promptTemplate) {
-            throw new Error(`Perfil de prompt no encontrado: ${profileId}`);
-        }
+Objeción del cliente: "${objecionActual}"
 
-        const prompt = promptTemplate
-            .replace(/{sector}/g, sector)
-            .replace(/{producto}/g, this.state.productName || "nuestro servicio")
-            .replace(/{temperatura}/g, temperatura)
-            .replace(/{perfil}/g, perfil)
-            .replace(/{historial_completo}/g, historialCompleto)
-            .replace(/{objecion_actual}/g, objecionActual)
-            .replace(/{enfoque}/g, enfoque);
+Tu misión:
+1. Detecta automáticamente el perfil emocional/psicológico de este prospecto basándote en la objeción:
+   - Directo (Enfocado en estatus, control, velocidad. Valora la asertividad y odia perder el tiempo).
+   - Analítico (Enfocado en ROI, datos, lógica, y eliminación de riesgo. Necesita números y garantías).
+   - Relacional (Enfocado en confianza, soporte, empatía. Valora la conexión humana y el acompañamiento).
+   - Impulsivo/Especulativo (Enfocado en exclusividad, novedad, FOMO).
+2. Elige de forma interna cuál de los 4 enfoques de Closer Élite es el óptimo para rebatir esta objeción:
+   - Enfoque Directo (Asertividad pura, reencuadre rápido de certeza).
+   - Enfoque Analítico (Desglose lógico de valor, ecuación de Hormozi y reducción de riesgo).
+   - Enfoque Emocional (Rapport táctico, validación de miedos y empatía de Chris Voss).
+   - Enfoque Solucionador (Diagnóstico profundo y preguntas consultivas).
+3. Escribe la justificación pedagógica breve de por qué elegiste este perfil (ej: "El cliente expresa dudas sobre... por tanto...").
+4. Genera una respuesta exacta (guión de Closer Élite) en español que use el ADN Élite (regla 70/30, curiosidad genuina, no afirmar si se puede preguntar, y un cierre parcial o llamado a la acción de alta certeza).
+5. Proporciona el Radar de Empatía (qué piensa subconscientemente el prospecto).
+6. Proporciona el Consejo de Mentor.
+7. Explica qué error clásico cometería el Vendedor Promedio en esta situación específica.
 
-        // Make Gemini API call (Gemini 1.5 Flash model)
+Devuelve la respuesta en formato JSON estrictamente válido. No devuelvas ningún texto adicional, comentarios, ni formato Markdown (como \`\`\`json). El formato debe ser exactamente:
+{
+  "profile": "<Nombre del perfil con emoji, ej: Directo 💥>",
+  "approach": "<Nombre del enfoque, ej: Enfoque Directo>",
+  "why": "<Explicación didáctica de 1-2 frases sobre la detección y el por qué del enfoque>",
+  "script": "<El guión de respuesta exacto en español, sin comillas externas>",
+  "radar": "<Lo que realmente piensa el cliente en su mente>",
+  "wisdom": "<Sabiduría del mentor de ventas para el vendedor>",
+  "vendedor_promedio": "<El error del vendedor promedio que debe evitarse>"
+}`;
+
+        // Make Gemini API call
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
             method: "POST",
             headers: {
@@ -2027,7 +2054,7 @@ SalesQuest.prototype.generateAI = async function(profileId) {
                 }],
                 generationConfig: {
                     temperature: 0.7,
-                    maxOutputTokens: 300
+                    maxOutputTokens: 600
                 }
             })
         });
@@ -2044,22 +2071,39 @@ SalesQuest.prototype.generateAI = async function(profileId) {
         }
 
         // Clean quotes and markdown from AI response
-        aiResult = aiResult.trim()
-            .replace(/^["'«`]+/, "")
-            .replace(/["'»`]+$/, "")
-            .trim();
+        let cleanJson = aiResult.trim();
+        if (cleanJson.includes("```")) {
+            const startIdx = cleanJson.indexOf("{");
+            const endIdx = cleanJson.lastIndexOf("}");
+            if (startIdx !== -1 && endIdx !== -1) {
+                cleanJson = cleanJson.substring(startIdx, endIdx + 1);
+            }
+        }
 
-        // Inject the product/sector variables if Gemini returned them unresolved
-        aiResult = aiResult
+        const evalData = JSON.parse(cleanJson);
+
+        // Update UI
+        if (badgeEl) badgeEl.innerText = `${evalData.profile || 'Perfil Detectado'} - ${evalData.approach || 'Enfoque Sugerido'}`;
+        if (whyEl) whyEl.innerText = evalData.why || '';
+        
+        let finalScript = evalData.script || '';
+        finalScript = finalScript
             .replace(/{producto}/g, this.state.productName || "nuestro servicio")
             .replace(/{product}/g, this.state.productName || "nuestro servicio")
             .replace(/{sector}/g, sector);
+        if (scriptEl) scriptEl.innerText = finalScript;
 
-        scriptEl.innerText = aiResult;
+        if (radarEl) radarEl.innerText = evalData.radar || '';
+        if (wisdomEl) wisdomEl.innerText = evalData.wisdom || '';
+        
+        if (errorEl) errorEl.innerText = evalData.vendedor_promedio || '';
+        if (alertContainer) alertContainer.classList.remove("hidden");
+
     } catch (error) {
-        console.error("Gemini API Error:", error);
-        alert(`Error al generar con IA: ${error.message}`);
-        scriptEl.innerText = originalScriptText;
+        console.error("Gemini API Error in Copilot:", error);
+        alert(`Error al generar análisis con IA: ${error.message}`);
+        // Fallback to local rendering on error
+        updateActiveObjectionDisplay();
     } finally {
         button.classList.remove("loading");
         button.innerHTML = originalBtnText;

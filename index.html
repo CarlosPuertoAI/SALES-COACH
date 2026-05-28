@@ -270,159 +270,55 @@
                             <h3 id="current-objection-title">Selecciona una objeción</h3>
                         </div>
 
-                        <!-- Response Tabs (Persuasion Profiles) -->
-                        <div class="response-tabs" id="masters-tabs">
-                            <button class="tab-btn active" data-tab="agresivo">
-                                <span class="tab-emoji">💥</span> Agresivo (Cierre Directo)
-                            </button>
-                            <button class="tab-btn" data-tab="emocional">
-                                <span class="tab-emoji">🧡</span> Emocional (Rapport Táctico)
-                            </button>
-                            <button class="tab-btn" data-tab="analitico">
-                                <span class="tab-emoji">📊</span> Analítico (Datos & ROI)
-                            </button>
-                            <button class="tab-btn" data-tab="solucionador">
-                                <span class="tab-emoji">🛠️</span> Solucionador (Diagnóstico de Dolor)
-                            </button>
+                        <!-- Carlos's Analysis & Recommended Approach -->
+                        <div class="copilot-analysis-card glass-panel" style="margin-bottom: 20px; border-left: 4px solid var(--primary); padding: 20px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+                                <span class="tag-status" style="background: rgba(var(--primary-rgb), 0.1); color: var(--primary); font-size: 11px;">Enfoque & Perfil Seleccionado por Carlos</span>
+                                <h4 id="detected-profile-badge" style="margin: 0; font-size: 15px; font-family: var(--font-display); color: #fff; text-shadow: 0 0 10px var(--primary-glow);">-</h4>
+                            </div>
+                            <div style="font-size: 14px; line-height: 1.6; color: var(--text-muted);">
+                                <strong>Razonamiento de Carlos:</strong> <span id="detected-profile-why">Selecciona una objeción para que Carlos la analice y determine la psicología del cliente.</span>
+                            </div>
                         </div>
 
-                        <!-- Response Content -->
-                        <div class="tab-content-container">
-                            <div id="tab-agresivo" class="tab-content active">
-                                <p class="response-concept"><strong>Enfoque Agresivo / Cierre Directo:</strong> Persuasión de alta convicción y urgencia, derribando excusas de manera asertiva y directa.</p>
-                                <div class="script-box">
-                                    <p id="script-agresivo-text">Selecciona una objeción para ver la respuesta.</p>
-                                    <div class="action-buttons">
-                                        <button class="btn-generate-ai" id="btn-gen-ai-agresivo" onclick="app.generateAI('agresivo')" title="Generar con Inteligencia Artificial">
-                                            <span>Generar con IA 🔮</span>
-                                        </button>
-                                        <button class="btn-speak" onclick="app.speakText('script-agresivo-text')" title="Escuchar Respuesta">
-                                            <svg class="icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-                                        </button>
-                                        <button class="btn-copy" onclick="app.copyToClipboard('script-agresivo-text')">
-                                            <svg class="icon" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M9 2h6v4H9z"/></svg>
-                                            <span>Copiar</span>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="pro-tip">
-                                    <strong>💡 Enfoque:</strong> Controla el tono de urgencia y muestra total seguridad en la propuesta.
-                                </div>
-                                <div class="empathy-radar-card">
-                                    <div class="empathy-radar-header">
-                                        <span>🧠</span> Radar Empático: Lectura de Mente
-                                    </div>
-                                    <div id="empathy-radar-agresivo-text" class="empathy-radar-text">Selecciona una objeción para ver el análisis emocional del cliente.</div>
-                                </div>
-                                <div class="mentor-wisdom-card">
-                                    <div class="mentor-wisdom-header">
-                                        <span>👑</span> Mente de Acero: Cierre Directo
-                                    </div>
-                                    <p id="mentor-wisdom-agresivo-text" class="mentor-wisdom-text">Selecciona una objeción para ver la recomendación mental de los mentores.</p>
-                                </div>
+                        <!-- Suggested Response Script -->
+                        <div class="script-box">
+                            <h4 style="margin: 0 0 10px 0; font-family: var(--font-display); font-size: 14px; color: var(--primary);">Guión Sugerido (Fórmula Élite)</h4>
+                            <p id="suggested-script-text" style="font-size: 15px; line-height: 1.6; color: var(--text-main); font-style: italic;">Selecciona una objeción de la lista de la izquierda.</p>
+                            <div class="action-buttons">
+                                <button class="btn-generate-ai" id="btn-gen-ai-copilot" onclick="app.generateAI()" title="Analizar de forma dinámica con IA">
+                                    <span>Analizar con IA 🔮</span>
+                                </button>
+                                <button class="btn-speak" onclick="app.speakText('suggested-script-text')" title="Escuchar Respuesta">
+                                    <svg class="icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                                    <span>Escuchar</span>
+                                </button>
+                                <button class="btn-copy" onclick="app.copyToClipboard('suggested-script-text')">
+                                    <svg class="icon" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M9 2h6v4H9z"/></svg>
+                                    <span>Copiar</span>
+                                </button>
                             </div>
+                        </div>
 
-                            <div id="tab-emocional" class="tab-content">
-                                <p class="response-concept"><strong>Enfoque Emocional / Tocar la Fibra:</strong> Conexión profunda basada en la empatía táctica, rebatiendo desde los sentimientos y la paz mental.</p>
-                                <div class="script-box">
-                                    <p id="script-emocional-text">Selecciona una objeción para ver la respuesta.</p>
-                                    <div class="action-buttons">
-                                        <button class="btn-generate-ai" id="btn-gen-ai-emocional" onclick="app.generateAI('emocional')" title="Generar con Inteligencia Artificial">
-                                            <span>Generar con IA 🔮</span>
-                                        </button>
-                                        <button class="btn-speak" onclick="app.speakText('script-emocional-text')" title="Escuchar Respuesta">
-                                            <svg class="icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-                                        </button>
-                                        <button class="btn-copy" onclick="app.copyToClipboard('script-emocional-text')">
-                                            <svg class="icon" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M9 2h6v4H9z"/></svg>
-                                            <span>Copiar</span>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="pro-tip">
-                                    <strong>💡 Enfoque:</strong> Habla en un tono pausado y empático que conecte con sus preocupaciones reales.
-                                </div>
-                                <div class="empathy-radar-card">
-                                    <div class="empathy-radar-header">
-                                        <span>🧠</span> Radar Empático: Lectura de Mente
-                                    </div>
-                                    <div id="empathy-radar-emocional-text" class="empathy-radar-text">Selecciona una objeción para ver el análisis emocional del cliente.</div>
-                                </div>
-                                <div class="mentor-wisdom-card">
-                                    <div class="mentor-wisdom-header">
-                                        <span>👑</span> Conexión Humana: Rapport Táctico
-                                    </div>
-                                    <p id="mentor-wisdom-emocional-text" class="mentor-wisdom-text">Selecciona una objeción para ver la recomendación mental de los mentores.</p>
-                                </div>
+                        <!-- Empathy Radar -->
+                        <div class="empathy-radar-card" style="margin-top: 15px;">
+                            <div class="empathy-radar-header">
+                                <span>🧠</span> Radar Empático: Lectura de Mente
                             </div>
+                            <div id="empathy-radar-text" class="empathy-radar-text">Selecciona una objeción para ver el análisis emocional del cliente.</div>
+                        </div>
 
-                            <div id="tab-analitico" class="tab-content">
-                                <p class="response-concept"><strong>Enfoque Analítico / Datos y ROI:</strong> Uso de datos objetivos, métricas precisas y retorno de inversión (ROI) para justificar racionalmente la decisión.</p>
-                                <div class="script-box">
-                                    <p id="script-analitico-text">Selecciona una objeción para ver la respuesta.</p>
-                                    <div class="action-buttons">
-                                        <button class="btn-generate-ai" id="btn-gen-ai-analitico" onclick="app.generateAI('analitico')" title="Generar con Inteligencia Artificial">
-                                            <span>Generar con IA 🔮</span>
-                                        </button>
-                                        <button class="btn-speak" onclick="app.speakText('script-analitico-text')" title="Escuchar Respuesta">
-                                            <svg class="icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-                                        </button>
-                                        <button class="btn-copy" onclick="app.copyToClipboard('script-analitico-text')">
-                                            <svg class="icon" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M9 2h6v4H9z"/></svg>
-                                            <span>Copiar</span>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="pro-tip">
-                                    <strong>💡 Enfoque:</strong> Presenta números claros y minimiza los riesgos percibidos mediante garantías.
-                                </div>
-                                <div class="empathy-radar-card">
-                                    <div class="empathy-radar-header">
-                                        <span>🧠</span> Radar Empático: Lectura de Mente
-                                    </div>
-                                    <div id="empathy-radar-analitico-text" class="empathy-radar-text">Selecciona una objeción para ver el análisis emocional del cliente.</div>
-                                </div>
-                                <div class="mentor-wisdom-card">
-                                    <div class="mentor-wisdom-header">
-                                        <span>👑</span> Oferta & Lógica: Ingeniería de Valor
-                                    </div>
-                                    <p id="mentor-wisdom-analitico-text" class="mentor-wisdom-text">Selecciona una objeción para ver la recomendación mental de los mentores.</p>
-                                </div>
+                        <!-- Mentor Wisdom -->
+                        <div class="mentor-wisdom-card" style="margin-top: 15px;">
+                            <div class="mentor-wisdom-header">
+                                <span>👑</span> Mente de Acero: Consejo del Mentor
                             </div>
+                            <p id="mentor-wisdom-text" class="mentor-wisdom-text">Selecciona una objeción para ver la recomendación mental de los mentores.</p>
+                        </div>
 
-                            <div id="tab-solucionador" class="tab-content">
-                                <p class="response-concept"><strong>Solucionador de Problemas / Alivio del Dolor:</strong> Indaga en los cuellos de botella operativos profundos para recetar la solución exacta y aliviar el dolor comercial.</p>
-                                <div class="script-box">
-                                    <p id="script-solucionador-text">Selecciona una objeción para ver la respuesta.</p>
-                                    <div class="action-buttons">
-                                        <button class="btn-generate-ai" id="btn-gen-ai-solucionador" onclick="app.generateAI('solucionador')" title="Generar con Inteligencia Artificial">
-                                            <span>Generar con IA 🔮</span>
-                                        </button>
-                                        <button class="btn-speak" onclick="app.speakText('script-solucionador-text')" title="Escuchar Respuesta">
-                                            <svg class="icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-                                        </button>
-                                        <button class="btn-copy" onclick="app.copyToClipboard('script-solucionador-text')">
-                                            <svg class="icon" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M9 2h6v4H9z"/></svg>
-                                            <span>Copiar</span>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="pro-tip">
-                                    <strong>💡 Enfoque:</strong> Haz preguntas orientadas a diagnosticar antes de ofrecer la solución.
-                                </div>
-                                <div class="empathy-radar-card">
-                                    <div class="empathy-radar-header">
-                                        <span>🧠</span> Radar Empático: Lectura de Mente
-                                    </div>
-                                    <div id="empathy-radar-solucionador-text" class="empathy-radar-text">Selecciona una objeción para ver el análisis emocional del cliente.</div>
-                                </div>
-                                <div class="mentor-wisdom-card">
-                                    <div class="mentor-wisdom-header">
-                                        <span>👑</span> Maestría Consultiva: Diagnóstico de Dolor
-                                    </div>
-                                    <p id="mentor-wisdom-solucionador-text" class="mentor-wisdom-text">Selecciona una objeción para ver la recomendación mental de los mentores.</p>
-                                </div>
-                            </div>
+                        <!-- Alerta Vendedor Promedio -->
+                        <div id="vendedor-promedio-alert-container" class="pro-tip hidden" style="margin-top: 15px; background: rgba(239, 68, 68, 0.05); border-color: rgba(239, 68, 68, 0.2); color: #ef4444; border-left: 4px solid #ef4444; padding: 15px; border-radius: 6px;">
+                            <strong>⚠️ Evita esto (Error Vendedor Promedio):</strong> <span id="vendedor-promedio-error-text">-</span>
                         </div>
 
                         <!-- Action footer in objections -->
