@@ -1619,14 +1619,9 @@ function updateActiveObjectionDisplay() {
     if (badgeEl) badgeEl.innerText = `${profileName} - ${approachName}`;
     if (whyEl) whyEl.innerText = why;
     
-    // Pre-configured scripts fallbacks
-    let fallbackScript = "";
-    if (profileId === "analitico") fallbackScript = obj.analitico;
-    else if (profileId === "agresivo") fallbackScript = obj.agresivo;
-    else if (profileId === "solucionador") fallbackScript = obj.solucionador;
-    else fallbackScript = obj.emocional;
-
-    if (scriptEl) scriptEl.innerText = compile(fallbackScript);
+    if (scriptEl) {
+        scriptEl.innerText = "Haz clic en el botón 'Analizar con IA 🔮' para que Carlos diseñe una estrategia de cierre única y redacte un guión de Closer Élite personalizado en tiempo real.";
+    }
     
     if (radarEl) radarEl.innerHTML = getEmpathyRadar(profileId, obj.title);
     if (wisdomEl) wisdomEl.innerHTML = getMentorWisdom(profileId, obj.title);
@@ -2118,7 +2113,8 @@ function initRoleplaySetup() {
         customerName: "",
         product: "",
         messages: [],
-        isMuted: false
+        isMuted: false,
+        businessContext: ""
     };
 
     // Reset mute button visual state
@@ -2198,6 +2194,9 @@ function setupRoleplayEventListeners() {
             // Generate Random Customer Name
             const names = ["Felipe", "Sandra", "Carlos", "Marta", "Roberto", "Laura", "Andrés", "Julia"];
             app.roleplay.customerName = names[Math.floor(Math.random() * names.length)];
+
+            // Generate Random Unique Business Context
+            app.roleplay.businessContext = generateRandomBusinessContext(app.state.sectorId, app.roleplay.customerProfile);
 
             // Clear messages array
             app.roleplay.messages = [];
@@ -2490,7 +2489,7 @@ async function generateCustomerResponse(isInitial = false) {
         // Initial trigger setup
         contents.push({
             role: "user",
-            parts: [{ text: `Hola, preséntate brevemente en una sola frase corta e inicia la conversación con una objeción de entrada acorde a tu personalidad de "${app.roleplay.customerProfile}".` }]
+            parts: [{ text: `Hola, preséntate brevemente en una frase corta que incluya el nombre de tu empresa o tu situación familiar específica, e inicia la conversación con una queja u objeción inicial acorde a tus datos únicos:\n${app.roleplay.businessContext}` }]
         });
 
         // Add actual dialog history
@@ -2521,16 +2520,22 @@ async function generateCustomerResponse(isInitial = false) {
         const baseSystem = `Instrucciones del Sistema para el Simulador de Ventas:
 Tu papel: Eres ${app.roleplay.customerName}, un cliente potencial real e independiente en una conversación telefónica con un vendedor.
 Contexto: El vendedor te está llamando para ofrecerte "${app.roleplay.product}" en el sector "${sectorName}".
+
+DATOS ÚNICOS DE TU SITUACIÓN (NUNCA TE DESVÍES DE ELLOS, ESTE ES TU NEGOCIO/VIDA):
+${app.roleplay.businessContext}
+
 Tu personalidad de comportamiento es: ${profileDescription}
 Tu tono de voz es: ${profileTone}
 
 REGLAS ABSOLUTAS DE COMPORTAMIENTO:
 1. Actúa al 100% como un ser humano real e independiente en una conversación fluida. NUNCA digas o insinúes que eres una IA, un modelo de lenguaje, una simulación o un bot.
 2. Responde directamente y con total coherencia al último mensaje del vendedor. Lee sus argumentos y preguntas con atención y responde en consecuencia.
-3. Si el vendedor te hace una pregunta de diagnóstico comprometida (como tu presupuesto actual, gastos o consumo), reacciona de forma humana y coherente según tu personalidad de negocio (por ejemplo, si eres escéptico, pregúntale para qué quiere saberlo antes de confiar; si estás ocupado, dile que te dé un rango de precios primero).
-4. Termina siempre tus oraciones y pensamientos. NUNCA dejes una respuesta incompleta, cortada o con frases a medio terminar (como "un poco" o "un"). Cada respuesta debe terminar con su punto final y tener coherencia gramatical absoluta.
-5. Mantén tus respuestas cortas (de 1 a 3 frases máximo), simulando una conversación de chat de voz fluida y dinámica.
-6. Sé un cliente difícil de cerrar, pero sé receptivo si el vendedor demuestra empatía táctica (Chris Voss), hace preguntas abiertas y demuestra el valor de su propuesta.`;
+3. Utiliza los datos únicos de tu situación (como tu nombre de empresa, tu dolor específico y tus métricas) de forma natural a lo largo de la conversación. No seas un cliente genérico, eres esta persona concreta.
+4. Conserva memoria perfecta de todo lo acordado o discutido anteriormente en el chat. Si el vendedor entra en contradicciones o suena falso/robótico, recházalo de inmediato.
+5. Si el vendedor te hace preguntas de diagnóstico comprometidas, reacciona según tu personalidad y tus datos únicos (ej. si eres escéptico o estás ocupado, sé evasivo al principio).
+6. Termina siempre tus oraciones y pensamientos. NUNCA dejes una respuesta incompleta o cortada.
+7. Mantén tus respuestas cortas (de 1 a 3 frases máximo), simulando una conversación de voz fluida y dinámica.
+8. Sé un cliente difícil de cerrar, pero sé receptivo si el vendedor demuestra empatía táctica (Chris Voss), hace preguntas abiertas y demuestra el valor real de su propuesta basándose en tu dolor de cabeza específico.`;
 
         const response = await fetch(`/api/gemini`, {
             method: "POST",
@@ -2817,5 +2822,176 @@ async function testGeminiApiKey(apiKey, statusElementId) {
     } catch (error) {
         statusEl.innerHTML = `<span style="color: #ef4444; font-size: 11px; font-weight: 500;">Error: ${error.message}</span>`;
     }
+}
+
+// Generate a random unique business/personal scenario for roleplay
+function generateRandomBusinessContext(sectorId, profileId) {
+    const scenarios = {
+        saas: [
+            {
+                company: "LogisTrans S.L. (Distribuidor de calefacción)",
+                pain: "Su equipo de 12 comerciales de calle apunta visitas en blocs de notas y las pasa por WhatsApp. La semana pasada perdieron un cliente clave de 5,000€ por falta de seguimiento rápido.",
+                situation: "El director comercial está frustrado por el desorden de datos pero le aterra perder tiempo formando al equipo en nuevas plataformas.",
+                metric: "Pierden unas 15 horas semanales por persona en rellenar datos y albaranes."
+            },
+            {
+                company: "Clínica Dental del Mar (Sector Salud)",
+                pain: "Las citas de pacientes se agendan en libreta y se cancelan a última hora sin preaviso. Tienen un 25% de ausencias de sillón dental que les cuesta unos 4,500€ al mes.",
+                situation: "La propietaria es muy escéptica sobre si un software de avisos automáticos de verdad solucionará las cancelaciones.",
+                metric: "Sufren unas 40 cancelaciones vacías al mes."
+            },
+            {
+                company: "Innova Agency (Agencia de Marketing)",
+                pain: "Utilizan tres herramientas fragmentadas que no se conectan entre sí. Duplican el trabajo de diseño y reporte manual de campañas para clientes.",
+                situation: "El director financiero está recortando costes a toda costa debido a un trimestre flojo.",
+                metric: "Gastan 800€ al mes en licencias de software que nadie aprovecha al máximo."
+            },
+            {
+                company: "NutriSan S.A. (Fábrica Alimentaria)",
+                pain: "Su departamento de atención al cliente está desbordado respondiendo preguntas repetitivas de envíos por chat, y el tiempo de respuesta supera las 6 horas.",
+                situation: "El gerente quiere automatizar pero no quiere dar una imagen fría ni de robot.",
+                metric: "El 70% de las consultas diarias de soporte son de seguimiento de envío básico."
+            }
+        ],
+        realestate: [
+            {
+                company: "Familia Ortega (Marta y Alberto)",
+                pain: "Viven en un apartamento alquilado de 50m² y Marta está embarazada de su segundo hijo. Necesitan mudarse a una casa de al menos 90m² con terraza antes del nacimiento en 4 meses.",
+                situation: "Alberto tiene pánico de que la cuota de la hipoteca suba por las fluctuaciones de mercado y no lleguen a fin de mes.",
+                metric: "Ahorros acumulados de 60,000€ y cuota mensual de hipoteca máxima de 1,100€."
+            },
+            {
+                company: "Carlos Herrero (Inversor Inmobiliario)",
+                pain: "Dispone de liquidez pero teme la nueva ley de vivienda y la okupación de los inquilinos. Busca un piso de 3 habitaciones para reformar y alquilar.",
+                situation: "Exige datos duros y una rentabilidad neta demostrable antes de hacer cualquier oferta.",
+                metric: "Capital de inversión de 150,000€ y ROI objetivo del 6.5% neto anual."
+            },
+            {
+                company: "Sinergia Coworking S.L.",
+                pain: "Buscan un local comercial de 200m² con luz natural y acceso a pie de calle para abrir un espacio de coworking en la zona norte.",
+                situation: "Tienen 45 días para reubicar a su comunidad actual de 30 miembros debido al fin de su contrato de alquiler actual.",
+                metric: "Presupuesto de renta máximo de 1,500€/mes neto."
+            },
+            {
+                company: "Héctor y Sofía (Jubilados)",
+                pain: "Quieren vender su chalet grande de tres plantas en el campo para comprar un apartamento pequeño con ascensor en el centro de la ciudad.",
+                situation: "Necesitan comodidad de accesos médicos cercanos pero les da mucha pena dejar el jardín familiar.",
+                metric: "Valor de tasación de su chalet actual en 320,000€."
+            }
+        ],
+        auto: [
+            {
+                company: "Pedro Jiménez (Fontanero autónomo)",
+                pain: "Su furgoneta comercial diésel tiene 15 años y la culata dañada. No le permiten entrar a la zona de bajas emisiones del centro donde tiene el 70% de su cartera de clientes.",
+                situation: "Necesita fiabilidad absoluta para trabajar a diario y teme paralizar su negocio por una avería nueva.",
+                metric: "Su furgoneta actual le cuesta 400€ al mes en visitas al taller."
+            },
+            {
+                company: "Laura Domínguez (Directora de Ventas)",
+                pain: "Conduce 80 km diarios para ir a la oficina. Su coche actual consume 8.5 litros a los 100km y gasta más de 300€ al mes en gasolina.",
+                situation: "Duda si adquirir un modelo eléctrico o híbrido por la devaluación futura de la batería.",
+                metric: "Presupuesto de cuota máxima de 350€ al mes para el nuevo vehículo."
+            },
+            {
+                company: "Familia Benítez (5 miembros)",
+                pain: "Tienen un utilitario de 5 plazas y necesitan un vehículo monovolumen o SUV de 7 plazas porque se mudan sus suegros a vivir con ellos y el espacio es insuficiente.",
+                situation: "Les asusta adquirir un coche grande y no poder maniobrar en el garaje de su comunidad.",
+                metric: "Uso diario escolar y viajes de fin de semana frecuentes."
+            },
+            {
+                company: "Andrés Castro (Empresario)",
+                pain: "Busca un coche deportivo premium de renting a través de su sociedad para desgravar el IVA y mejorar la imagen corporativa ante inversores de capital riesgo.",
+                situation: "Exige un renting de gama alta que tenga todo incluido (seguro a todo riesgo y mantenimiento).",
+                metric: "Cuota de renting de hasta 700€/mes neto."
+            }
+        ],
+        b2b: [
+            {
+                company: "Muebles Alianza S.L. (Fábrica tradicional)",
+                pain: "Fábrica tradicional de muebles de oficina. Tienen comerciales de calle pero no captan clientes digitales y su facturación ha caído un 20% frente a competidores online.",
+                situation: "El director general cree que el marketing digital es 'humo' y no confía en promesas de conversión.",
+                metric: "Facturación anual estancada en 1.2 millones de euros."
+            },
+            {
+                company: "SkinCare Labs E-commerce",
+                pain: "Venden cosmética natural online. Tienen tráfico decente pero su tasa de conversión web es de apenas 0.7%, perdiendo dinero en anuncios.",
+                situation: "El equipo interno de marketing está frustrado y desbordado por los constantes cambios de algoritmos.",
+                metric: "Inversión publicitaria de 3,000€ al mes en Instagram Ads con retorno negativo."
+            },
+            {
+                company: "Geriátrico San Juan (Residencia)",
+                pain: "Sufren una rotación del 40% de sus auxiliares de enfermería por falta de onboarding profesional y problemas de clima laboral interno.",
+                situation: "Las bajas constantes obligan a contratar personal de ETT muy caro.",
+                metric: "Coste de selección y baja de cada empleado estimado en 3,000€."
+            },
+            {
+                company: "Asociación de Pymes del Sur",
+                pain: "Necesitan digitalizar sus procesos de formación interna pero su junta directiva es reacia a contratar consultores externos por malas experiencias anteriores de proyectos sin resultados.",
+                situation: "El presidente de la asociación es duro de convencer y no quiere perder tiempo en reuniones infructuosas.",
+                metric: "Presupuesto anual asignado de 20,000€ para innovación formativa."
+            }
+        ],
+        finance: [
+            {
+                company: "Laura y Martín (Restauradores)",
+                pain: "Si sufren una baja laboral o un siniestro en el local, el negocio cerraría y no podrían pagar el alquiler de 2,000€/mes ni el sueldo del camarero.",
+                situation: "Creen que los seguros nunca pagan a tiempo y exigen demasiados papeles en caso de incidente.",
+                metric: "Gastos fijos del restaurante de 3,500€ al mes."
+            },
+            {
+                company: "Javier Gómez (Programador autónomo, 28 años)",
+                pain: "No tiene red de seguridad familiar. Si se lesiona una mano jugando al tenis o enferma, la cobertura de autónomos es de solo 450€ al mes.",
+                situation: "Se siente joven y sano y cree que contratar un seguro de baja es tirar el dinero.",
+                metric: "Ingresos mensuales de 2,200€ que dependen al 100% de su movilidad física."
+            },
+            {
+                company: "Inversiones del Duero S.L.",
+                pain: "Tienen 3 locales comerciales alquilados y les preocupa sufrir impagos sistemáticos de renta o daños estructurales graves por parte de los inquilinos.",
+                situation: "Buscan cobertura jurídica total y garantía de cobro mensual por contrato.",
+                metric: "Renta total mensual percibida de 4,200€."
+            },
+            {
+                company: "Beatriz Ortiz (Madre soltera, 35 años)",
+                pain: "Quiere abrir un plan de ahorro o seguro de vida para garantizar la educación universitaria de su hija de 6 años ante cualquier fallecimiento o invalidez.",
+                situation: "Teme meter su dinero en un fondo sin liquidez y no poder retirarlo en caso de urgencia médica.",
+                metric: "Aportación mensual máxima de 100€."
+            }
+        ],
+        luxury: [
+            {
+                company: "Celia Valls (Directiva de Tecnología)",
+                pain: "Asiste a la gala anual de su sector donde estarán sus mayores competidores e inversores internacionales. Quiere una pieza de alta joyería original que transmita estatus.",
+                situation: "Sabe que hay réplicas baratas online por una fracción de coste, pero le aterra que un experto de la gala lo note.",
+                metric: "Presupuesto disponible de 8,000€ para complementos de gala."
+            },
+            {
+                company: "Dr. Manuel Torres (Cirujano)",
+                pain: "Quiere regalarle un reloj de alta relojería de edición limitada a su esposa por su 20 aniversario de bodas, buscando una pieza que mantenga su valor.",
+                situation: "Duda si comprar el modelo original hoy o esperar a ver si baja de precio en el mercado secundario.",
+                metric: "Dispone de 15,000€ asignados para la compra del aniversario."
+            },
+            {
+                company: "Hotel Boutique Villa Real",
+                pain: "Están redecorando la suite de lujo principal para clientes VIP e insisten en decorarla con piezas exclusivas hechas a mano para justificar una tarifa alta.",
+                situation: "El diseñador insiste en que las réplicas baratas abaratan la imagen del hotel.",
+                metric: "Precio de la suite de 1,200€ la noche."
+            },
+            {
+                company: "Sofía y David (Coleccionistas)",
+                pain: "Buscan una obra de arte o escultura exclusiva de galería para presidir el salón de su nueva mansión de diseño minimalista.",
+                situation: "Quieren total certeza de autenticidad y el certificado firmado por el artista.",
+                metric: "Presupuesto de hasta 25,000€ para la pieza del salón."
+            }
+        ]
+    };
+
+    const sectorScenarios = scenarios[sectorId] || scenarios["saas"];
+    const idx = Math.floor(Math.random() * sectorScenarios.length);
+    const s = sectorScenarios[idx];
+    
+    return `EMPRESA/PROSPECTO: ${s.company}
+SITUACIÓN EXACTA: ${s.situation}
+DOLOR ESPECÍFICO A RESOLVER: ${s.pain}
+MÉTRICA/PRESUPUESTO CLAVE: ${s.metric}`;
 }
 
