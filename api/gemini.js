@@ -14,15 +14,26 @@ export default async function handler(req, res) {
         return;
     }
 
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed' });
-    }
-
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
         return res.status(500).json({ 
             error: 'GEMINI_API_KEY no está configurada en el servidor. Por favor, añádela en las variables de entorno de tu proyecto en el panel de Vercel.' 
         });
+    }
+
+    if (req.method === 'GET') {
+        try {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+            const data = await response.json();
+            return res.status(200).json(data);
+        } catch (error) {
+            console.error('Error listing models:', error);
+            return res.status(500).json({ error: 'Error listing models: ' + error.message });
+        }
+    }
+
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Method not allowed' });
     }
 
     try {
