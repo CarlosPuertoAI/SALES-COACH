@@ -25,7 +25,7 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    const model = req.body.model || 'gemini-2.0-flash';
+    const model = req.body.model || 'gemini-2.5-flash';
     const modelName = model.startsWith('models/') ? model.substring(7) : model;
 
     const bodyCopy = { ...req.body };
