@@ -403,7 +403,7 @@ class SalesQuest {
         this.saveState();
 
         if (this.state.level > oldLevel) {
-            this.showCelebrationModal(`¡Subiste al Nivel ${this.state.level}! 🎉`, `Has ganado ${amount} XP. Tu rango de vendedor ha aumentado. ¡Sigue así!`, [
+            showCelebrationModal(`¡Subiste al Nivel ${this.state.level}! 🎉`, `Has ganado ${amount} XP. Tu rango de vendedor ha aumentado. ¡Sigue así!`, [
                 { emoji: "🏆", name: "Cerrador Junior" }
             ]);
         }
