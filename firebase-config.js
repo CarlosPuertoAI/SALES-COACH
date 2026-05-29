@@ -1,12 +1,13 @@
 // Configuración de Firebase para SalesQuest
 // Reemplaza estas credenciales con las de tu proyecto en la consola de Firebase.
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyCfhSFBkUaT-dyuEpjP5f1ed34f81PfdWs",
+    authDomain: "sales-coach-758ff.firebaseapp.com",
+    projectId: "sales-coach-758ff",
+    storageBucket: "sales-coach-758ff.firebasestorage.app",
+    messagingSenderId: "732031011503",
+    appId: "1:732031011503:web:2b1d2c30a7273cc5dae25a",
+    measurementId: "G-3MVDJ8DMQZ"
 };
 
 let auth = null;
