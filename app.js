@@ -682,6 +682,7 @@ function initUI() {
     
     // Inicializar flujos de autenticación e interfaz
     initAuth();
+    initFriends();
 }
 
 // Onboarding: Sector Grid Render
@@ -3368,6 +3369,15 @@ let activeChannel = "general";
 let leafletMap = null;
 let mapMarkers = [];
 
+// Friends and DM system globals
+let activeChatType = "channel"; // 'channel' | 'private'
+let activeChatId = null;
+let activeFriendId = null;
+let friendsListener1 = null;
+let friendsListener2 = null;
+let friendsMap = new Map();
+let friendRequests = [];
+
 // Mock Messages for Local Demo Fallback
 const mockMessages = {
     general: [
@@ -3666,12 +3676,18 @@ function initAuth() {
                     
                     // Update user connection geolocation coordinate fields
                     updateUserGeolocation(user.uid);
+                    
+                    // Start friends real-time listeners
+                    startFriendsListeners(user.uid);
                 } catch (error) {
                     console.error("Fallo de sincronía con Firestore:", error);
                 }
 
                 checkAuthAndOnboarding();
             } else {
+                // Stop friends listeners on logout
+                stopFriendsListeners();
+                
                 if (app.isGuest) {
                     checkAuthAndOnboarding();
                 } else {
@@ -3823,6 +3839,8 @@ function setupChatRoom() {
                 channelItems.forEach(i => {
                     i.classList.remove("active");
                 });
+                // Deselect DMs active item when selecting channel
+                document.querySelectorAll(".friend-item").forEach(f => f.classList.remove("active"));
                 item.classList.add("active");
                 switchChannel(item.dataset.channel);
             });
@@ -3848,8 +3866,24 @@ function setupChatRoom() {
 
 // 6. Switch Chat Channels
 function switchChannel(channel) {
+    activeChatType = 'channel';
     activeChannel = channel;
+    activeChatId = null;
+    activeFriendId = null;
     
+    // Deselect friend items in sidebar
+    document.querySelectorAll(".friend-item").forEach(f => f.classList.remove("active"));
+
+    // Select correct channel button
+    const channelItems = document.querySelectorAll(".channel-item");
+    channelItems.forEach(i => {
+        if (i.dataset.channel === channel) {
+            i.classList.add("active");
+        } else {
+            i.classList.remove("active");
+        }
+    });
+
     const titleEl = document.getElementById("active-channel-title");
     if (titleEl) {
         const channelNames = {
@@ -3863,6 +3897,10 @@ function switchChannel(channel) {
         };
         titleEl.innerText = channelNames[channel] || "Canal";
     }
+
+    // Show online badge
+    const onlineBadge = document.getElementById("online-users-count");
+    if (onlineBadge) onlineBadge.style.display = "flex";
 
     const container = document.getElementById("chat-messages-container");
     if (container) container.innerHTML = "";
@@ -3937,16 +3975,26 @@ function renderSingleMessage(msg) {
     }
 
     bubble.innerHTML = `
-        <div style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; align-self: flex-start; padding-top: 2px;">${formatAvatar(msg.senderAvatar, 24)}</div>
+        <div class="chat-profile-trigger" data-uid="${msg.senderId}" style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; align-self: flex-start; padding-top: 2px; cursor: pointer; transition: transform 0.2s;">${formatAvatar(msg.senderAvatar, 24)}</div>
         <div style="display: flex; flex-direction: column; gap: 2px; flex: 1;">
             <div style="display: flex; align-items: center; gap: 6px;">
-                <span style="font-size: 12px; font-weight: 700; color: ${isOwn ? '#a855f7' : 'var(--text-main)'};">${msg.senderName}</span>
+                <span class="chat-profile-trigger" data-uid="${msg.senderId}" style="font-size: 12px; font-weight: 700; color: ${isOwn ? '#a855f7' : 'var(--text-main)'}; cursor: pointer;">${msg.senderName}</span>
                 <span style="font-size: 9px; color: #a855f7; background: rgba(168,85,247,0.1); padding: 1px 4px; border-radius: 4px; font-weight: 600;">Lvl ${msg.level || 1}</span>
                 <span style="font-size: 9px; color: var(--text-muted); opacity: 0.8;">${timeStr}</span>
             </div>
             <p style="font-size: 13px; color: var(--text-main); margin: 0; line-height: 1.4; word-break: break-word;">${msg.text}</p>
         </div>
     `;
+    
+    // Bind click trigger for profile modals
+    bubble.querySelectorAll(".chat-profile-trigger").forEach(el => {
+        el.addEventListener("click", () => {
+            const senderUid = el.dataset.uid;
+            if (senderUid && senderUid !== "guest" && senderUid !== "carlos_bot") {
+                openUserProfile(senderUid);
+            }
+        });
+    });
     
     container.appendChild(bubble);
 }
@@ -3980,12 +4028,18 @@ async function sendChatMessage(text) {
         level: level,
         text: text,
         timestamp: firebaseEnabled ? firebase.firestore.FieldValue.serverTimestamp() : new Date().toISOString(),
-        channelId: activeChannel
+        channelId: activeChatType === 'channel' ? activeChannel : null,
+        chatId: activeChatType === 'private' ? activeChatId : null,
+        receiverId: activeChatType === 'private' ? activeFriendId : null
     };
 
     if (firebaseEnabled) {
         try {
-            await db.collection("messages").add(messageData);
+            if (activeChatType === 'channel') {
+                await db.collection("messages").add(messageData);
+            } else {
+                await db.collection("private_messages").add(messageData);
+            }
         } catch (e) {
             console.error("Error al guardar mensaje:", e);
             alert("No se pudo enviar el mensaje: " + e.message);
@@ -4102,9 +4156,19 @@ async function loadMapMarkers() {
                                 <strong>Sector:</strong> ${sectorName}
                                 <br><strong>Ubicación:</strong> ${u.city || 'Activo'}, ${u.country || 'Planeta Tierra'}
                             </div>
+                            <button class="map-profile-btn" data-uid="${doc.id}" style="margin-top: 8px; width: 100%; padding: 6px; background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.3); color: #c084fc; font-size: 10px; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: inherit;">Ver Perfil / Amigos</button>
                         </div>
                     `;
                     marker.bindPopup(content);
+                    marker.on('popupopen', (e) => {
+                        const popupEl = e.popup.getElement();
+                        const btn = popupEl.querySelector(".map-profile-btn");
+                        if (btn) {
+                            btn.addEventListener("click", () => {
+                                openUserProfile(btn.dataset.uid);
+                            });
+                        }
+                    });
                     mapMarkers.push(marker);
                 }
             });
@@ -4140,9 +4204,19 @@ async function loadMapMarkers() {
                         <strong>Sector:</strong> ${sectorName}
                         <br><strong>Ubicación:</strong> ${u.city}, ${u.country}
                     </div>
+                    <button class="map-profile-btn" data-uid="${u.username}" style="margin-top: 8px; width: 100%; padding: 6px; background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.3); color: #c084fc; font-size: 10px; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: inherit;">Ver Perfil / Amigos</button>
                 </div>
             `;
             marker.bindPopup(content);
+            marker.on('popupopen', (e) => {
+                const popupEl = e.popup.getElement();
+                const btn = popupEl.querySelector(".map-profile-btn");
+                if (btn) {
+                    btn.addEventListener("click", () => {
+                        openUserProfile(btn.dataset.uid);
+                    });
+                }
+            });
             mapMarkers.push(marker);
         });
 
@@ -4177,5 +4251,557 @@ async function loadMapMarkers() {
         } catch (e) {}
     }
 }
+
+// --- FRIENDS & DIRECT MESSAGES CORE IMPLEMENTATION ---
+
+// Cached request arrays
+let sentRequests = [];
+let receivedRequests = [];
+
+function initFriends() {
+    const openRequestsBtn = document.getElementById("open-requests-btn");
+    const closeRequestsModalBtn = document.getElementById("close-requests-modal-btn");
+    const requestsModal = document.getElementById("requests-modal");
+    
+    if (openRequestsBtn && requestsModal) {
+        openRequestsBtn.addEventListener("click", () => {
+            requestsModal.classList.remove("hidden");
+            renderFriendRequests();
+        });
+    }
+    
+    if (closeRequestsModalBtn && requestsModal) {
+        closeRequestsModalBtn.addEventListener("click", () => {
+            requestsModal.classList.add("hidden");
+        });
+    }
+    
+    // Tab switching in requests modal
+    const tabReceived = document.getElementById("tab-requests-received");
+    const tabSent = document.getElementById("tab-requests-sent");
+    const receivedContainer = document.getElementById("requests-received-container");
+    const sentContainer = document.getElementById("requests-sent-container");
+    
+    if (tabReceived && tabSent && receivedContainer && sentContainer) {
+        tabReceived.addEventListener("click", () => {
+            tabReceived.classList.add("active");
+            tabSent.classList.remove("active");
+            receivedContainer.classList.remove("hidden");
+            sentContainer.classList.add("hidden");
+            
+            tabReceived.style.borderBottom = "2px solid var(--primary)";
+            tabSent.style.borderBottom = "2px solid transparent";
+            tabReceived.style.color = "var(--text-main)";
+            tabSent.style.color = "var(--text-muted)";
+        });
+        
+        tabSent.addEventListener("click", () => {
+            tabSent.classList.add("active");
+            tabReceived.classList.remove("active");
+            sentContainer.classList.remove("hidden");
+            receivedContainer.classList.add("hidden");
+            
+            tabSent.style.borderBottom = "2px solid var(--primary)";
+            tabReceived.style.borderBottom = "2px solid transparent";
+            tabSent.style.color = "var(--text-main)";
+            tabReceived.style.color = "var(--text-muted)";
+        });
+    }
+    
+    // Close profile modal
+    const closeProfileModalBtn = document.getElementById("close-profile-modal-btn");
+    const profileModal = document.getElementById("user-profile-modal");
+    if (closeProfileModalBtn && profileModal) {
+        closeProfileModalBtn.addEventListener("click", () => {
+            profileModal.classList.add("hidden");
+        });
+    }
+}
+
+function startFriendsListeners(uid) {
+    if (!firebaseEnabled) return;
+    
+    stopFriendsListeners();
+    
+    sentRequests = [];
+    receivedRequests = [];
+    
+    friendsListener1 = db.collection("friend_requests")
+        .where("senderId", "==", uid)
+        .onSnapshot(snapshot => {
+            const docs = [];
+            snapshot.forEach(doc => {
+                docs.push({ id: doc.id, ...doc.data() });
+            });
+            handleRequestsSnapshot(uid, 'sent', docs);
+        }, err => {
+            console.error("Error listening to sent friend requests:", err);
+        });
+        
+    friendsListener2 = db.collection("friend_requests")
+        .where("receiverId", "==", uid)
+        .onSnapshot(snapshot => {
+            const docs = [];
+            snapshot.forEach(doc => {
+                docs.push({ id: doc.id, ...doc.data() });
+            });
+            handleRequestsSnapshot(uid, 'received', docs);
+        }, err => {
+            console.error("Error listening to received friend requests:", err);
+        });
+}
+
+function stopFriendsListeners() {
+    if (friendsListener1) {
+        friendsListener1();
+        friendsListener1 = null;
+    }
+    if (friendsListener2) {
+        friendsListener2();
+        friendsListener2 = null;
+    }
+    friendsMap.clear();
+    friendRequests = [];
+    sentRequests = [];
+    receivedRequests = [];
+    updateFriendsUI();
+}
+
+function handleRequestsSnapshot(uid, type, snapshotDocs) {
+    if (type === 'sent') {
+        sentRequests = snapshotDocs;
+    } else if (type === 'received') {
+        receivedRequests = snapshotDocs;
+    }
+    
+    // Combine sent and received lists, filtering duplicate IDs
+    const allRequests = [...sentRequests, ...receivedRequests];
+    const seen = new Set();
+    friendRequests = [];
+    allRequests.forEach(req => {
+        if (!seen.has(req.id)) {
+            seen.add(req.id);
+            friendRequests.push(req);
+        }
+    });
+    
+    // Re-compile friends mapping
+    friendsMap.clear();
+    friendRequests.forEach(req => {
+        if (req.status === 'accepted') {
+            const isSender = req.senderId === uid;
+            const friendId = isSender ? req.receiverId : req.senderId;
+            const friendName = isSender ? req.receiverName : req.senderName;
+            const friendAvatar = isSender ? req.receiverAvatar : req.senderAvatar;
+            
+            friendsMap.set(friendId, {
+                uid: friendId,
+                username: friendName,
+                avatar: friendAvatar
+            });
+        }
+    });
+    
+    updateFriendsUI();
+}
+
+function updateFriendsUI() {
+    const friendsListContainer = document.getElementById("friends-list");
+    const noFriendsMsg = document.getElementById("no-friends-msg");
+    const uid = (auth && auth.currentUser) ? auth.currentUser.uid : null;
+    
+    // Update red notification badge count
+    if (uid) {
+        const pendingReceived = friendRequests.filter(req => req.receiverId === uid && req.status === 'pending');
+        const badge = document.getElementById("requests-badge");
+        if (badge) {
+            if (pendingReceived.length > 0) {
+                badge.innerText = pendingReceived.length;
+                badge.style.display = "inline-block";
+            } else {
+                badge.style.display = "none";
+            }
+        }
+    }
+    
+    if (!friendsListContainer) return;
+    
+    // Clear dynamic list items
+    friendsListContainer.querySelectorAll(".friend-item").forEach(el => el.remove());
+    
+    if (friendsMap.size === 0) {
+        if (noFriendsMsg) noFriendsMsg.style.display = "block";
+        return;
+    }
+    
+    if (noFriendsMsg) noFriendsMsg.style.display = "none";
+    
+    friendsMap.forEach(friend => {
+        const btn = document.createElement("button");
+        btn.className = `friend-item ${activeFriendId === friend.uid ? 'active' : ''}`;
+        btn.dataset.uid = friend.uid;
+        
+        btn.innerHTML = `
+            <div style="width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;">${formatAvatar(friend.avatar, 20)}</div>
+            <span style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${friend.username}</span>
+        `;
+        
+        btn.addEventListener("click", () => {
+            switchPrivateChat(friend.uid);
+        });
+        
+        friendsListContainer.appendChild(btn);
+    });
+}
+
+function renderFriendRequests() {
+    const receivedContainer = document.getElementById("requests-received-container");
+    const sentContainer = document.getElementById("requests-sent-container");
+    const uid = (auth && auth.currentUser) ? auth.currentUser.uid : null;
+    
+    if (!uid) return;
+    
+    if (receivedContainer) {
+        receivedContainer.innerHTML = "";
+        const pendingReceived = friendRequests.filter(req => req.receiverId === uid && req.status === 'pending');
+        
+        if (pendingReceived.length === 0) {
+            receivedContainer.innerHTML = `<p style="text-align: center; color: var(--text-muted); font-size: 12px; margin-top: 40px;">No tienes solicitudes pendientes.</p>`;
+        } else {
+            pendingReceived.forEach(req => {
+                const card = document.createElement("div");
+                card.className = "friend-request-card";
+                
+                card.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">${formatAvatar(req.senderAvatar, 28)}</div>
+                        <span style="font-size: 13px; font-weight: 600; color: var(--text-main);">${req.senderName}</span>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="accept-btn" style="padding: 4px 10px; background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3); color: #4ade80; font-size: 11px; border-radius: 6px; cursor: pointer; font-weight: 600;">Aceptar</button>
+                        <button class="decline-btn" style="padding: 4px 10px; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #f87171; font-size: 11px; border-radius: 6px; cursor: pointer; font-weight: 600;">Rechazar</button>
+                    </div>
+                `;
+                
+                card.querySelector(".accept-btn").addEventListener("click", () => {
+                    acceptFriendRequest(req.id);
+                });
+                card.querySelector(".decline-btn").addEventListener("click", () => {
+                    declineFriendRequest(req.id);
+                });
+                
+                receivedContainer.appendChild(card);
+            });
+        }
+    }
+    
+    if (sentContainer) {
+        sentContainer.innerHTML = "";
+        const pendingSent = friendRequests.filter(req => req.senderId === uid && req.status === 'pending');
+        
+        if (pendingSent.length === 0) {
+            sentContainer.innerHTML = `<p style="text-align: center; color: var(--text-muted); font-size: 12px; margin-top: 40px;">No has enviado solicitudes recientes.</p>`;
+        } else {
+            pendingSent.forEach(req => {
+                const card = document.createElement("div");
+                card.className = "friend-request-card";
+                
+                card.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">${formatAvatar(req.receiverAvatar, 28)}</div>
+                        <span style="font-size: 13px; font-weight: 600; color: var(--text-main);">${req.receiverName}</span>
+                    </div>
+                    <span style="font-size: 11px; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 6px;">Pendiente</span>
+                `;
+                sentContainer.appendChild(card);
+            });
+        }
+    }
+}
+
+async function acceptFriendRequest(requestId) {
+    if (!firebaseEnabled) return;
+    try {
+        await db.collection("friend_requests").doc(requestId).update({
+            status: "accepted",
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        setTimeout(() => {
+            renderFriendRequests();
+        }, 100);
+    } catch (e) {
+        console.error("Error accepting friend request:", e);
+        alert("Error al aceptar solicitud: " + e.message);
+    }
+}
+
+async function declineFriendRequest(requestId) {
+    if (!firebaseEnabled) return;
+    try {
+        // Deleting the document lets them re-request in the future if desired
+        await db.collection("friend_requests").doc(requestId).delete();
+        setTimeout(() => {
+            renderFriendRequests();
+        }, 100);
+    } catch (e) {
+        console.error("Error declining friend request:", e);
+        alert("Error al rechazar solicitud: " + e.message);
+    }
+}
+
+function getFriendshipStatus(otherUserId) {
+    const uid = (auth && auth.currentUser) ? auth.currentUser.uid : null;
+    if (!uid) return 'none';
+    if (uid === otherUserId) return 'self';
+    
+    const req1 = friendRequests.find(r => r.senderId === uid && r.receiverId === otherUserId);
+    const req2 = friendRequests.find(r => r.senderId === otherUserId && r.receiverId === uid);
+    
+    const request = req1 || req2;
+    if (!request) return 'none';
+    
+    if (request.status === 'accepted') return 'accepted';
+    if (request.status === 'pending') {
+        if (request.senderId === uid) return 'sent_pending';
+        return 'received_pending';
+    }
+    return 'none';
+}
+
+async function sendFriendRequest(targetUid) {
+    if (!firebaseEnabled) return;
+    const uid = (auth && auth.currentUser) ? auth.currentUser.uid : null;
+    if (!uid || uid === targetUid) return;
+    
+    try {
+        const receiverDoc = await db.collection("users").doc(targetUid).get();
+        if (!receiverDoc.exists) {
+            alert("El usuario no existe.");
+            return;
+        }
+        const receiverData = receiverDoc.data();
+        const senderDoc = await db.collection("users").doc(uid).get();
+        const senderData = senderDoc.exists ? senderDoc.data() : {};
+        
+        const requestId = `${uid}_${targetUid}`;
+        
+        await db.collection("friend_requests").doc(requestId).set({
+            senderId: uid,
+            senderName: senderData.username || auth.currentUser.email.split("@")[0],
+            senderAvatar: senderData.avatar || "🦈",
+            receiverId: targetUid,
+            receiverName: receiverData.username || receiverData.email.split("@")[0],
+            receiverAvatar: receiverData.avatar || "🦈",
+            status: "pending",
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        openUserProfile(targetUid);
+    } catch (e) {
+        console.error("Error sending friend request:", e);
+        alert("Error al enviar solicitud: " + e.message);
+    }
+}
+
+async function openUserProfile(userId) {
+    const profileModal = document.getElementById("user-profile-modal");
+    if (!profileModal) return;
+    
+    document.getElementById("profile-modal-name").innerText = "Cargando...";
+    document.getElementById("profile-modal-level").innerText = "Nivel ...";
+    document.getElementById("profile-modal-sector").innerText = "Cargando...";
+    document.getElementById("profile-modal-location").innerText = "Cargando...";
+    document.getElementById("profile-modal-xp").innerText = "0 XP";
+    
+    const avatarEl = document.getElementById("profile-modal-avatar");
+    if (avatarEl) avatarEl.innerHTML = "🦈";
+    
+    const actionsContainer = document.getElementById("profile-modal-actions");
+    if (actionsContainer) actionsContainer.innerHTML = "";
+    
+    profileModal.classList.remove("hidden");
+    
+    let userData = null;
+    
+    if (firebaseEnabled) {
+        try {
+            const userDoc = await db.collection("users").doc(userId).get();
+            if (userDoc.exists) {
+                userData = userDoc.data();
+            }
+        } catch (e) {
+            console.error("Error fetching user profile:", e);
+        }
+    }
+    
+    if (!userData) {
+        const mockUsers = [
+            { uid: "Elena Saas", username: "Elena Saas", avatar: "💻", level: 8, sectorId: "saas", city: "París", country: "Francia", xp: 2400 },
+            { uid: "John B2B", username: "John B2B", avatar: "🦅", level: 14, sectorId: "b2b", city: "Nueva York", country: "EE.UU.", xp: 5800 },
+            { uid: "Yuki Luxury", username: "Yuki Luxury", avatar: "👑", level: 11, sectorId: "luxury", city: "Tokio", country: "Japón", xp: 4100 },
+            { uid: "Matías Inmo", username: "Matías Inmo", avatar: "🏠", level: 5, sectorId: "realestate", city: "Buenos Aires", country: "Argentina", xp: 1200 },
+            { uid: "Clara Seguros", username: "Clara Seguros", avatar: "📊", level: 9, sectorId: "finance", city: "Bogotá", country: "Colombia", xp: 2900 },
+            { uid: "Carlos Boss", username: "Carlos Boss", avatar: "🦁", level: 25, sectorId: "b2b", city: "Ciudad de México", country: "México", xp: 12500 }
+        ];
+        userData = mockUsers.find(u => u.uid === userId || u.username === userId);
+    }
+    
+    if (!userData) {
+        document.getElementById("profile-modal-name").innerText = "Usuario Desconocido";
+        return;
+    }
+    
+    document.getElementById("profile-modal-name").innerText = userData.username || "Vendedor";
+    document.getElementById("profile-modal-level").innerText = `Nivel ${userData.level || 1}`;
+    
+    const sectorName = userData.sectorId ? (SECTORS.find(s => s.id === userData.sectorId)?.name || userData.sectorId) : "General";
+    document.getElementById("profile-modal-sector").innerText = sectorName;
+    
+    const city = userData.city || "Activo";
+    const country = userData.country || "Planeta Tierra";
+    document.getElementById("profile-modal-location").innerText = `${city}, ${country}`;
+    document.getElementById("profile-modal-xp").innerText = `${userData.xp || 0} XP`;
+    
+    if (avatarEl) {
+        avatarEl.innerHTML = formatAvatar(userData.avatar, 72);
+    }
+    
+    if (actionsContainer) {
+        actionsContainer.innerHTML = "";
+        
+        const myUid = (auth && auth.currentUser) ? auth.currentUser.uid : null;
+        if (!myUid || myUid === userId) {
+            const btn = document.createElement("button");
+            btn.className = "btn btn-secondary btn-block";
+            btn.innerText = "Este es tu perfil";
+            btn.disabled = true;
+            actionsContainer.appendChild(btn);
+            return;
+        }
+        
+        const status = getFriendshipStatus(userId);
+        
+        if (status === 'accepted') {
+            const msgBtn = document.createElement("button");
+            msgBtn.className = "btn btn-primary btn-block";
+            msgBtn.innerHTML = "Enviar Mensaje 💬";
+            msgBtn.addEventListener("click", () => {
+                profileModal.classList.add("hidden");
+                navigateTo("communities");
+                switchPrivateChat(userId);
+            });
+            actionsContainer.appendChild(msgBtn);
+        } else if (status === 'sent_pending') {
+            const pendingBtn = document.createElement("button");
+            pendingBtn.className = "btn btn-secondary btn-block";
+            pendingBtn.innerText = "Solicitud Enviada ⏳";
+            pendingBtn.disabled = true;
+            actionsContainer.appendChild(pendingBtn);
+        } else if (status === 'received_pending') {
+            const acceptBtn = document.createElement("button");
+            acceptBtn.className = "btn btn-primary btn-block";
+            acceptBtn.style.background = "linear-gradient(135deg, #10b981, #059669)";
+            acceptBtn.innerText = "Aceptar Solicitud 👍";
+            acceptBtn.addEventListener("click", async () => {
+                const req = friendRequests.find(r => r.senderId === userId && r.receiverId === myUid);
+                if (req) {
+                    await acceptFriendRequest(req.id);
+                    openUserProfile(userId);
+                }
+            });
+            
+            const declineBtn = document.createElement("button");
+            declineBtn.className = "btn btn-secondary btn-block";
+            declineBtn.style.background = "rgba(239, 68, 68, 0.1)";
+            declineBtn.style.border = "1px solid rgba(239, 68, 68, 0.3)";
+            declineBtn.style.color = "#f87171";
+            declineBtn.innerText = "Rechazar Solicitud";
+            declineBtn.addEventListener("click", async () => {
+                const req = friendRequests.find(r => r.senderId === userId && r.receiverId === myUid);
+                if (req) {
+                    await declineFriendRequest(req.id);
+                    openUserProfile(userId);
+                }
+            });
+            
+            actionsContainer.appendChild(acceptBtn);
+            actionsContainer.appendChild(declineBtn);
+        } else {
+            const addBtn = document.createElement("button");
+            addBtn.className = "btn btn-primary btn-block";
+            addBtn.innerText = "Añadir a Amigos 🤝";
+            addBtn.addEventListener("click", () => {
+                sendFriendRequest(userId);
+            });
+            actionsContainer.appendChild(addBtn);
+        }
+    }
+}
+
+function switchPrivateChat(friendId) {
+    activeChatType = 'private';
+    activeFriendId = friendId;
+    activeChannel = null;
+    
+    document.querySelectorAll(".friend-item").forEach(f => {
+        if (f.dataset.uid === friendId) {
+            f.classList.add("active");
+        } else {
+            f.classList.remove("active");
+        }
+    });
+    
+    document.querySelectorAll(".channel-item").forEach(i => i.classList.remove("active"));
+    
+    const friend = friendsMap.get(friendId);
+    const friendName = friend ? friend.username : "Amigo";
+    
+    const titleEl = document.getElementById("active-channel-title");
+    if (titleEl) {
+        titleEl.innerHTML = `💬 Chat con ${friendName}`;
+    }
+    
+    const onlineBadge = document.getElementById("online-users-count");
+    if (onlineBadge) onlineBadge.style.display = "none";
+    
+    const container = document.getElementById("chat-messages-container");
+    if (container) container.innerHTML = "";
+    
+    const myUid = auth.currentUser.uid;
+    activeChatId = myUid < friendId ? `${myUid}_${friendId}` : `${friendId}_${myUid}`;
+    
+    if (firebaseEnabled) {
+        if (chatUnsubscribe) {
+            chatUnsubscribe();
+        }
+        
+        chatUnsubscribe = db.collection("private_messages")
+            .where("chatId", "==", activeChatId)
+            .onSnapshot(snapshot => {
+                container.innerHTML = "";
+                const docs = [];
+                snapshot.forEach(doc => {
+                    docs.push(doc.data());
+                });
+                
+                docs.sort((a, b) => {
+                    const tA = a.timestamp ? (a.timestamp.seconds ? a.timestamp.seconds * 1000 : new Date(a.timestamp).getTime()) : 0;
+                    const tB = b.timestamp ? (b.timestamp.seconds ? b.timestamp.seconds * 1000 : new Date(b.timestamp).getTime()) : 0;
+                    return tA - tB;
+                });
+                
+                const recentDocs = docs.slice(-50);
+                recentDocs.forEach(msg => {
+                    renderSingleMessage(msg);
+                });
+                container.scrollTop = container.scrollHeight;
+            }, err => {
+                console.error("Firestore private chat snapshot error:", err);
+            });
+    } else {
+        container.innerHTML = `<p style="text-align: center; color: var(--text-muted); font-size: 12px; margin-top: 40px;">El chat privado requiere Firebase habilitado.</p>`;
+    }
+}
+
 
 

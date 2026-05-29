@@ -157,34 +157,49 @@
                 </div>
                 
                 <div class="chat-wrapper glass-panel" style="display: grid; grid-template-columns: 240px 1fr; flex: 1; border-radius: 16px; overflow: hidden; background: rgba(13,17,29,0.3); border: 1px solid rgba(255,255,255,0.06); height: 100%;">
-                    <!-- Sidebar: Channels/Sectors -->
-                    <div class="chat-sidebar" style="border-right: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.01); display: flex; flex-direction: column; height: 100%;">
-                        <div style="padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.06);">
-                            <h3 style="font-family: var(--font-display); font-size: 15px; color: var(--text-main); margin: 0;">Salas por Sector</h3>
-                            <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px; margin-bottom: 0;">Comparte técnicas con colegas</p>
+                    <!-- Sidebar: Channels/Sectors & Friends -->
+                    <div class="chat-sidebar" style="border-right: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.01); display: flex; flex-direction: column; height: 100%; overflow: hidden;">
+                        <!-- Channels List Container -->
+                        <div style="display: flex; flex-direction: column; max-height: 52%; border-bottom: 1px solid rgba(255,255,255,0.06); min-height: 200px;">
+                            <div style="padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.04);">
+                                <h3 style="font-family: var(--font-display); font-size: 13px; color: var(--text-main); margin: 0; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9;">Salas de Chat</h3>
+                            </div>
+                            <div class="channel-list" style="flex: 1; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 4px;">
+                                <button class="channel-item active" data-channel="general" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; border: none; background: transparent; color: var(--text-main); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
+                                    <span>🌐</span> <span style="flex: 1;">General</span>
+                                </button>
+                                <button class="channel-item" data-channel="b2b" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
+                                    <span>💼</span> <span style="flex: 1;">Consultoría B2B</span>
+                                </button>
+                                <button class="channel-item" data-channel="saas" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
+                                    <span>💻</span> <span style="flex: 1;">SaaS / Software</span>
+                                </button>
+                                <button class="channel-item" data-channel="realestate" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
+                                    <span>🏠</span> <span style="flex: 1;">Inmobiliaria</span>
+                                </button>
+                                <button class="channel-item" data-channel="automotive" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
+                                    <span>🚗</span> <span style="flex: 1;">Automoción</span>
+                                </button>
+                                <button class="channel-item" data-channel="finance" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
+                                    <span>📊</span> <span style="flex: 1;">Finanzas / Seguros</span>
+                                </button>
+                                <button class="channel-item" data-channel="luxury" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
+                                    <span>👑</span> <span style="flex: 1;">Lujo / High-Ticket</span>
+                                </button>
+                            </div>
                         </div>
-                        <div class="channel-list" style="flex: 1; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 4px;">
-                            <button class="channel-item active" data-channel="general" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; border: none; background: transparent; color: var(--text-main); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
-                                <span>🌐</span> <span style="flex: 1;">General</span>
-                            </button>
-                            <button class="channel-item" data-channel="b2b" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
-                                <span>💼</span> <span style="flex: 1;">Consultoría B2B</span>
-                            </button>
-                            <button class="channel-item" data-channel="saas" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
-                                <span>💻</span> <span style="flex: 1;">SaaS / Software</span>
-                            </button>
-                            <button class="channel-item" data-channel="realestate" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
-                                <span>🏠</span> <span style="flex: 1;">Inmobiliaria</span>
-                            </button>
-                            <button class="channel-item" data-channel="automotive" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
-                                <span>🚗</span> <span style="flex: 1;">Automoción</span>
-                            </button>
-                            <button class="channel-item" data-channel="finance" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
-                                <span>📊</span> <span style="flex: 1;">Finanzas / Seguros</span>
-                            </button>
-                            <button class="channel-item" data-channel="luxury" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
-                                <span>👑</span> <span style="flex: 1;">Lujo / High-Ticket</span>
-                            </button>
+                        
+                        <!-- Friends/DMs Section -->
+                        <div style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
+                            <div style="padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; align-items: center; justify-content: space-between;">
+                                <h3 style="font-family: var(--font-display); font-size: 13px; color: var(--text-main); margin: 0; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9;">Mensajes Directos</h3>
+                                <button id="open-requests-btn" style="position: relative; background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.3); color: #c084fc; font-size: 10px; padding: 2px 8px; border-radius: 6px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 4px;">
+                                    Solicitudes <span id="requests-badge" style="display: none; background: #ef4444; color: #fff; font-size: 8.5px; padding: 1px 4.5px; border-radius: 4px; font-weight: 700;">0</span>
+                                </button>
+                            </div>
+                            <div id="friends-list" style="overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 4px; flex: 1;">
+                                <p id="no-friends-msg" style="font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 16px; padding: 0 8px; line-height: 1.4;">Aún no tienes amigos. Agrega a otros haciendo clic en su perfil en el mapa o el chat público.</p>
+                            </div>
                         </div>
                     </div>
                     
@@ -1112,15 +1127,66 @@
         </div>
     </div>
 
+    <!-- MODAL: GESTIÓN DE SOLICITUDES DE AMISTAD -->
+    <div id="requests-modal" class="modal-overlay hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 1100; display: flex; align-items: center; justify-content: center; padding: 16px;">
+        <div class="glass-panel" style="width: 100%; max-width: 440px; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); background: rgba(13,17,29,0.9); box-shadow: 0 20px 40px rgba(0,0,0,0.5); position: relative;">
+            <div style="padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-between;">
+                <h3 style="font-family: var(--font-display); font-size: 16px; margin: 0; color: var(--text-main);">Solicitudes de Amistad</h3>
+                <button id="close-requests-modal-btn" style="background: none; border: none; color: var(--text-muted); font-size: 22px; cursor: pointer; line-height: 1;">&times;</button>
+            </div>
+            
+            <!-- Tabs: Recibidas / Enviadas -->
+            <div style="display: flex; border-bottom: 1px solid rgba(255,255,255,0.04); background: rgba(255,255,255,0.01);">
+                <button id="tab-requests-received" class="request-tab active" style="flex: 1; padding: 12px; background: none; border: none; border-bottom: 2px solid var(--primary); color: var(--text-main); font-size: 12.5px; font-weight: 600; cursor: pointer; text-align: center;">Recibidas</button>
+                <button id="tab-requests-sent" class="request-tab" style="flex: 1; padding: 12px; background: none; border: none; border-bottom: 2px solid transparent; color: var(--text-muted); font-size: 12.5px; font-weight: 600; cursor: pointer; text-align: center;">Enviadas</button>
+            </div>
+            
+            <div style="padding: 16px; min-height: 240px; max-height: 360px; overflow-y: auto;">
+                <!-- Received requests list -->
+                <div id="requests-received-container" style="display: flex; flex-direction: column; gap: 10px;">
+                    <p style="text-align: center; color: var(--text-muted); font-size: 12px; margin-top: 40px;">No tienes solicitudes pendientes.</p>
+                </div>
+                
+                <!-- Sent requests list -->
+                <div id="requests-sent-container" class="hidden" style="display: flex; flex-direction: column; gap: 10px;">
+                    <p style="text-align: center; color: var(--text-muted); font-size: 12px; margin-top: 40px;">No has enviado solicitudes recientes.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: TARJETA DE PERFIL DE USUARIO -->
+    <div id="user-profile-modal" class="modal-overlay hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 1200; display: flex; align-items: center; justify-content: center; padding: 16px;">
+        <div class="glass-panel" style="width: 100%; max-width: 340px; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); background: rgba(13,17,29,0.95); box-shadow: 0 15px 30px rgba(0,0,0,0.4); text-align: center; padding: 24px; position: relative;">
+            <button id="close-profile-modal-btn" style="position: absolute; top: 12px; right: 16px; background: none; border: none; color: var(--text-muted); font-size: 22px; cursor: pointer; line-height: 1;">&times;</button>
+            
+            <div id="profile-modal-avatar" style="width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-size: 36px; margin: 0 auto 16px; border: 2px solid rgba(255,255,255,0.1); overflow: hidden;">🦈</div>
+            
+            <h3 id="profile-modal-name" style="font-family: var(--font-display); font-size: 18px; margin: 0 0 4px; color: var(--text-main);">Cargando...</h3>
+            <span id="profile-modal-level" style="font-size: 11px; color: #a855f7; background: rgba(168,85,247,0.1); padding: 2px 8px; border-radius: 6px; font-weight: 700;">Nivel 1</span>
+            
+            <div style="margin: 20px 0; border-top: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06); padding: 14px 0; display: flex; flex-direction: column; gap: 8px; text-align: left; font-size: 12px;">
+                <div><strong style="color: var(--text-muted);">Sector de Ventas:</strong> <span id="profile-modal-sector" style="color: var(--text-main);">Cargando...</span></div>
+                <div><strong style="color: var(--text-muted);">Ubicación:</strong> <span id="profile-modal-location" style="color: var(--text-main);">Cargando...</span></div>
+                <div id="profile-modal-xp-row"><strong style="color: var(--text-muted);">Experiencia:</strong> <span id="profile-modal-xp" style="color: var(--text-main);">0 XP</span></div>
+            </div>
+            
+            <div id="profile-modal-actions" style="display: flex; flex-direction: column; gap: 10px;">
+                <!-- Actions loaded dynamically -->
+                <button class="btn btn-primary btn-block">Añadir Amigo</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Firebase Compat SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <!-- Firebase Custom Config -->
-    <script src="firebase-config.js?v=5"></script>
+    <script src="firebase-config.js?v=6"></script>
     <!-- Leaflet Map JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <!-- Main JS Application Logic -->
-    <script src="app.js?v=5"></script>
+    <script src="app.js?v=6"></script>
 </body>
 </html>
