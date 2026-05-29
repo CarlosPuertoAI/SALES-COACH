@@ -2557,7 +2557,54 @@ function setupRoleplayEventListeners() {
         }
 
         window.attachedFileName = file.name;
-        window.attachedFileMimeType = file.type;
+        
+        // Corregir y normalizar el tipo MIME
+        let detectedMime = file.type || "";
+        const fileNameLower = file.name.toLowerCase();
+
+        // Si el archivo es claramente un audio (por nombre de WhatsApp o extensión)
+        // pero el sistema lo detectó como video (como video/mpeg), lo convertimos a audio.
+        if (fileNameLower.includes("audio") || 
+            fileNameLower.endsWith(".mp3") || 
+            fileNameLower.endsWith(".wav") || 
+            fileNameLower.endsWith(".m4a") || 
+            fileNameLower.endsWith(".aac") || 
+            fileNameLower.endsWith(".ogg") || 
+            fileNameLower.endsWith(".opus") || 
+            fileNameLower.endsWith(".mpeg") || 
+            fileNameLower.endsWith(".mpg")) {
+            
+            if (detectedMime.startsWith("video/")) {
+                detectedMime = detectedMime.replace("video/", "audio/");
+            }
+        }
+
+        // Si el tipo MIME está vacío, lo resolvemos basándonos en la extensión
+        if (!detectedMime) {
+            if (fileNameLower.endsWith(".png")) {
+                detectedMime = "image/png";
+            } else if (fileNameLower.endsWith(".jpg") || fileNameLower.endsWith(".jpeg")) {
+                detectedMime = "image/jpeg";
+            } else if (fileNameLower.endsWith(".gif")) {
+                detectedMime = "image/gif";
+            } else if (fileNameLower.endsWith(".webp")) {
+                detectedMime = "image/webp";
+            } else if (fileNameLower.endsWith(".mp3") || fileNameLower.endsWith(".mpeg") || fileNameLower.endsWith(".mpg")) {
+                detectedMime = "audio/mpeg";
+            } else if (fileNameLower.endsWith(".wav")) {
+                detectedMime = "audio/wav";
+            } else if (fileNameLower.endsWith(".m4a")) {
+                detectedMime = "audio/m4a";
+            } else if (fileNameLower.endsWith(".aac")) {
+                detectedMime = "audio/aac";
+            } else if (fileNameLower.endsWith(".ogg") || fileNameLower.endsWith(".opus")) {
+                detectedMime = "audio/ogg";
+            } else {
+                detectedMime = "audio/mpeg"; // Fallback por defecto
+            }
+        }
+
+        window.attachedFileMimeType = detectedMime;
 
         // Actualizar UI del dropzone
         if (filenameEl) {
@@ -2566,9 +2613,9 @@ function setupRoleplayEventListeners() {
         }
         if (dropzoneText) dropzoneText.classList.add("hidden");
         if (dropzoneIcon) {
-            if (file.type.startsWith("image/")) {
+            if (window.attachedFileMimeType.startsWith("image/")) {
                 dropzoneIcon.innerText = "🖼️";
-            } else if (file.type.startsWith("audio/")) {
+            } else if (window.attachedFileMimeType.startsWith("audio/")) {
                 dropzoneIcon.innerText = "🎙️";
             } else {
                 dropzoneIcon.innerText = "📄";
