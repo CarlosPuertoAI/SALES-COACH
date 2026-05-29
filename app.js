@@ -2086,6 +2086,47 @@ Devuelve la respuesta en formato JSON estrictamente válido. No devuelvas ningú
 
 // Inicializar la configuración del Roleplay
 function initRoleplaySetup() {
+    const modeSelection = document.getElementById("roleplay-mode-selection");
+    const simulatorWorkspace = document.getElementById("roleplay-simulator-workspace");
+    const uploadWorkspace = document.getElementById("roleplay-upload-workspace");
+
+    if (modeSelection) modeSelection.classList.remove("hidden");
+    if (simulatorWorkspace) simulatorWorkspace.classList.add("hidden");
+    if (uploadWorkspace) uploadWorkspace.classList.add("hidden");
+
+    // Reset upload state
+    const fileInput = document.getElementById("upload-file-input");
+    if (fileInput) fileInput.value = "";
+    
+    const filenameEl = document.getElementById("dropzone-filename");
+    if (filenameEl) {
+        filenameEl.innerText = "";
+        filenameEl.classList.add("hidden");
+    }
+    
+    const dropzoneText = document.getElementById("dropzone-text");
+    if (dropzoneText) dropzoneText.classList.remove("hidden");
+    
+    const dropzoneIcon = document.getElementById("dropzone-icon");
+    if (dropzoneIcon) dropzoneIcon.innerText = "📁";
+
+    const uploadProduct = document.getElementById("upload-product-input");
+    if (uploadProduct) uploadProduct.value = "";
+    
+    const uploadContext = document.getElementById("upload-context-input");
+    if (uploadContext) uploadContext.value = "";
+
+    const uploadPlaceholder = document.getElementById("upload-placeholder-card");
+    if (uploadPlaceholder) uploadPlaceholder.classList.remove("hidden");
+    
+    const uploadResults = document.getElementById("upload-results-card");
+    if (uploadResults) uploadResults.classList.add("hidden");
+
+    // Clear local state variables
+    window.attachedFileBase64 = null;
+    window.attachedFileMimeType = null;
+    window.attachedFileName = null;
+
     const setupScreen = document.getElementById("roleplay-setup-screen");
     const chatScreen = document.getElementById("roleplay-chat-screen");
     const feedbackScreen = document.getElementById("roleplay-feedback-screen");
@@ -2423,6 +2464,258 @@ function setupRoleplayEventListeners() {
         shortcutCallBtn.addEventListener("click", () => {
             const startBtn = document.getElementById("roleplay-start-btn");
             if (startBtn) startBtn.click();
+        });
+    }
+
+    // Camino 1: Click en Auditar Venta Real
+    const modePathUpload = document.getElementById("mode-path-upload");
+    if (modePathUpload) {
+        modePathUpload.addEventListener("click", () => {
+            const modeSelection = document.getElementById("roleplay-mode-selection");
+            const uploadWorkspace = document.getElementById("roleplay-upload-workspace");
+            if (modeSelection) modeSelection.classList.add("hidden");
+            if (uploadWorkspace) uploadWorkspace.classList.remove("hidden");
+        });
+    }
+
+    // Camino 2: Click en Simulador de Práctica
+    const modePathPractice = document.getElementById("mode-path-practice");
+    if (modePathPractice) {
+        modePathPractice.addEventListener("click", () => {
+            const modeSelection = document.getElementById("roleplay-mode-selection");
+            const simulatorWorkspace = document.getElementById("roleplay-simulator-workspace");
+            if (modeSelection) modeSelection.classList.add("hidden");
+            if (simulatorWorkspace) simulatorWorkspace.classList.remove("hidden");
+        });
+    }
+
+    // Volver al Dashboard desde Selección de Modo
+    const modeBackDashboardBtn = document.getElementById("mode-back-dashboard-btn");
+    if (modeBackDashboardBtn) {
+        modeBackDashboardBtn.addEventListener("click", () => {
+            navigateTo("dashboard");
+        });
+    }
+
+    // Volver a Modos desde el Simulador (cambiamos el comportamiento de Volver al Dashboard)
+    const roleplayBackBtn = document.getElementById("roleplay-back-btn");
+    if (roleplayBackBtn) {
+        const newBackBtn = roleplayBackBtn.cloneNode(true);
+        roleplayBackBtn.parentNode.replaceChild(newBackBtn, roleplayBackBtn);
+        newBackBtn.addEventListener("click", () => {
+            initRoleplaySetup();
+        });
+    }
+
+    // Volver a Modos desde Auditoría de Venta
+    const uploadBackBtn = document.getElementById("upload-back-btn");
+    if (uploadBackBtn) {
+        uploadBackBtn.addEventListener("click", () => {
+            initRoleplaySetup();
+        });
+    }
+
+    // Lógica Drag & Drop y Selección de Archivo
+    const dropzone = document.getElementById("upload-dropzone");
+    const fileInput = document.getElementById("upload-file-input");
+    const filenameEl = document.getElementById("dropzone-filename");
+    const dropzoneText = document.getElementById("dropzone-text");
+    const dropzoneIcon = document.getElementById("dropzone-icon");
+
+    if (dropzone && fileInput) {
+        dropzone.addEventListener("click", () => fileInput.click());
+
+        fileInput.addEventListener("change", (e) => {
+            handleFileSelection(e.target.files[0]);
+        });
+
+        dropzone.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            dropzone.classList.add("dragover");
+        });
+
+        dropzone.addEventListener("dragleave", () => {
+            dropzone.classList.remove("dragover");
+        });
+
+        dropzone.addEventListener("drop", (e) => {
+            e.preventDefault();
+            dropzone.classList.remove("dragover");
+            if (e.dataTransfer.files.length > 0) {
+                handleFileSelection(e.dataTransfer.files[0]);
+            }
+        });
+    }
+
+    function handleFileSelection(file) {
+        if (!file) return;
+
+        // Validar tamaño máximo 4.5 MB
+        if (file.size > 4.5 * 1024 * 1024) {
+            alert("El archivo supera el límite de 4.5 MB. Por favor, sube un archivo de menor tamaño para evitar fallos de servidor.");
+            return;
+        }
+
+        window.attachedFileName = file.name;
+        window.attachedFileMimeType = file.type;
+
+        // Actualizar UI del dropzone
+        if (filenameEl) {
+            filenameEl.innerText = file.name;
+            filenameEl.classList.remove("hidden");
+        }
+        if (dropzoneText) dropzoneText.classList.add("hidden");
+        if (dropzoneIcon) {
+            if (file.type.startsWith("image/")) {
+                dropzoneIcon.innerText = "🖼️";
+            } else if (file.type.startsWith("audio/")) {
+                dropzoneIcon.innerText = "🎙️";
+            } else {
+                dropzoneIcon.innerText = "📄";
+            }
+        }
+
+        // Leer archivo a Base64
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            window.attachedFileBase64 = e.target.result.split(",")[1];
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Botón de Enviar a Auditoría con Carlos
+    const uploadSubmitBtn = document.getElementById("upload-submit-btn");
+    if (uploadSubmitBtn) {
+        uploadSubmitBtn.addEventListener("click", async () => {
+            if (!window.attachedFileBase64 || !window.attachedFileMimeType) {
+                alert("Por favor, selecciona o arrastra un archivo de audio o una imagen de venta primero.");
+                return;
+            }
+
+            const product = document.getElementById("upload-product-input").value.trim() || "un producto no especificado";
+            const context = document.getElementById("upload-context-input").value.trim() || "No se ha proporcionado contexto adicional.";
+
+            // Cambiar botón a estado cargando
+            const originalText = uploadSubmitBtn.innerHTML;
+            uploadSubmitBtn.disabled = true;
+            uploadSubmitBtn.innerHTML = `<span>Analizando Venta... 🔄</span>`;
+
+            // Prompt de Auditoría Carlos
+            const promptText = `Analiza detalladamente este archivo adjunto de una conversación de ventas real. 
+El producto o servicio que se vende es: "${product}".
+Contexto de la venta: "${context}".
+
+Tu papel: Eres Carlos, un mentor de ventas y cerrador implacable con más de 30 años de experiencia cerrando contratos millonarios. Tu estilo es asertivo, extremadamente honesto, pero profundamente constructivo y didáctico.
+Analiza la conversación (si es una imagen/chat, lee los textos; si es un audio, escucha el contenido de la conversación de voz).
+
+Tu objetivo es auditar el desempeño del vendedor y devolver un análisis estructurado en JSON válido. El JSON debe tener exactamente este formato:
+{
+  "conclusiones": "<Tu análisis del estado de la venta, diagnóstico de la psicología del prospecto y resumen general de 3-4 frases>",
+  "puntos_fuertes": [
+    "<Punto fuerte 1 con justificación de por qué fue un hábito élite>",
+    "<Punto fuerte 2>",
+    "<Punto fuerte 3>"
+  ],
+  "puntos_debiles": [
+    "<Punto débil 1 explicando qué error clásico cometió el vendedor y por qué mató la llamada>",
+    "<Punto débil 2>",
+    "<Punto débil 3>"
+  ],
+  "lecciones": [
+    "<Lección clave 1 sobre cómo reencuadrar la conversación, Chris Voss, Hormozi, o control de llamada>",
+    "<Lección clave 2>",
+    "<Lección clave 3>"
+  ]
+}
+
+No incluyas markdown (como bloques \`\`\`json), comentarios, ni texto fuera del objeto JSON. El resultado debe ser puramente el JSON estructurado.`;
+
+            try {
+                const response = await fetch(`/api/gemini`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [
+                                { inlineData: { mimeType: window.attachedFileMimeType, data: window.attachedFileBase64 } },
+                                { text: promptText }
+                            ]
+                        }],
+                        generationConfig: {
+                            temperature: 0.7,
+                            maxOutputTokens: 8000,
+                            responseMimeType: "application/json"
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    let errDetails = `HTTP ${response.status}`;
+                    try {
+                        const errData = await response.json();
+                        if (errData.error) {
+                            errDetails = typeof errData.error === 'object' ? (errData.error.message || JSON.stringify(errData.error)) : errData.error;
+                        }
+                    } catch (e) {}
+                    throw new Error(errDetails);
+                }
+
+                const data = await response.json();
+                const aiResult = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!aiResult) throw new Error("La IA no devolvió ningún reporte de auditoría.");
+
+                // Parsear respuesta JSON limpia
+                let cleanJson = aiResult.trim();
+                if (cleanJson.includes("```")) {
+                    const startIdx = cleanJson.indexOf("{");
+                    const endIdx = cleanJson.lastIndexOf("}");
+                    if (startIdx !== -1 && endIdx !== -1) {
+                        cleanJson = cleanJson.substring(startIdx, endIdx + 1);
+                    }
+                }
+                const report = JSON.parse(cleanJson);
+
+                // Renderizar Resultados
+                document.getElementById("upload-conclusions").innerText = report.conclusiones || "";
+
+                const strengthsList = document.getElementById("upload-strengths");
+                strengthsList.innerHTML = "";
+                (report.puntos_fuertes || []).forEach(pf => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `<strong>•</strong> ${pf}`;
+                    strengthsList.appendChild(li);
+                });
+
+                const weaknessesList = document.getElementById("upload-weaknesses");
+                weaknessesList.innerHTML = "";
+                (report.puntos_debiles || []).forEach(pd => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `<strong>•</strong> ${pd}`;
+                    weaknessesList.appendChild(li);
+                });
+
+                const lessonsList = document.getElementById("upload-lessons");
+                lessonsList.innerHTML = "";
+                (report.lecciones || []).forEach(l => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `<strong>•</strong> ${l}`;
+                    lessonsList.appendChild(li);
+                });
+
+                // Recompensa de XP
+                app.addXP(150);
+
+                // Alternar contenedores
+                document.getElementById("upload-placeholder-card").classList.add("hidden");
+                document.getElementById("upload-results-card").classList.remove("hidden");
+
+            } catch (error) {
+                console.error("Error in sales audit:", error);
+                alert(`Error al auditar la venta: ${error.message}`);
+            } finally {
+                uploadSubmitBtn.disabled = false;
+                uploadSubmitBtn.innerHTML = originalText;
+            }
         });
     }
 }

@@ -436,7 +436,39 @@
 
             <!-- VIEW: SIMULADOR DE ROLEPLAY IA -->
             <section id="view-roleplay" class="view hidden" style="max-width: 1200px; margin: 0 auto; padding: 10px 0;">
-                <div class="roleplay-workspace" style="display: flex; gap: 24px; flex-wrap: wrap;">
+                <!-- PATH SELECTION MENU -->
+                <div id="roleplay-mode-selection" class="roleplay-mode-selection glass-panel" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 32px; padding: 48px 32px; text-align: center; width: 100%; min-height: 500px; border-radius: 16px; background: rgba(13,17,29,0.4); border: 1px solid rgba(255,255,255,0.06);">
+                    <div class="mode-selection-header" style="max-width: 600px; margin: 0 auto;">
+                        <span class="tag-status" style="background: rgba(168,85,247,0.1); color: #a855f7; border: 1px solid rgba(168,85,247,0.2); font-size: 11px;">MÉTODO DE ENTRENAMIENTO</span>
+                        <h2 style="font-family: var(--font-display); font-size: 32px; margin-top: 12px; color: var(--text-main); text-shadow: 0 0 20px rgba(168,85,247,0.15);">Elige tu Camino de Élite</h2>
+                        <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px; line-height: 1.6;">Conviértete en el mayor tiburón de las ventas practicando con clientes de IA o auditando tus propias llamadas y conversaciones reales.</p>
+                    </div>
+                    
+                    <div class="mode-selection-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; width: 100%; max-width: 800px; margin-top: 10px;">
+                        <!-- Path 1: Audit real sale -->
+                        <div class="mode-card glass-panel" id="mode-path-upload" style="padding: 32px; border-radius: 16px; cursor: pointer; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 16px; transition: var(--transition-smooth); background: rgba(13,17,29,0.5); border: 1px solid rgba(255,255,255,0.08);">
+                            <div class="mode-icon" style="font-size: 48px; background: linear-gradient(135deg, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 10px rgba(168,85,247,0.3));">🎙️</div>
+                            <h3 style="font-family: var(--font-display); font-size: 20px; color: var(--text-main); margin: 0;">1. Auditar Venta Real</h3>
+                            <p style="color: var(--text-muted); font-size: 12.5px; line-height: 1.5; margin: 0;">Sube un audio de tu llamada o capturas de tu chat. Carlos evaluará tu desempeño y extraerá conclusiones, fortalezas, debilidades y lecciones clave.</p>
+                            <button class="btn btn-primary" style="margin-top: 10px; pointer-events: none; background: linear-gradient(135deg, #a855f7, #ec4899); border: none; box-shadow: 0 4px 12px rgba(168,85,247,0.25);">Analizar Venta 📊</button>
+                        </div>
+                        
+                        <!-- Path 2: Practice in Simulator -->
+                        <div class="mode-card glass-panel" id="mode-path-practice" style="padding: 32px; border-radius: 16px; cursor: pointer; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 16px; transition: var(--transition-smooth); background: rgba(13,17,29,0.5); border: 1px solid rgba(255,255,255,0.08);">
+                            <div class="mode-icon" style="font-size: 48px; background: linear-gradient(135deg, #0ea5e9, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 10px rgba(14,165,233,0.3));">⚔️</div>
+                            <h3 style="font-family: var(--font-display); font-size: 20px; color: var(--text-main); margin: 0;">2. Simulador de Práctica</h3>
+                            <p style="color: var(--text-muted); font-size: 12.5px; line-height: 1.5; margin: 0;">Enfréntate cara a cara en un roleplay en vivo con clientes difíciles generados por IA. Domina las objeciones y entrena tu empatía táctica.</p>
+                            <button class="btn btn-primary" style="margin-top: 10px; pointer-events: none; background: linear-gradient(135deg, #0ea5e9, #10b981); border: none; box-shadow: 0 4px 12px rgba(14,165,233,0.25);">Chatear en Vivo 📞</button>
+                        </div>
+                    </div>
+                    
+                    <button type="button" id="mode-back-dashboard-btn" class="btn btn-secondary" style="padding: 10px 24px; font-size: 13px; margin-top: 10px;">
+                        <span>Volver al Dashboard</span>
+                    </button>
+                </div>
+
+                <!-- SIMULATOR WORKSPACE (Path 2) -->
+                <div class="roleplay-workspace hidden" id="roleplay-simulator-workspace" style="display: flex; gap: 24px; flex-wrap: wrap;">
                     
                     <!-- LEFT COLUMN: CONTROLS & CONFIGURATION -->
                     <div id="roleplay-setup-screen" class="roleplay-sidebar glass-panel" style="flex: 1; min-width: 320px; max-width: 380px; padding: 24px; border-radius: 16px; display: flex; flex-direction: column; gap: 20px;">
@@ -671,6 +703,115 @@
                             </div>
                         </div>
 
+                    </div>
+                </div>
+
+                <!-- AUDIT UPLOAD WORKSPACE (Path 1) -->
+                <div id="roleplay-upload-workspace" class="roleplay-upload-workspace hidden" style="display: flex; gap: 24px; flex-wrap: wrap; width: 100%;">
+                    <!-- LEFT COLUMN: FILE ATTACHMENT & CONTEXT -->
+                    <div class="roleplay-sidebar glass-panel" style="flex: 1; min-width: 320px; max-width: 380px; padding: 24px; border-radius: 16px; display: flex; flex-direction: column; gap: 20px;">
+                        <div class="roleplay-setup-header" style="text-align: center; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 16px;">
+                            <span class="tag-status" style="background: rgba(168,85,247,0.1); color: #a855f7; border: 1px solid rgba(168,85,247,0.2); font-size: 11px;">AUDITORÍA DE LLAMADAS/CHATS</span>
+                            <h2 style="font-family: var(--font-display); font-size: 22px; margin-top: 8px; color: var(--text-main);">Subir Venta Real</h2>
+                            <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px; line-height: 1.4;">Adjunta el audio de tu llamada o capturas de tu chat para recibir conclusiones clave de Carlos.</p>
+                        </div>
+
+                        <!-- 1. Dropzone -->
+                        <div class="form-group">
+                            <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--text-main);">1. Selecciona tu archivo de venta:</label>
+                            <div id="upload-dropzone" class="upload-dropzone" style="border: 2px dashed rgba(255,255,255,0.15); border-radius: 12px; padding: 30px 16px; text-align: center; background: rgba(255,255,255,0.01); cursor: pointer; transition: var(--transition-smooth); display: flex; flex-direction: column; align-items: center; gap: 12px; justify-content: center; min-height: 160px;">
+                                <div id="dropzone-icon" style="font-size: 40px;">📁</div>
+                                <div id="dropzone-text" style="font-size: 12px; color: var(--text-muted); line-height: 1.4;">
+                                    Arrastra aquí tu audio o imagen, o haz clic para buscar.
+                                    <br><span style="font-size: 10px; opacity: 0.7; display: block; margin-top: 4px;">Audios (MP3, WAV, M4A) o Imágenes (PNG, JPG)</span>
+                                </div>
+                                <div id="dropzone-filename" class="hidden" style="font-size: 13px; font-weight: 600; color: #a855f7; background: rgba(168,85,247,0.08); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(168,85,247,0.15); word-break: break-all;"></div>
+                                <input type="file" id="upload-file-input" accept="audio/*,image/*" style="display: none;" />
+                            </div>
+                        </div>
+
+                        <!-- 2. Product Name / Context -->
+                        <div class="form-group">
+                            <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-main);">2. Producto y Contexto (Opcional):</label>
+                            <input type="text" id="upload-product-input" placeholder="Ej: Software SaaS B2B, Venta fría..." style="width: 100%; padding: 10px 12px; border-radius: 8px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: var(--text-main); font-size: 13px; outline: none; transition: var(--transition-smooth); margin-bottom: 8px;" />
+                            <textarea id="upload-context-input" placeholder="Añade contexto sobre el prospecto, objeción inicial, qué querías lograr, etc..." rows="3" style="width: 100%; padding: 10px 12px; border-radius: 8px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: var(--text-main); font-size: 13px; outline: none; transition: var(--transition-smooth); resize: none; font-family: inherit; line-height: 1.4;"></textarea>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: auto; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 16px;">
+                            <button type="button" id="upload-submit-btn" class="btn btn-primary btn-glow btn-block" style="padding: 12px 16px; font-size: 14px; background: linear-gradient(135deg, #a855f7, #ec4899); border: none; box-shadow: 0 4px 12px rgba(168,85,247,0.25);">
+                                <span>Analizar Venta con Carlos 🔮</span>
+                            </button>
+                            <button type="button" id="upload-back-btn" class="btn btn-secondary btn-block" style="padding: 10px 16px; font-size: 13px;">
+                                <span>Volver a Modos</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT COLUMN: MAIN WORKSPACE (RESULTS / PLACEHOLDER) -->
+                    <div class="roleplay-main" style="flex: 2; min-width: 320px; display: flex; flex-direction: column;">
+                        <!-- PLACEHOLDER -->
+                        <div id="upload-placeholder-card" class="glass-panel" style="padding: 60px 40px; border-radius: 16px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; height: 100%; min-height: 480px; background: rgba(13,17,29,0.3); border: 1px solid rgba(255,255,255,0.06);">
+                            <div style="font-size: 64px; animation: float 3s ease-in-out infinite;">📊</div>
+                            <h2 style="font-family: var(--font-display); font-size: 26px; margin: 0; color: var(--text-main);">Informe de Auditoría Real</h2>
+                            <p style="color: var(--text-muted); font-size: 14.5px; max-width: 480px; margin: 0 auto; line-height: 1.6;">
+                                Sube tu llamada de audio o captura de chat de ventas en el panel izquierdo y haz clic en <strong>Analizar Venta</strong>. Carlos auditará tu desempeño para darte una evaluación de nivel tiburón.
+                            </p>
+                        </div>
+
+                        <!-- RESULTS CARD -->
+                        <div id="upload-results-card" class="glass-panel hidden" style="padding: 32px; border-radius: 16px; background: rgba(13,17,29,0.5); border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 24px; min-height: 480px; overflow-y: auto; height: 100%; box-shadow: var(--shadow-lg);">
+                            <div class="results-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 16px;">
+                                <div>
+                                    <h2 style="font-family: var(--font-display); font-size: 24px; color: var(--text-main); margin: 0; display: flex; align-items: center; gap: 10px;">
+                                        <span>Informe de Auditoría de Carlos 🦈</span>
+                                    </h2>
+                                    <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px; margin-bottom: 0;">Análisis objetivo e instructivo del prospecto y tus habilidades de cierre.</p>
+                                </div>
+                                <div id="upload-award-xp" class="stat-badge" style="background: rgba(16,185,129,0.1); color: #10b981; border: 1px solid rgba(16,185,129,0.2); font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 4px; padding: 6px 12px; border-radius: 8px;">
+                                    <span>+150 XP Recibidos! 🚀</span>
+                                </div>
+                            </div>
+
+                            <!-- Content sections -->
+                            <div class="results-content-grid" style="display: flex; flex-direction: column; gap: 20px;">
+                                
+                                <!-- Conclusions -->
+                                <div class="result-block" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 12px; padding: 18px;">
+                                    <h3 style="font-family: var(--font-display); font-size: 16px; color: #a855f7; margin-top: 0; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                                        <span>📜 Conclusiones y Diagnóstico General</span>
+                                    </h3>
+                                    <p id="upload-conclusions" style="font-size: 13.5px; line-height: 1.6; color: var(--text-main); margin: 0;"></p>
+                                </div>
+
+                                <!-- Strengths / Weaknesses Grid -->
+                                <div class="strengths-weaknesses-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
+                                    <!-- Strengths -->
+                                    <div class="result-block" style="background: rgba(16,185,129,0.02); border: 1px solid rgba(16,185,129,0.08); border-radius: 12px; padding: 18px; border-left: 4px solid #10b981;">
+                                        <h3 style="font-family: var(--font-display); font-size: 16px; color: #10b981; margin-top: 0; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                                            <span>✅ Puntos Fuertes (Hábitos Élite)</span>
+                                        </h3>
+                                        <ul id="upload-strengths" style="margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.6; color: var(--text-main); display: flex; flex-direction: column; gap: 6px;"></ul>
+                                    </div>
+
+                                    <!-- Weaknesses -->
+                                    <div class="result-block" style="background: rgba(239,68,68,0.02); border: 1px solid rgba(239,68,68,0.08); border-radius: 12px; padding: 18px; border-left: 4px solid #ef4444;">
+                                        <h3 style="font-family: var(--font-display); font-size: 16px; color: #ef4444; margin-top: 0; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                                            <span>❌ Puntos Débiles (Errores de Novato)</span>
+                                        </h3>
+                                        <ul id="upload-weaknesses" style="margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.6; color: var(--text-main); display: flex; flex-direction: column; gap: 6px;"></ul>
+                                    </div>
+                                </div>
+
+                                <!-- Lessons & Learnings -->
+                                <div class="result-block" style="background: rgba(245,158,11,0.02); border: 1px solid rgba(245,158,11,0.08); border-radius: 12px; padding: 18px; border-left: 4px solid #f59e0b;">
+                                    <h3 style="font-family: var(--font-display); font-size: 16px; color: #f59e0b; margin-top: 0; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                                        <span>💡 Lecciones de Valor y Consejos de Carlos</span>
+                                    </h3>
+                                    <ul id="upload-lessons" style="margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.6; color: var(--text-main); display: flex; flex-direction: column; gap: 8px;"></ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>

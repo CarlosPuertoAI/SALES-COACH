@@ -2099,3 +2099,73 @@ input[type="text"]:focus {
     }
 }
 
+/* Sales Audit & Mode Selection Styles */
+.roleplay-mode-selection {
+    animation: fadeIn 0.4s ease-out;
+}
+
+.mode-card {
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+    will-change: transform, box-shadow;
+}
+
+.mode-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(168, 85, 247, 0.35) !important;
+    box-shadow: 0 12px 30px rgba(168, 85, 247, 0.15);
+}
+
+#mode-path-practice:hover {
+    border-color: rgba(14, 165, 233, 0.35) !important;
+    box-shadow: 0 12px 30px rgba(14, 165, 233, 0.15);
+}
+
+.upload-dropzone {
+    transition: border-color 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
+}
+
+.upload-dropzone:hover {
+    border-color: #a855f7 !important;
+    background-color: rgba(168, 85, 247, 0.02) !important;
+}
+
+.upload-dropzone.dragover {
+    border-color: #ec4899 !important;
+    background-color: rgba(236, 72, 153, 0.05) !important;
+    transform: scale(1.02);
+}
+
+.roleplay-upload-workspace {
+    animation: fadeIn 0.4s ease-out;
+}
+
+.result-block {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: transform 0.25s ease;
+}
+
+.result-block:hover {
+    transform: translateY(-2px);
+}
+
+/* Custom list items for Audit results */
+.results-content-grid ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.results-content-grid li {
+    position: relative;
+    padding-left: 18px;
+    margin-bottom: 8px;
+}
+
+.results-content-grid li strong {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+
