@@ -475,11 +475,10 @@ function updateWizardUI() {
     if (currentSlide) {
         currentSlide.classList.remove("hidden");
         
-        // Update badge text dynamically based on leadType
+        // Update badge text dynamically
         const badge = currentSlide.querySelector(".badge-promo");
         if (badge && step > 1) {
-            const total = app.state.leadType === "cold" ? 2 : 3;
-            badge.textContent = `Paso ${step - 1} de ${total}`;
+            badge.textContent = `Paso 1 de 1`;
         }
     }
     
@@ -491,10 +490,7 @@ function updateWizardUI() {
     } else {
         if (progressContainer) progressContainer.style.display = "block";
         if (progress) {
-            const total = app.state.leadType === "cold" ? 2 : 3;
-            const currentStep = step - 1; // 1, 2, 3
-            const pct = (currentStep / total) * 100;
-            progress.style.width = `${pct}%`;
+            progress.style.width = `100%`;
         }
     }
     
@@ -511,43 +507,12 @@ function updateWizardUI() {
     }
     
     if (nextBtn) {
-        const lastStep = app.state.leadType === "cold" ? 3 : 4;
-        if (step < lastStep) {
+        if (step < 2) {
             nextBtn.classList.add("hidden");
         } else {
             nextBtn.classList.remove("hidden");
             nextBtn.innerHTML = `<span>Comenzar mi Ruta 🚀</span>`;
         }
-    }
-
-    // Highlight selections for step 3
-    if (step === 3) {
-        const coldCard = document.getElementById("lead-cold-card");
-        const warmCard = document.getElementById("lead-warm-card");
-        if (coldCard && warmCard) {
-            if (app.state.leadType === "cold") {
-                coldCard.classList.add("selected");
-                warmCard.classList.remove("selected");
-            } else if (app.state.leadType === "warm") {
-                warmCard.classList.add("selected");
-                coldCard.classList.remove("selected");
-            } else {
-                coldCard.classList.remove("selected");
-                warmCard.classList.remove("selected");
-            }
-        }
-    }
-
-    // Highlight selections for step 4
-    if (step === 4) {
-        document.querySelectorAll("#filters-options-container .quiz-option").forEach(opt => {
-            const val = opt.dataset.val;
-            if (app.state.previousFilters.includes(val)) {
-                opt.classList.add("selected");
-            } else {
-                opt.classList.remove("selected");
-            }
-        });
     }
 }
 
@@ -845,6 +810,11 @@ function setupEventListeners() {
                 const sectorName = sectorObj ? sectorObj.name : "tu sector";
                 app.state.productName = sectorName; // Respaldo para plantillas
                 
+                // Fallback / default to cold lead type
+                if (!app.state.leadType) {
+                    app.state.leadType = "cold";
+                }
+                
                 if (!app.state.completedStages.includes("onboarding-complete")) {
                     app.state.completedStages.push("onboarding-complete");
                 }
@@ -856,7 +826,7 @@ function setupEventListeners() {
                 
                 showCelebrationModal(
                     "¡Ruta Creada! 🚀", 
-                    `Tu ruta de aprendizaje de ventas para "${sectorName}" (${app.state.leadType === 'cold' ? 'Lead Frío' : 'Lead Caliente'}) está lista. Ganas +20 XP.`,
+                    `Tu ruta de aprendizaje de ventas para "${sectorName}" está lista. Ganas +20 XP.`,
                     [{ emoji: "🗺️", name: "Iniciador" }]
                 );
                 
@@ -868,24 +838,6 @@ function setupEventListeners() {
                     alert("Por favor, selecciona un sector comercial.");
                     return;
                 }
-                app.state.onboardingStep = 3;
-                updateWizardUI();
-            } 
-            else if (step === 3) {
-                if (!app.state.leadType) {
-                    alert("Por favor, selecciona si es un Lead Frío o Caliente.");
-                    return;
-                }
-                
-                // Si es frío, completamos aquí la ruta de inmediato
-                if (app.state.leadType === "cold") {
-                    completeOnboarding();
-                } else {
-                    app.state.onboardingStep = 4;
-                    updateWizardUI();
-                }
-            } 
-            else if (step === 4) {
                 completeOnboarding();
             }
         });
