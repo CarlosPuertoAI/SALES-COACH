@@ -2057,6 +2057,12 @@ function initRoleplaySetup() {
     if (simulatorWorkspace) simulatorWorkspace.classList.add("hidden");
     if (uploadWorkspace) uploadWorkspace.classList.add("hidden");
 
+    // Clear chat messages container UI
+    const chatMessagesEl = document.getElementById("roleplay-chat-messages");
+    if (chatMessagesEl) {
+        chatMessagesEl.innerHTML = "";
+    }
+
     // Reset upload state
     const fileInput = document.getElementById("upload-file-input");
     if (fileInput) fileInput.value = "";
@@ -2348,6 +2354,10 @@ function setupRoleplayEventListeners() {
                 if (inputField) {
                     const base = recognition.baseTranscript || "";
                     inputField.value = base + (base && transcript ? " " : "") + transcript;
+                    
+                    // Auto-scroll input to the end to keep the newest text visible
+                    inputField.selectionStart = inputField.selectionEnd = inputField.value.length;
+                    inputField.scrollLeft = inputField.scrollWidth;
                 }
             };
 
