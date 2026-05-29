@@ -730,11 +730,39 @@
                             </div>
                         </div>
 
-                        <!-- 2. Product Name / Context -->
-                        <div class="form-group">
-                            <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-main);">2. Producto y Contexto (Opcional):</label>
-                            <input type="text" id="upload-product-input" placeholder="Ej: Software SaaS B2B, Venta fría..." style="width: 100%; padding: 10px 12px; border-radius: 8px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: var(--text-main); font-size: 13px; outline: none; transition: var(--transition-smooth); margin-bottom: 8px;" />
-                            <textarea id="upload-context-input" placeholder="Añade contexto sobre el prospecto, objeción inicial, qué querías lograr, etc..." rows="3" style="width: 100%; padding: 10px 12px; border-radius: 8px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: var(--text-main); font-size: 13px; outline: none; transition: var(--transition-smooth); resize: none; font-family: inherit; line-height: 1.4;"></textarea>
+                        <!-- 2. Detalle de la Venta -->
+                        <div class="form-group" style="display: flex; flex-direction: column; gap: 12px;">
+                            <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 0px; color: var(--text-main);">2. Detalles de la Venta:</label>
+                            
+                            <div>
+                                <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Sector Comercial:</label>
+                                <select id="upload-sector-select" style="width: 100%; padding: 10px 12px; border-radius: 8px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: var(--text-main); font-size: 13px; outline: none; transition: var(--transition-smooth); cursor: pointer;">
+                                    <option value="b2b" selected>Servicios B2B / Consultoría</option>
+                                    <option value="saas">SaaS / Software B2B</option>
+                                    <option value="realestate">Inmobiliaria</option>
+                                    <option value="automotive">Automoción</option>
+                                    <option value="finance">Finanzas / Seguros</option>
+                                    <option value="luxury">Lujo / High-Ticket</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Temperatura del Lead:</label>
+                                <select id="upload-lead-temp" style="width: 100%; padding: 10px 12px; border-radius: 8px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: var(--text-main); font-size: 13px; outline: none; transition: var(--transition-smooth); cursor: pointer;">
+                                    <option value="cold" selected>❄️ Contacto en Frío (Cold Call)</option>
+                                    <option value="warm">🔥 Contacto en Caliente (Inbound)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Producto o Servicio:</label>
+                                <input type="text" id="upload-product-input" placeholder="Ej: Consultoría SEO, Placas Solares..." style="width: 100%; padding: 10px 12px; border-radius: 8px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: var(--text-main); font-size: 13px; outline: none; transition: var(--transition-smooth);" />
+                            </div>
+
+                            <div>
+                                <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Contexto Adicional (Opcional):</label>
+                                <textarea id="upload-context-input" placeholder="Explica la objeción inicial o detalles clave del cliente..." rows="2" style="width: 100%; padding: 10px 12px; border-radius: 8px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: var(--text-main); font-size: 13px; outline: none; transition: var(--transition-smooth); resize: none; font-family: inherit; line-height: 1.4;"></textarea>
+                            </div>
                         </div>
 
                         <!-- Action Buttons -->

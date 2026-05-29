@@ -2592,6 +2592,11 @@ function setupRoleplayEventListeners() {
                 return;
             }
 
+            const sectorSelect = document.getElementById("upload-sector-select");
+            const leadTempSelect = document.getElementById("upload-lead-temp");
+            const sectorText = sectorSelect ? sectorSelect.options[sectorSelect.selectedIndex].text : "Servicios B2B / Consultoría";
+            const leadTempText = leadTempSelect ? leadTempSelect.options[leadTempSelect.selectedIndex].text : "Contacto en Frío (Cold Call)";
+
             const product = document.getElementById("upload-product-input").value.trim() || "un producto no especificado";
             const context = document.getElementById("upload-context-input").value.trim() || "No se ha proporcionado contexto adicional.";
 
@@ -2602,6 +2607,8 @@ function setupRoleplayEventListeners() {
 
             // Prompt de Auditoría Carlos
             const promptText = `Analiza detalladamente este archivo adjunto de una conversación de ventas real. 
+El sector comercial de la venta es: "${sectorText}".
+El tipo de contacto / temperatura del lead es: "${leadTempText}".
 El producto o servicio que se vende es: "${product}".
 Contexto de la venta: "${context}".
 
