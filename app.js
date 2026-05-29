@@ -3431,13 +3431,88 @@ function initAuth() {
     // Avatar selections inside registration form
     const avatarOptions = document.querySelectorAll(".avatar-option");
     let selectedAvatar = "🦈";
+    let uploadedPhotoBase64 = null;
+
     avatarOptions.forEach(opt => {
         opt.addEventListener("click", () => {
             avatarOptions.forEach(o => o.classList.remove("selected"));
             opt.classList.add("selected");
             selectedAvatar = opt.dataset.avatar;
+
+            // Clear custom photo if emoji is selected
+            if (uploadedPhotoBase64) {
+                uploadedPhotoBase64 = null;
+                const fileInput = document.getElementById("auth-register-photo");
+                const uploadLabel = document.getElementById("photo-upload-label");
+                const previewContainer = document.getElementById("photo-preview-container");
+                const clearBtn = document.getElementById("photo-clear-btn");
+                if (fileInput) fileInput.value = "";
+                if (previewContainer) previewContainer.style.display = "none";
+                if (uploadLabel) uploadLabel.innerText = "📸 Subir imagen...";
+                if (clearBtn) clearBtn.style.display = "none";
+            }
         });
     });
+
+    // Custom photo upload logic
+    const fileInput = document.getElementById("auth-register-photo");
+    const uploadLabel = document.getElementById("photo-upload-label");
+    const previewContainer = document.getElementById("photo-preview-container");
+    const previewImg = document.getElementById("photo-preview-img");
+    const clearBtn = document.getElementById("photo-clear-btn");
+
+    if (fileInput) {
+        fileInput.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement("canvas");
+                    const maxDim = 96;
+                    canvas.width = maxDim;
+                    canvas.height = maxDim;
+                    const ctx = canvas.getContext("2d");
+                    
+                    const minSide = Math.min(img.width, img.height);
+                    const sx = (img.width - minSide) / 2;
+                    const sy = (img.height - minSide) / 2;
+                    ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, maxDim, maxDim);
+                    
+                    uploadedPhotoBase64 = canvas.toDataURL("image/jpeg", 0.75);
+                    
+                    if (previewImg && previewContainer) {
+                        previewImg.src = uploadedPhotoBase64;
+                        previewContainer.style.display = "flex";
+                    }
+                    if (uploadLabel) uploadLabel.innerText = "✓ Foto cargada";
+                    if (clearBtn) clearBtn.style.display = "block";
+                    
+                    // Deselect emoji selections
+                    avatarOptions.forEach(o => o.classList.remove("selected"));
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    if (clearBtn) {
+        clearBtn.addEventListener("click", () => {
+            uploadedPhotoBase64 = null;
+            if (fileInput) fileInput.value = "";
+            if (previewContainer) previewContainer.style.display = "none";
+            if (uploadLabel) uploadLabel.innerText = "📸 Subir imagen...";
+            if (clearBtn) clearBtn.style.display = "none";
+            
+            if (avatarOptions.length > 0) {
+                avatarOptions[0].classList.add("selected");
+                selectedAvatar = avatarOptions[0].dataset.avatar;
+            }
+        });
+    }
 
     // Guest sign-in button (Demo local)
     const guestBtn = document.getElementById("auth-guest-btn");
@@ -3513,7 +3588,7 @@ function initAuth() {
                     uid: user.uid,
                     username: username,
                     email: email,
-                    avatar: selectedAvatar,
+                    avatar: uploadedPhotoBase64 || selectedAvatar,
                     xp: 0,
                     level: 1,
                     completedStages: [],
@@ -3810,6 +3885,15 @@ function switchChannel(channel) {
     }
 }
 
+// Helper to format custom photos vs emoji avatars
+function formatAvatar(avatarStr, sizePx = 20) {
+    if (!avatarStr) return '🦈';
+    if (avatarStr.startsWith('data:') || avatarStr.startsWith('http')) {
+        return `<img src="${avatarStr}" style="width: ${sizePx}px; height: ${sizePx}px; border-radius: 50%; object-fit: cover; display: inline-block; border: 1px solid rgba(255,255,255,0.15);" />`;
+    }
+    return `<span style="font-size: ${sizePx - 2}px; line-height: 1;">${avatarStr}</span>`;
+}
+
 // 7. Render a single chat bubble
 function renderSingleMessage(msg) {
     const container = document.getElementById("chat-messages-container");
@@ -3834,7 +3918,7 @@ function renderSingleMessage(msg) {
     }
 
     bubble.innerHTML = `
-        <div style="font-size: 20px; align-self: flex-start; padding-top: 2px;">${msg.senderAvatar || '🦈'}</div>
+        <div style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; align-self: flex-start; padding-top: 2px;">${formatAvatar(msg.senderAvatar, 24)}</div>
         <div style="display: flex; flex-direction: column; gap: 2px; flex: 1;">
             <div style="display: flex; align-items: center; gap: 6px;">
                 <span style="font-size: 12px; font-weight: 700; color: ${isOwn ? '#a855f7' : 'var(--text-main)'};">${msg.senderName}</span>
@@ -3989,7 +4073,7 @@ async function loadMapMarkers() {
                     const content = `
                         <div style="font-family: inherit; font-size: 12px; color: #fff; padding: 4px; min-width: 140px;">
                             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                                <span style="font-size: 18px;">${u.avatar || '🦈'}</span>
+                                <span style="width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;">${formatAvatar(u.avatar, 26)}</span>
                                 <div>
                                     <strong style="color: #a855f7; font-size: 13px;">${u.username || 'Vendedor'}</strong>
                                     <br><span style="font-size: 9.5px; color: #8b8f9a;">Nivel ${u.level || 1}</span>
@@ -4027,7 +4111,7 @@ async function loadMapMarkers() {
             const content = `
                 <div style="font-family: inherit; font-size: 12px; color: #fff; padding: 4px; min-width: 140px;">
                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                        <span style="font-size: 18px;">${u.avatar}</span>
+                        <span style="width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;">${formatAvatar(u.avatar, 26)}</span>
                         <div>
                             <strong style="color: #a855f7; font-size: 13px;">${u.username}</strong>
                             <br><span style="font-size: 9.5px; color: #8b8f9a;">Nivel ${u.level}</span>

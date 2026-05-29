@@ -101,7 +101,7 @@
                             </div>
                             
                             <!-- Avatar Selection Grid -->
-                            <div class="form-group" style="margin-bottom: 24px;">
+                            <div class="form-group" style="margin-bottom: 16px;">
                                 <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">Selecciona tu Avatar de Ventas:</label>
                                 <div class="avatar-select-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
                                     <div class="avatar-option selected" data-avatar="🦈" style="display: flex; align-items: center; justify-content: center; font-size: 24px; padding: 8px; background: rgba(255,255,255,0.05); border: 2px solid var(--primary); border-radius: 10px; cursor: pointer; transition: all 0.2s;">🦈</div>
@@ -112,6 +112,21 @@
                                     <div class="avatar-option" data-avatar="🦊" style="display: flex; align-items: center; justify-content: center; font-size: 24px; padding: 8px; background: rgba(255,255,255,0.02); border: 2px solid transparent; border-radius: 10px; cursor: pointer; transition: all 0.2s;">🦊</div>
                                     <div class="avatar-option" data-avatar="🐯" style="display: flex; align-items: center; justify-content: center; font-size: 24px; padding: 8px; background: rgba(255,255,255,0.02); border: 2px solid transparent; border-radius: 10px; cursor: pointer; transition: all 0.2s;">🐯</div>
                                     <div class="avatar-option" data-avatar="🦉" style="display: flex; align-items: center; justify-content: center; font-size: 24px; padding: 8px; background: rgba(255,255,255,0.02); border: 2px solid transparent; border-radius: 10px; cursor: pointer; transition: all 0.2s;">🦉</div>
+                                </div>
+                            </div>
+
+                            <!-- Custom Photo Upload Field -->
+                            <div class="form-group" style="margin-bottom: 24px;">
+                                <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">O sube tu propia Foto de Perfil (Opcional):</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <label for="auth-register-photo" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 14px; background: rgba(255,255,255,0.04); border: 1px dashed rgba(255,255,255,0.15); border-radius: 10px; cursor: pointer; color: var(--text-main); font-size: 12px; transition: all 0.2s; flex: 1; text-align: center; border-color: rgba(255,255,255,0.15);">
+                                        <span id="photo-upload-label">📸 Subir imagen...</span>
+                                    </label>
+                                    <input type="file" id="auth-register-photo" accept="image/*" style="display: none;" />
+                                    <div id="photo-preview-container" style="width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.05); display: none; align-items: center; justify-content: center; overflow: hidden; border: 2px solid var(--primary); flex-shrink: 0;">
+                                        <img id="photo-preview-img" style="width: 100%; height: 100%; object-fit: cover;" />
+                                    </div>
+                                    <button type="button" id="photo-clear-btn" style="display: none; background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.2); border-radius: 8px; padding: 6px 10px; font-size: 11px; cursor: pointer;">Quitar</button>
                                 </div>
                             </div>
                             
@@ -1102,10 +1117,10 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <!-- Firebase Custom Config -->
-    <script src="firebase-config.js"></script>
+    <script src="firebase-config.js?v=2"></script>
     <!-- Leaflet Map JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <!-- Main JS Application Logic -->
-    <script src="app.js"></script>
+    <script src="app.js?v=2"></script>
 </body>
 </html>
