@@ -2023,7 +2023,7 @@ Devuelve la respuesta en formato JSON estrictamente válido. No devuelvas ningú
                 }],
                 generationConfig: {
                     temperature: 0.7,
-                    maxOutputTokens: 1500,
+                    maxOutputTokens: 8000,
                     responseMimeType: "application/json"
                 }
             })
@@ -2649,7 +2649,7 @@ INSTRUCCIONES DE AUDITORÍA (APLICA ESTRICTAMENTE EL ADN DEL CLOSER ÉLITE):
                 contents: [{ parts: [{ text: prompt }] }],
                 generationConfig: { 
                     temperature: 0.7, 
-                    maxOutputTokens: 1500,
+                    maxOutputTokens: 8000,
                     responseMimeType: "application/json"
                 }
             })
