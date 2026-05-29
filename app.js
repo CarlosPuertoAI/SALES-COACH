@@ -3712,6 +3712,7 @@ function checkAuthAndOnboarding() {
         if (header) header.classList.remove("hidden");
         if (nav) nav.classList.remove("hidden");
         app.updateHeaderStats();
+        addLogoutButton();
         
         const currentView = document.querySelector(".view.active");
         if (!currentView || currentView.id === "view-auth") {
@@ -3794,6 +3795,12 @@ function addLogoutButton() {
                     app.state.completedStages = app.state.completedStages.filter(s => s !== "onboarding-complete");
                     app.saveState();
                     logoutBtn.remove();
+                    
+                    const nav = document.getElementById("app-nav");
+                    if (nav) nav.classList.add("hidden");
+                    const header = document.getElementById("app-header");
+                    if (header) header.classList.add("hidden");
+                    
                     navigateTo("auth");
                 } catch (e) {
                     alert("Error al cerrar sesión: " + e.message);
