@@ -354,6 +354,19 @@ class SalesQuest {
     saveState() {
         localStorage.setItem("salesquest_state", JSON.stringify(this.state));
         this.updateHeaderStats();
+        
+        // Sincronizar progreso con Firestore si el usuario está logueado
+        if (firebaseEnabled && auth && auth.currentUser) {
+            db.collection("users").doc(auth.currentUser.uid).update({
+                xp: this.state.xp,
+                level: this.state.level,
+                completedStages: this.state.completedStages,
+                productName: this.state.productName,
+                sectorId: this.state.sectorId,
+                leadType: this.state.leadType,
+                lastActive: firebase.firestore.FieldValue.serverTimestamp()
+            }).catch(err => console.warn("Error al sincronizar estado con Firestore:", err));
+        }
     }
 
     resetState() {
@@ -667,15 +680,8 @@ function initUI() {
     setupRoleplayEventListeners();
     startQuoteRotation();
     
-    if (app.state.completedStages.includes("onboarding-complete")) {
-        const headerEl = document.getElementById("app-header");
-        if (headerEl) headerEl.classList.remove("hidden");
-        document.getElementById("app-nav").classList.remove("hidden");
-        app.updateHeaderStats();
-        navigateTo("dashboard");
-    } else {
-        navigateTo("onboarding");
-    }
+    // Inicializar flujos de autenticación e interfaz
+    initAuth();
 }
 
 // Onboarding: Sector Grid Render
@@ -747,6 +753,10 @@ function navigateTo(viewId) {
         renderClosing();
     } else if (viewId === "roleplay") {
         initRoleplaySetup();
+    } else if (viewId === "communities") {
+        setupChatRoom();
+    } else if (viewId === "worldmap") {
+        initWorldMap();
     }
 
     // Scroll to top
@@ -3346,4 +3356,723 @@ SITUACIÓN EXACTA: ${s.situation}
 DOLOR ESPECÍFICO A RESOLVER: ${s.pain}
 MÉTRICA/PRESUPUESTO CLAVE: ${s.metric}`;
 }
+
+SalesQuest.prototype.navigateTo = function(viewId) {
+    navigateTo(viewId);
+};
+
+// --- MULTIPLAYER CORE: AUTHENTICATION, CHAT & WORLD MAP ---
+
+let chatUnsubscribe = null;
+let activeChannel = "general";
+let leafletMap = null;
+let mapMarkers = [];
+
+// Mock Messages for Local Demo Fallback
+const mockMessages = {
+    general: [
+        { senderName: "Carlos 🦈", senderAvatar: "🦈", level: 12, text: "¿Cómo lidian con la objeción 'no tengo presupuesto' en venta fría?", timestamp: new Date(Date.now() - 3600000) },
+        { senderName: "Marta", senderAvatar: "🦊", level: 5, text: "Yo suelo usar la técnica de Chris Voss: '¿Considera que invertir en esto le causaría pérdidas o es más bien un tema de flujo de caja?'", timestamp: new Date(Date.now() - 1800000) },
+        { senderName: "Juan", senderAvatar: "🐯", level: 8, text: "¡Buenísima técnica! Yo prefiero ir por el ROI estimado.", timestamp: new Date(Date.now() - 600000) }
+    ],
+    b2b: [
+        { senderName: "Sofía", senderAvatar: "🦅", level: 10, text: "Las consultorías de servicios B2B medianas están tardando más en firmar contratos este mes.", timestamp: new Date(Date.now() - 7200000) },
+        { senderName: "Roberto", senderAvatar: "🦁", level: 7, text: "Sí, es por el cierre del Q2. Hay que acelerar ofreciendo incentivos de inicio rápido.", timestamp: new Date(Date.now() - 5400000) }
+    ],
+    saas: [
+        { senderName: "Elena", senderAvatar: "💻", level: 9, text: "Con el Copiloto de SalesQuest, el tiempo de respuesta a objeciones bajó a la mitad. Mis demos convierten el doble.", timestamp: new Date(Date.now() - 3600000) },
+        { senderName: "Alex", senderAvatar: "🐲", level: 4, text: "Totalmente de acuerdo, la sección de reencuadre dinámico ayuda muchísimo.", timestamp: new Date(Date.now() - 1200000) }
+    ],
+    realestate: [
+        { senderName: "Raúl", senderAvatar: "🏠", level: 6, text: "El mercado inmobiliario en Madrid está en un punto donde la prisa del vendedor domina.", timestamp: new Date(Date.now() - 1800000) }
+    ],
+    automotive: [
+        { senderName: "Oscar", senderAvatar: "🚗", level: 5, text: "Los clientes de gama media-alta son muy propensos a comparar financiación. Hay que vender el pack completo.", timestamp: new Date(Date.now() - 3600000) }
+    ],
+    finance: [
+        { senderName: "Nuria", senderAvatar: "📊", level: 8, text: "En seguros de salud B2B, la retención es clave. El onboarding post-venta vale oro.", timestamp: new Date(Date.now() - 1800000) }
+    ],
+    luxury: [
+        { senderName: "Victoria", senderAvatar: "👑", level: 11, text: "En el sector de lujo, hablar de precio es un error. Hay que vender estatus y escasez absoluta.", timestamp: new Date(Date.now() - 3600000) }
+    ]
+};
+
+// 1. Initialize Authentication and Sessions
+function initAuth() {
+    // Check if guest status was stored previously
+    app.isGuest = localStorage.getItem("salesquest_is_guest") === "true";
+
+    // Tab toggling (Login vs Register)
+    const tabLogin = document.getElementById("auth-tab-login");
+    const tabRegister = document.getElementById("auth-tab-register");
+    const loginContainer = document.getElementById("auth-login-container");
+    const registerContainer = document.getElementById("auth-register-container");
+
+    if (tabLogin && tabRegister && loginContainer && registerContainer) {
+        tabLogin.addEventListener("click", () => {
+            tabLogin.classList.add("active");
+            tabRegister.classList.remove("active");
+            loginContainer.classList.remove("hidden");
+            registerContainer.classList.add("hidden");
+            tabLogin.style.color = "var(--text-main)";
+            tabRegister.style.color = "var(--text-muted)";
+        });
+
+        tabRegister.addEventListener("click", () => {
+            tabRegister.classList.add("active");
+            tabLogin.classList.remove("active");
+            registerContainer.classList.remove("hidden");
+            loginContainer.classList.add("hidden");
+            tabRegister.style.color = "var(--text-main)";
+            tabLogin.style.color = "var(--text-muted)";
+        });
+    }
+
+    // Avatar selections inside registration form
+    const avatarOptions = document.querySelectorAll(".avatar-option");
+    let selectedAvatar = "🦈";
+    avatarOptions.forEach(opt => {
+        opt.addEventListener("click", () => {
+            avatarOptions.forEach(o => o.classList.remove("selected"));
+            opt.classList.add("selected");
+            selectedAvatar = opt.dataset.avatar;
+        });
+    });
+
+    // Guest sign-in button (Demo local)
+    const guestBtn = document.getElementById("auth-guest-btn");
+    if (guestBtn) {
+        guestBtn.addEventListener("click", () => {
+            localStorage.setItem("salesquest_is_guest", "true");
+            app.isGuest = true;
+            console.log("Entrando en modo invitado local.");
+            checkAuthAndOnboarding();
+        });
+    }
+
+    // Handle Login Form Submission
+    const loginForm = document.getElementById("auth-login-form");
+    if (loginForm) {
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("auth-login-email").value.trim();
+            const password = document.getElementById("auth-login-password").value.trim();
+
+            if (!firebaseEnabled) {
+                alert("Firebase no está conectado. Edita 'firebase-config.js' con tus credenciales de Firebase para activar esta función.");
+                return;
+            }
+
+            try {
+                const submitBtn = loginForm.querySelector("button[type='submit']");
+                const originalText = submitBtn.innerHTML;
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = "<span>Entrando... 🔄</span>";
+
+                await auth.signInWithEmailAndPassword(email, password);
+                localStorage.setItem("salesquest_is_guest", "false");
+                app.isGuest = false;
+            } catch (error) {
+                console.error("Error al iniciar sesión:", error);
+                alert(`Error al iniciar sesión: ${error.message}`);
+            } finally {
+                const submitBtn = loginForm.querySelector("button[type='submit']");
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = "<span>Iniciar Sesión 🚀</span>";
+                }
+            }
+        });
+    }
+
+    // Handle Registration Form Submission
+    const registerForm = document.getElementById("auth-register-form");
+    if (registerForm) {
+        registerForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const username = document.getElementById("auth-register-username").value.trim();
+            const email = registerForm.querySelector("input[type='email']").value.trim();
+            const password = registerForm.querySelector("input[type='password']").value.trim();
+
+            if (!firebaseEnabled) {
+                alert("Firebase no está conectado. Edita 'firebase-config.js' con tus credenciales de Firebase para activar esta función.");
+                return;
+            }
+
+            try {
+                const submitBtn = registerForm.querySelector("button[type='submit']");
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = "<span>Registrando... 🔄</span>";
+
+                // Create Firebase User
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+
+                // Create profile in Firestore
+                await db.collection("users").doc(user.uid).set({
+                    uid: user.uid,
+                    username: username,
+                    email: email,
+                    avatar: selectedAvatar,
+                    xp: 0,
+                    level: 1,
+                    completedStages: [],
+                    productName: "",
+                    sectorId: "",
+                    leadType: "",
+                    lastActive: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                localStorage.setItem("salesquest_is_guest", "false");
+                app.isGuest = false;
+                
+                // Clear local state for clean new account
+                app.state.xp = 0;
+                app.state.level = 1;
+                app.state.completedStages = [];
+                app.state.productName = "";
+                app.state.sectorId = "";
+                app.state.leadType = "";
+                app.saveState();
+
+                alert("¡Perfil de ventas creado con éxito!");
+            } catch (error) {
+                console.error("Error al registrarse:", error);
+                alert(`Error al registrarse: ${error.message}`);
+            } finally {
+                const submitBtn = registerForm.querySelector("button[type='submit']");
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = "<span>Crear Cuenta y Empezar 🦈</span>";
+                }
+            }
+        });
+    }
+
+    // Monitor Firebase Auth State
+    if (firebaseEnabled && auth) {
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                console.log("Usuario Firebase detectado:", user.uid);
+                localStorage.setItem("salesquest_is_guest", "false");
+                app.isGuest = false;
+
+                // Inject Logout Button in header
+                addLogoutButton();
+
+                // Fetch progress state
+                try {
+                    const doc = await db.collection("users").doc(user.uid).get();
+                    if (doc.exists) {
+                        const data = doc.data();
+                        app.state.xp = data.xp || 0;
+                        app.state.level = data.level || 1;
+                        app.state.completedStages = data.completedStages || [];
+                        app.state.productName = data.productName || "";
+                        app.state.sectorId = data.sectorId || "";
+                        app.state.leadType = data.leadType || "";
+                        app.saveState();
+                    } else {
+                        // Backup if firestore document failed to initialize
+                        await db.collection("users").doc(user.uid).set({
+                            uid: user.uid,
+                            username: user.email.split("@")[0],
+                            email: user.email,
+                            avatar: "🦈",
+                            xp: app.state.xp,
+                            level: app.state.level,
+                            completedStages: app.state.completedStages,
+                            productName: app.state.productName,
+                            sectorId: app.state.sectorId,
+                            leadType: app.state.leadType,
+                            lastActive: firebase.firestore.FieldValue.serverTimestamp()
+                        }, { merge: true });
+                    }
+                    
+                    // Update user connection geolocation coordinate fields
+                    updateUserGeolocation(user.uid);
+                } catch (error) {
+                    console.error("Fallo de sincronía con Firestore:", error);
+                }
+
+                checkAuthAndOnboarding();
+            } else {
+                if (app.isGuest) {
+                    checkAuthAndOnboarding();
+                } else {
+                    // Force auth view
+                    const nav = document.getElementById("app-nav");
+                    if (nav) nav.classList.add("hidden");
+                    const header = document.getElementById("app-header");
+                    if (header) header.classList.add("hidden");
+                    navigateTo("auth");
+                }
+            }
+        });
+    } else {
+        checkAuthAndOnboarding();
+    }
+}
+
+// 2. Auth vs Onboarding Checker
+function checkAuthAndOnboarding() {
+    const nav = document.getElementById("app-nav");
+    const header = document.getElementById("app-header");
+    
+    // Toggle demo warning alerts
+    const chatAlert = document.getElementById("firebase-demo-alert-chat");
+    const mapAlert = document.getElementById("firebase-demo-alert-map");
+    if (chatAlert) {
+        if (!firebaseEnabled) chatAlert.classList.remove("hidden");
+        else chatAlert.classList.add("hidden");
+    }
+    if (mapAlert) {
+        if (!firebaseEnabled) mapAlert.classList.remove("hidden");
+        else mapAlert.classList.add("hidden");
+    }
+
+    const isOnboardingComplete = app.state.completedStages.includes("onboarding-complete");
+
+    if (isOnboardingComplete) {
+        if (header) header.classList.remove("hidden");
+        if (nav) nav.classList.remove("hidden");
+        app.updateHeaderStats();
+        
+        const currentView = document.querySelector(".view.active");
+        if (!currentView || currentView.id === "view-auth") {
+            navigateTo("dashboard");
+        }
+    } else {
+        if (header) header.classList.add("hidden");
+        if (nav) nav.classList.add("hidden");
+        navigateTo("onboarding");
+    }
+}
+
+// 3. User Geolocation updater
+async function updateUserGeolocation(uid) {
+    if (!firebaseEnabled) return;
+    try {
+        // Fast non-intrusive IP geolocation
+        const response = await fetch("https://ipapi.co/json/");
+        if (response.ok) {
+            const data = await response.json();
+            if (data.latitude && data.longitude) {
+                await db.collection("users").doc(uid).update({
+                    lat: data.latitude,
+                    lng: data.longitude,
+                    city: data.city || "",
+                    country: data.country_name || "",
+                    lastActive: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                return;
+            }
+        }
+    } catch (e) {
+        console.warn("Fallo geolocalización por IP, probando HTML5 nativa:", e);
+    }
+
+    // Fallback: browser Geolocation
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async (position) => {
+            try {
+                await db.collection("users").doc(uid).update({
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                    lastActive: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            } catch (e) {
+                console.error("Error al actualizar ubicación:", e);
+            }
+        });
+    }
+}
+
+// 4. Logout trigger button renderer
+function addLogoutButton() {
+    if (document.getElementById("auth-logout-btn")) return;
+    
+    const headerRight = document.querySelector(".header-right");
+    if (headerRight) {
+        const logoutBtn = document.createElement("button");
+        logoutBtn.id = "auth-logout-btn";
+        logoutBtn.className = "header-back-btn";
+        logoutBtn.title = "Cerrar Sesión";
+        logoutBtn.style.background = "rgba(239, 68, 68, 0.1)";
+        logoutBtn.style.color = "#ef4444";
+        logoutBtn.style.border = "1px solid rgba(239, 68, 68, 0.2)";
+        logoutBtn.style.padding = "4px 8px";
+        logoutBtn.style.borderRadius = "8px";
+        logoutBtn.style.fontSize = "11px";
+        logoutBtn.style.fontWeight = "600";
+        logoutBtn.style.cursor = "pointer";
+        logoutBtn.innerHTML = "Salir 🚪";
+        
+        logoutBtn.addEventListener("click", async () => {
+            if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
+                try {
+                    if (firebaseEnabled && auth) {
+                        await auth.signOut();
+                    }
+                    localStorage.removeItem("salesquest_is_guest");
+                    app.isGuest = false;
+                    app.state.completedStages = app.state.completedStages.filter(s => s !== "onboarding-complete");
+                    app.saveState();
+                    logoutBtn.remove();
+                    navigateTo("auth");
+                } catch (e) {
+                    alert("Error al cerrar sesión: " + e.message);
+                }
+            }
+        });
+        headerRight.prepend(logoutBtn);
+    }
+}
+
+// 5. Chat communities connection setup
+function setupChatRoom() {
+    const channelItems = document.querySelectorAll(".channel-item");
+    
+    // Bind click events only once
+    if (!channelItems[0].hasAttribute("data-listener-bound")) {
+        channelItems.forEach(item => {
+            item.setAttribute("data-listener-bound", "true");
+            item.addEventListener("click", () => {
+                channelItems.forEach(i => {
+                    i.classList.remove("active");
+                });
+                item.classList.add("active");
+                switchChannel(item.dataset.channel);
+            });
+        });
+
+        const chatForm = document.getElementById("chat-send-form");
+        if (chatForm) {
+            chatForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const input = document.getElementById("chat-message-input");
+                const text = input.value.trim();
+                if (!text) return;
+                
+                input.value = "";
+                await sendChatMessage(text);
+            });
+        }
+    }
+
+    // Default load General channel
+    switchChannel(activeChannel);
+}
+
+// 6. Switch Chat Channels
+function switchChannel(channel) {
+    activeChannel = channel;
+    
+    const titleEl = document.getElementById("active-channel-title");
+    if (titleEl) {
+        const channelNames = {
+            general: "🌐 Canal General",
+            b2b: "💼 Consultoría B2B",
+            saas: "💻 SaaS / Software B2B",
+            realestate: "🏠 Sector Inmobiliario",
+            automotive: "🚗 Sector Automoción",
+            finance: "📊 Finanzas / Seguros",
+            luxury: "👑 Lujo / High-Ticket"
+        };
+        titleEl.innerText = channelNames[channel] || "Canal";
+    }
+
+    const container = document.getElementById("chat-messages-container");
+    if (container) container.innerHTML = "";
+
+    if (firebaseEnabled) {
+        if (chatUnsubscribe) {
+            chatUnsubscribe();
+        }
+
+        chatUnsubscribe = db.collection("messages")
+            .where("channelId", "==", channel)
+            .orderBy("timestamp", "asc")
+            .limitToLast(50)
+            .onSnapshot((snapshot) => {
+                container.innerHTML = "";
+                snapshot.forEach((doc) => {
+                    renderSingleMessage(doc.data());
+                });
+                container.scrollTop = container.scrollHeight;
+            }, (err) => {
+                console.error("Firestore chat snapshot error:", err);
+            });
+    } else {
+        const msgs = mockMessages[channel] || [];
+        msgs.forEach(msg => renderSingleMessage(msg));
+        container.scrollTop = container.scrollHeight;
+    }
+}
+
+// 7. Render a single chat bubble
+function renderSingleMessage(msg) {
+    const container = document.getElementById("chat-messages-container");
+    if (!container) return;
+
+    let isOwn = false;
+    if (firebaseEnabled && auth && auth.currentUser) {
+        isOwn = msg.senderId === auth.currentUser.uid;
+    } else if (msg.senderId === "guest") {
+        isOwn = true;
+    }
+
+    const bubble = document.createElement("div");
+    bubble.className = `chat-msg-bubble ${isOwn ? 'own-message' : ''}`;
+    
+    let timeStr = "";
+    try {
+        const date = msg.timestamp ? (msg.timestamp.seconds ? new Date(msg.timestamp.seconds * 1000) : new Date(msg.timestamp)) : new Date();
+        timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } catch (e) {
+        timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    bubble.innerHTML = `
+        <div style="font-size: 20px; align-self: flex-start; padding-top: 2px;">${msg.senderAvatar || '🦈'}</div>
+        <div style="display: flex; flex-direction: column; gap: 2px; flex: 1;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 12px; font-weight: 700; color: ${isOwn ? '#a855f7' : 'var(--text-main)'};">${msg.senderName}</span>
+                <span style="font-size: 9px; color: #a855f7; background: rgba(168,85,247,0.1); padding: 1px 4px; border-radius: 4px; font-weight: 600;">Lvl ${msg.level || 1}</span>
+                <span style="font-size: 9px; color: var(--text-muted); opacity: 0.8;">${timeStr}</span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-main); margin: 0; line-height: 1.4; word-break: break-word;">${msg.text}</p>
+        </div>
+    `;
+    
+    container.appendChild(bubble);
+}
+
+// 8. Send Chat Message
+async function sendChatMessage(text) {
+    let name = "Invitado";
+    let avatar = "🦈";
+    let level = app.state.level || 1;
+    let uid = "guest";
+
+    if (firebaseEnabled && auth && auth.currentUser) {
+        uid = auth.currentUser.uid;
+        try {
+            const doc = await db.collection("users").doc(uid).get();
+            if (doc.exists) {
+                const data = doc.data();
+                name = data.username || auth.currentUser.email.split("@")[0];
+                avatar = data.avatar || "🦈";
+                level = data.level || 1;
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    const messageData = {
+        senderId: uid,
+        senderName: name,
+        senderAvatar: avatar,
+        level: level,
+        text: text,
+        timestamp: firebaseEnabled ? firebase.firestore.FieldValue.serverTimestamp() : new Date().toISOString(),
+        channelId: activeChannel
+    };
+
+    if (firebaseEnabled) {
+        try {
+            await db.collection("messages").add(messageData);
+        } catch (e) {
+            console.error("Error al guardar mensaje:", e);
+            alert("No se pudo enviar el mensaje: " + e.message);
+        }
+    } else {
+        if (!mockMessages[activeChannel]) mockMessages[activeChannel] = [];
+        mockMessages[activeChannel].push(messageData);
+        renderSingleMessage(messageData);
+        
+        const container = document.getElementById("chat-messages-container");
+        if (container) container.scrollTop = container.scrollHeight;
+
+        // Auto Bot Response simulation
+        setTimeout(() => {
+            const responses = [
+                "¡Brillante reencuadre! Me guardo esa frase.",
+                "Cuidado con bajar el precio tan rápido. Aumenta el dolor primero.",
+                "Usa preguntas de Chris Voss: '¿Parece esto una propuesta razonable?'",
+                "Esa objeción de presupuesto siempre encubre falta de certeza.",
+                "Recomiendo calificar con el Perfilador antes de saltar a la llamada."
+            ];
+            const botMsg = {
+                senderId: "carlos_bot",
+                senderName: "Carlos 🦈 (Mentor)",
+                senderAvatar: "🦈",
+                level: 30,
+                text: `@${name}: ${responses[Math.floor(Math.random() * responses.length)]}`,
+                timestamp: new Date().toISOString(),
+                channelId: activeChannel
+            };
+            mockMessages[activeChannel].push(botMsg);
+            renderSingleMessage(botMsg);
+            if (container) container.scrollTop = container.scrollHeight;
+        }, 1500);
+    }
+}
+
+// 9. World map initializing
+function initWorldMap() {
+    const mapBtn = document.getElementById("refresh-map-btn");
+    
+    // Bind reload button listener only once
+    if (mapBtn && !mapBtn.hasAttribute("data-listener-bound")) {
+        mapBtn.setAttribute("data-listener-bound", "true");
+        mapBtn.addEventListener("click", () => {
+            loadMapMarkers();
+        });
+    }
+
+    if (typeof L === 'undefined') {
+        console.warn("Leaflet.js no está cargado todavía.");
+        return;
+    }
+
+    if (!leafletMap) {
+        leafletMap = L.map('map', {
+            center: [20, 0],
+            zoom: 2,
+            minZoom: 1.5,
+            maxZoom: 10
+        });
+
+        // Add CartoDB Dark Matter tile layer
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 20
+        }).addTo(leafletMap);
+    }
+
+    // Invalidate Leaflet size to force redraw in active tab container
+    setTimeout(() => {
+        if (leafletMap) leafletMap.invalidateSize();
+    }, 200);
+
+    loadMapMarkers();
+}
+
+// 10. Load map markers for active users
+async function loadMapMarkers() {
+    if (!leafletMap) return;
+
+    // Clear active map markers
+    mapMarkers.forEach(m => leafletMap.removeLayer(m));
+    mapMarkers = [];
+
+    // Customize Neon marker dot
+    const dotIcon = L.divIcon({
+        className: 'custom-map-marker',
+        html: `<div style="background: #a855f7; border: 2px solid #fff; width: 14px; height: 14px; border-radius: 50%; box-shadow: 0 0 12px #a855f7;"></div>`,
+        iconSize: [14, 14],
+        iconAnchor: [7, 7]
+    });
+
+    if (firebaseEnabled) {
+        try {
+            const querySnapshot = await db.collection("users").get();
+            querySnapshot.forEach((doc) => {
+                const u = doc.data();
+                if (u.lat && u.lng) {
+                    const marker = L.marker([u.lat, u.lng], { icon: dotIcon }).addTo(leafletMap);
+                    const sectorName = u.sectorId ? (SECTORS.find(s => s.id === u.sectorId)?.name || u.sectorId) : "General";
+                    
+                    const content = `
+                        <div style="font-family: inherit; font-size: 12px; color: #fff; padding: 4px; min-width: 140px;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <span style="font-size: 18px;">${u.avatar || '🦈'}</span>
+                                <div>
+                                    <strong style="color: #a855f7; font-size: 13px;">${u.username || 'Vendedor'}</strong>
+                                    <br><span style="font-size: 9.5px; color: #8b8f9a;">Nivel ${u.level || 1}</span>
+                                </div>
+                            </div>
+                            <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 6px; margin-top: 6px; line-height: 1.4;">
+                                <strong>Sector:</strong> ${sectorName}
+                                <br><strong>Ubicación:</strong> ${u.city || 'Activo'}, ${u.country || 'Planeta Tierra'}
+                            </div>
+                        </div>
+                    `;
+                    marker.bindPopup(content);
+                    mapMarkers.push(marker);
+                }
+            });
+        } catch (e) {
+            console.error("Error al consultar usuarios geolocalizados:", e);
+        }
+    } else {
+        // Local Demo Map simulation
+        const mockUsers = [
+            { username: "CerradorTiburón (Tú)", avatar: "🦈", level: app.state.level || 1, sectorId: app.state.sectorId || "saas", lat: 40.4167, lng: -3.7037, city: "Madrid", country: "España" },
+            { username: "Elena Saas", avatar: "💻", level: 8, sectorId: "saas", lat: 48.8566, lng: 2.3522, city: "París", country: "Francia" },
+            { username: "John B2B", avatar: "🦅", level: 14, sectorId: "b2b", lat: 40.7128, lng: -74.0060, city: "Nueva York", country: "EE.UU." },
+            { username: "Yuki Luxury", avatar: "👑", level: 11, sectorId: "luxury", lat: 35.6762, lng: 139.6503, city: "Tokio", country: "Japón" },
+            { username: "Matías Inmo", avatar: "🏠", level: 5, sectorId: "realestate", lat: -34.6037, lng: -58.3816, city: "Buenos Aires", country: "Argentina" },
+            { username: "Clara Seguros", avatar: "📊", level: 9, sectorId: "finance", lat: 4.7110, lng: -74.0721, city: "Bogotá", country: "Colombia" },
+            { username: "Carlos Boss", avatar: "🦁", level: 25, sectorId: "b2b", lat: 19.4326, lng: -99.1332, city: "Ciudad de México", country: "México" }
+        ];
+
+        mockUsers.forEach(u => {
+            const marker = L.marker([u.lat, u.lng], { icon: dotIcon }).addTo(leafletMap);
+            const sectorName = SECTORS.find(s => s.id === u.sectorId)?.name || u.sectorId;
+            
+            const content = `
+                <div style="font-family: inherit; font-size: 12px; color: #fff; padding: 4px; min-width: 140px;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                        <span style="font-size: 18px;">${u.avatar}</span>
+                        <div>
+                            <strong style="color: #a855f7; font-size: 13px;">${u.username}</strong>
+                            <br><span style="font-size: 9.5px; color: #8b8f9a;">Nivel ${u.level}</span>
+                        </div>
+                    </div>
+                    <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 6px; margin-top: 6px; line-height: 1.4;">
+                        <strong>Sector:</strong> ${sectorName}
+                        <br><strong>Ubicación:</strong> ${u.city}, ${u.country}
+                    </div>
+                </div>
+            `;
+            marker.bindPopup(content);
+            mapMarkers.push(marker);
+        });
+
+        // Try IP autolocation centring for guest user
+        try {
+            fetch("https://ipapi.co/json/")
+                .then(res => res.json())
+                .then(data => {
+                    if (data.latitude && data.longitude) {
+                        const marker = L.marker([data.latitude, data.longitude], { icon: dotIcon }).addTo(leafletMap);
+                        const sectorName = SECTORS.find(s => s.id === app.state.sectorId)?.name || "Sin configurar";
+                        const content = `
+                            <div style="font-family: inherit; font-size: 12px; color: #fff; padding: 4px; min-width: 140px;">
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                    <span style="font-size: 18px;">🦈</span>
+                                    <div>
+                                        <strong style="color: #a855f7; font-size: 13px;">Tú (Invitado)</strong>
+                                        <br><span style="font-size: 9.5px; color: #8b8f9a;">Nivel ${app.state.level || 1}</span>
+                                    </div>
+                                </div>
+                                <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 6px; margin-top: 6px; line-height: 1.4;">
+                                    <strong>Sector:</strong> ${sectorName}
+                                    <br><strong>Ubicación:</strong> ${data.city || 'Desconocido'}, ${data.country_name || 'España'}
+                                </div>
+                            </div>
+                        `;
+                        marker.bindPopup(content);
+                        mapMarkers.push(marker);
+                        leafletMap.setView([data.latitude, data.longitude], 4);
+                    }
+                }).catch(e => console.warn(e));
+        } catch (e) {}
+    }
+}
+
 

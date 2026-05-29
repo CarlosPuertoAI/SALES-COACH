@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Leaflet Map CSS (World Map) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <!-- Main Style Sheet -->
     <link rel="stylesheet" href="style.css">
 </head>
@@ -50,8 +52,176 @@
         <!-- MAIN CONTENT AREA -->
         <main class="main-content" id="main-content">
             
+            <!-- VIEW 0: AUTHENTICATION (LOGIN / REGISTER) -->
+            <section id="view-auth" class="view active">
+                <div class="auth-card glass-panel animate-fade-in" style="max-width: 480px; margin: 40px auto; padding: 32px 24px; border-radius: 20px;">
+                    <div style="text-align: center; margin-bottom: 24px;">
+                        <img src="sales_hero.png" alt="SalesQuest" style="max-width: 140px; margin-bottom: 12px; filter: drop-shadow(0 0 10px rgba(168,85,247,0.3));">
+                        <h2 style="font-family: var(--font-display); font-size: 26px; color: var(--text-main); margin-bottom: 6px;">Entrar a la Arena</h2>
+                        <p style="color: var(--text-muted); font-size: 13px;">Registra tu perfil para guardar tu nivel, chatear y aparecer en el mapa mundial.</p>
+                    </div>
+
+                    <!-- Auth Tabs -->
+                    <div class="auth-tabs" style="display: flex; gap: 8px; background: rgba(255,255,255,0.03); padding: 4px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); margin-bottom: 24px;">
+                        <button id="auth-tab-login" class="btn btn-secondary active" style="flex: 1; border-radius: 8px; border: none; padding: 10px; font-size: 13px; font-weight: 600; cursor: pointer; color: var(--text-main);">Iniciar Sesión</button>
+                        <button id="auth-tab-register" class="btn btn-secondary" style="flex: 1; border-radius: 8px; border: none; padding: 10px; font-size: 13px; font-weight: 600; cursor: pointer; color: var(--text-muted);">Registrarse</button>
+                    </div>
+
+                    <!-- LOGIN FORM -->
+                    <div id="auth-login-container">
+                        <form id="auth-login-form" class="interactive-form">
+                            <div class="form-group" style="margin-bottom: 16px;">
+                                <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">Correo Electrónico:</label>
+                                <input type="email" id="auth-login-email" placeholder="ejemplo@ventas.com" required style="width: 100%; padding: 11px 14px; border-radius: 10px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: var(--text-main); font-size: 13.5px;" />
+                            </div>
+                            <div class="form-group" style="margin-bottom: 24px;">
+                                <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">Contraseña:</label>
+                                <input type="password" id="auth-login-password" placeholder="••••••••" required style="width: 100%; padding: 11px 14px; border-radius: 10px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: var(--text-main); font-size: 13.5px;" />
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-glow btn-block" style="padding: 12px; font-size: 14px; margin-bottom: 16px;">
+                                <span>Iniciar Sesión 🚀</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- REGISTER FORM (Hidden by default) -->
+                    <div id="auth-register-container" class="hidden">
+                        <form id="auth-register-form" class="interactive-form">
+                            <div class="form-group" style="margin-bottom: 16px;">
+                                <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">Nombre de Vendedor (Username):</label>
+                                <input type="text" id="auth-register-username" placeholder="Ej: CerradorTiburón" required style="width: 100%; padding: 11px 14px; border-radius: 10px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: var(--text-main); font-size: 13.5px;" />
+                            </div>
+                            <div class="form-group" style="margin-bottom: 16px;">
+                                <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">Correo Electrónico:</label>
+                                <input type="email" id="auth-register-email" placeholder="ejemplo@ventas.com" required style="width: 100%; padding: 11px 14px; border-radius: 10px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: var(--text-main); font-size: 13.5px;" />
+                            </div>
+                            <div class="form-group" style="margin-bottom: 16px;">
+                                <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">Contraseña (mín. 6 caracteres):</label>
+                                <input type="password" id="auth-register-password" placeholder="Mínimo 6 caracteres" required minlength="6" style="width: 100%; padding: 11px 14px; border-radius: 10px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: var(--text-main); font-size: 13.5px;" />
+                            </div>
+                            
+                            <!-- Avatar Selection Grid -->
+                            <div class="form-group" style="margin-bottom: 24px;">
+                                <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">Selecciona tu Avatar de Ventas:</label>
+                                <div class="avatar-select-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+                                    <div class="avatar-option selected" data-avatar="🦈" style="display: flex; align-items: center; justify-content: center; font-size: 24px; padding: 8px; background: rgba(255,255,255,0.05); border: 2px solid var(--primary); border-radius: 10px; cursor: pointer; transition: all 0.2s;">🦈</div>
+                                    <div class="avatar-option" data-avatar="🦁" style="display: flex; align-items: center; justify-content: center; font-size: 24px; padding: 8px; background: rgba(255,255,255,0.02); border: 2px solid transparent; border-radius: 10px; cursor: pointer; transition: all 0.2s;">🦁</div>
+                                    <div class="avatar-option" data-avatar="🦅" style="display: flex; align-items: center; justify-content: center; font-size: 24px; padding: 8px; background: rgba(255,255,255,0.02); border: 2px solid transparent; border-radius: 10px; cursor: pointer; transition: all 0.2s;">🦅</div>
+                                    <div class="avatar-option" data-avatar="🐲" style="display: flex; align-items: center; justify-content: center; font-size: 24px; padding: 8px; background: rgba(255,255,255,0.02); border: 2px solid transparent; border-radius: 10px; cursor: pointer; transition: all 0.2s;">🐲</div>
+                                    <div class="avatar-option" data-avatar="🐺" style="display: flex; align-items: center; justify-content: center; font-size: 24px; padding: 8px; background: rgba(255,255,255,0.02); border: 2px solid transparent; border-radius: 10px; cursor: pointer; transition: all 0.2s;">🐺</div>
+                                    <div class="avatar-option" data-avatar="🦊" style="display: flex; align-items: center; justify-content: center; font-size: 24px; padding: 8px; background: rgba(255,255,255,0.02); border: 2px solid transparent; border-radius: 10px; cursor: pointer; transition: all 0.2s;">🦊</div>
+                                    <div class="avatar-option" data-avatar="🐯" style="display: flex; align-items: center; justify-content: center; font-size: 24px; padding: 8px; background: rgba(255,255,255,0.02); border: 2px solid transparent; border-radius: 10px; cursor: pointer; transition: all 0.2s;">🐯</div>
+                                    <div class="avatar-option" data-avatar="🦉" style="display: flex; align-items: center; justify-content: center; font-size: 24px; padding: 8px; background: rgba(255,255,255,0.02); border: 2px solid transparent; border-radius: 10px; cursor: pointer; transition: all 0.2s;">🦉</div>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary btn-glow btn-block" style="padding: 12px; font-size: 14px; margin-bottom: 16px;">
+                                <span>Crear Cuenta y Empezar 🦈</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Divider -->
+                    <div style="display: flex; align-items: center; gap: 8px; margin: 16px 0; opacity: 0.5;">
+                        <div style="flex: 1; height: 1px; background: var(--text-muted);"></div>
+                        <span style="font-size: 11px; color: var(--text-muted);">O TAMBIÉN</span>
+                        <div style="flex: 1; height: 1px; background: var(--text-muted);"></div>
+                    </div>
+
+                    <!-- Guest mode -->
+                    <button id="auth-guest-btn" class="btn btn-secondary btn-block" style="padding: 12px; border: 1px solid rgba(255,255,255,0.08); font-size: 13.5px; color: var(--text-main);">
+                        <span>Entrar como Invitado (Modo Demo)</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- VIEW: COMUNIDADES CHAT EN VIVO -->
+            <section id="view-communities" class="view hidden" style="max-width: 1000px; margin: 0 auto; height: calc(100vh - 200px); display: flex; flex-direction: column;">
+                <div id="firebase-demo-alert-chat" class="pro-tip hidden" style="background: rgba(245,158,11,0.05); border: 1px solid rgba(245,158,11,0.15); color: #f3a63b; padding: 12px; border-radius: 10px; margin-bottom: 12px; font-size: 12.5px;">
+                    <strong>⚠️ Modo Demo Local:</strong> Chat en la nube desactivado. Edita <code>firebase-config.js</code> para conectar tu base de datos de Firebase.
+                </div>
+                
+                <div class="chat-wrapper glass-panel" style="display: grid; grid-template-columns: 240px 1fr; flex: 1; border-radius: 16px; overflow: hidden; background: rgba(13,17,29,0.3); border: 1px solid rgba(255,255,255,0.06); height: 100%;">
+                    <!-- Sidebar: Channels/Sectors -->
+                    <div class="chat-sidebar" style="border-right: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.01); display: flex; flex-direction: column; height: 100%;">
+                        <div style="padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                            <h3 style="font-family: var(--font-display); font-size: 15px; color: var(--text-main); margin: 0;">Salas por Sector</h3>
+                            <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px; margin-bottom: 0;">Comparte técnicas con colegas</p>
+                        </div>
+                        <div class="channel-list" style="flex: 1; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 4px;">
+                            <button class="channel-item active" data-channel="general" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; border: none; background: transparent; color: var(--text-main); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
+                                <span>🌐</span> <span style="flex: 1;">General</span>
+                            </button>
+                            <button class="channel-item" data-channel="b2b" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
+                                <span>💼</span> <span style="flex: 1;">Consultoría B2B</span>
+                            </button>
+                            <button class="channel-item" data-channel="saas" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
+                                <span>💻</span> <span style="flex: 1;">SaaS / Software</span>
+                            </button>
+                            <button class="channel-item" data-channel="realestate" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
+                                <span>🏠</span> <span style="flex: 1;">Inmobiliaria</span>
+                            </button>
+                            <button class="channel-item" data-channel="automotive" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
+                                <span>🚗</span> <span style="flex: 1;">Automoción</span>
+                            </button>
+                            <button class="channel-item" data-channel="finance" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
+                                <span>📊</span> <span style="flex: 1;">Finanzas / Seguros</span>
+                            </button>
+                            <button class="channel-item" data-channel="luxury" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.2s;">
+                                <span>👑</span> <span style="flex: 1;">Lujo / High-Ticket</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Chat Area -->
+                    <div class="chat-main" style="display: flex; flex-direction: column; height: 100%; overflow: hidden;">
+                        <div class="chat-header" style="padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-between;">
+                            <span id="active-channel-title" style="font-family: var(--font-display); font-size: 15px; font-weight: 600; color: var(--text-main);">🌐 Canal General</span>
+                            <span id="online-users-count" style="font-size: 11px; color: #22c55e; background: rgba(34,197,94,0.08); padding: 4px 8px; border-radius: 20px; border: 1px solid rgba(34,197,94,0.15); display: flex; align-items: center; gap: 6px;">
+                                <span style="width: 6px; height: 6px; border-radius: 50%; background: #22c55e; display: inline-block;"></span>
+                                Conectados en tiempo real
+                            </span>
+                        </div>
+                        
+                        <!-- Messages scroll -->
+                        <div id="chat-messages-container" style="flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth;">
+                            <!-- Messages will be injected here -->
+                        </div>
+                        
+                        <!-- Message Input Form -->
+                        <form id="chat-send-form" style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; gap: 10px; background: rgba(255,255,255,0.01);">
+                            <input type="text" id="chat-message-input" placeholder="Escribe un mensaje de venta..." required autocomplete="off" style="flex: 1; padding: 10px 14px; border-radius: 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: var(--text-main); font-size: 13.5px; outline: none; transition: all 0.2s;" />
+                            <button type="submit" class="btn btn-primary" style="padding: 10px 20px; border-radius: 20px; border: none; font-size: 13.5px; font-weight: 600; display: flex; align-items: center; gap: 6px; color: var(--text-main);">
+                                <span>Enviar</span> 🚀
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: WORLD CONNECTION MAP -->
+            <section id="view-worldmap" class="view hidden" style="max-width: 1000px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; height: calc(100vh - 200px);">
+                <div id="firebase-demo-alert-map" class="pro-tip hidden" style="background: rgba(245,158,11,0.05); border: 1px solid rgba(245,158,11,0.15); color: #f3a63b; padding: 12px; border-radius: 10px; margin-bottom: 0px; font-size: 12.5px;">
+                    <strong>⚠️ Modo Demo Local:</strong> Ubicación en la nube desactivada. Edita <code>firebase-config.js</code> para conectar tu base de datos de Firebase.
+                </div>
+                
+                <div class="map-card glass-panel" style="flex: 1; border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; background: rgba(13,17,29,0.3); border: 1px solid rgba(255,255,255,0.06); min-height: 400px; height: 100%;">
+                    <div style="padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.01);">
+                        <div>
+                            <h3 style="font-family: var(--font-display); font-size: 15px; color: var(--text-main); margin: 0;">Radar de Vendedores Global</h3>
+                            <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px; margin-bottom: 0;">Mira desde dónde se conectan y negocian otros cerradores de élite.</p>
+                        </div>
+                        <button id="refresh-map-btn" class="btn btn-secondary" style="padding: 6px 12px; font-size: 11px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); color: var(--text-main);">
+                            <span>Recargar Mapa 🔄</span>
+                        </button>
+                    </div>
+                    <!-- Leaflet map container -->
+                    <div id="map" style="flex: 1; width: 100%; height: 100%; z-index: 1;"></div>
+                </div>
+            </section>
+
             <!-- VIEW 1: ONBOARDING / SETUP (WIZARD) -->
-            <section id="view-onboarding" class="view active">
+            <section id="view-onboarding" class="view hidden">
                 <div class="onboarding-card glass-panel">
                     
                     <!-- Wizard Progress Bar -->
@@ -867,6 +1037,14 @@
                 <svg class="icon" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                 <span>Cierres</span>
             </button>
+            <button class="nav-item" data-view="communities">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-6 0c2.21 0 4-1.79 4-4S11.21 4 9 4 5 5.79 5 8s1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zm6 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45v2h6v-2c0-2.66-5.33-4-8-4z"/></svg>
+                <span>Comunidad</span>
+            </button>
+            <button class="nav-item" data-view="worldmap">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.4z"/></svg>
+                <span>Mapa</span>
+            </button>
         </nav>
     </div>
 
@@ -919,6 +1097,14 @@
         </div>
     </div>
 
+    <!-- Firebase Compat SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <!-- Firebase Custom Config -->
+    <script src="firebase-config.js"></script>
+    <!-- Leaflet Map JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <!-- Main JS Application Logic -->
     <script src="app.js"></script>
 </body>
