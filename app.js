@@ -3874,12 +3874,24 @@ function switchChannel(channel) {
 
         chatUnsubscribe = db.collection("messages")
             .where("channelId", "==", channel)
-            .orderBy("timestamp", "asc")
-            .limitToLast(50)
             .onSnapshot((snapshot) => {
                 container.innerHTML = "";
+                const docs = [];
                 snapshot.forEach((doc) => {
-                    renderSingleMessage(doc.data());
+                    docs.push(doc.data());
+                });
+                
+                // Sort by timestamp in JavaScript to avoid index creation requirement
+                docs.sort((a, b) => {
+                    const tA = a.timestamp ? (a.timestamp.seconds ? a.timestamp.seconds * 1000 : new Date(a.timestamp).getTime()) : 0;
+                    const tB = b.timestamp ? (b.timestamp.seconds ? b.timestamp.seconds * 1000 : new Date(b.timestamp).getTime()) : 0;
+                    return tA - tB;
+                });
+                
+                // Limit to last 50
+                const recentDocs = docs.slice(-50);
+                recentDocs.forEach((msg) => {
+                    renderSingleMessage(msg);
                 });
                 container.scrollTop = container.scrollHeight;
             }, (err) => {
