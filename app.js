@@ -2023,7 +2023,8 @@ Devuelve la respuesta en formato JSON estrictamente válido. No devuelvas ningú
                 }],
                 generationConfig: {
                     temperature: 0.7,
-                    maxOutputTokens: 600
+                    maxOutputTokens: 1500,
+                    responseMimeType: "application/json"
                 }
             })
         });
@@ -2547,7 +2548,7 @@ REGLAS ABSOLUTAS DE COMPORTAMIENTO:
                 },
                 generationConfig: {
                     temperature: 0.85,
-                    maxOutputTokens: 250
+                    maxOutputTokens: 1000
                 }
             })
         });
@@ -2646,7 +2647,11 @@ INSTRUCCIONES DE AUDITORÍA (APLICA ESTRICTAMENTE EL ADN DEL CLOSER ÉLITE):
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 contents: [{ parts: [{ text: prompt }] }],
-                generationConfig: { temperature: 0.7, maxOutputTokens: 800 }
+                generationConfig: { 
+                    temperature: 0.7, 
+                    maxOutputTokens: 1500,
+                    responseMimeType: "application/json"
+                }
             })
         });
 
