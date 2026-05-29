@@ -25,25 +25,49 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    const model = req.body.model || 'gemini-2.5-flash';
-    const modelName = model.startsWith('models/') ? model.substring(7) : model;
-
+    const requestedModel = req.body.model || 'gemini-2.5-flash';
     const bodyCopy = { ...req.body };
     delete bodyCopy.model;
 
-    try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(bodyCopy)
-        });
+    const fallbacks = [requestedModel, 'gemini-2.5-flash', 'gemini-3.5-flash', 'gemini-2.5-flash-lite'];
+    const uniqueModels = [...new Set(fallbacks)];
 
-        const data = await response.json();
-        return res.status(response.status).json(data);
-    } catch (error) {
-        console.error('Error in gemini proxy:', error);
-        return res.status(500).json({ error: 'Fallo al conectar con Gemini API: ' + error.message });
+    let lastError = null;
+    let successResponse = null;
+    let responseStatus = 200;
+
+    for (const model of uniqueModels) {
+        const modelName = model.startsWith('models/') ? model.substring(7) : model;
+        try {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bodyCopy)
+            });
+
+            const data = await response.json();
+            responseStatus = response.status;
+
+            if (response.ok) {
+                successResponse = data;
+                break;
+            } else {
+                console.warn(`Model ${modelName} returned status ${responseStatus}:`, data);
+                lastError = data.error?.message || data.error || `HTTP ${responseStatus}`;
+            }
+        } catch (error) {
+            console.error(`Error calling model ${modelName}:`, error);
+            lastError = error.message;
+        }
+    }
+
+    if (successResponse) {
+        return res.status(responseStatus).json(successResponse);
+    } else {
+        return res.status(responseStatus || 500).json({
+            error: `Fallo al conectar con Gemini API (probados todos los modelos de respaldo): ${lastError}`
+        });
     }
 }
