@@ -962,7 +962,16 @@ function setupEventListeners() {
     const challengeClose = document.getElementById("challenge-close-btn");
     if (challengeClose) {
         challengeClose.addEventListener("click", () => {
-            document.getElementById("challenge-modal").classList.add("hidden");
+            if (challengeClose.dataset.correctAction === "true") {
+                challengeClose.dataset.correctAction = "false";
+                document.getElementById("challenge-modal").classList.add("hidden");
+                if (typeof app.onChallengeCorrect === "function") {
+                    app.onChallengeCorrect();
+                    app.onChallengeCorrect = null;
+                }
+            } else {
+                document.getElementById("challenge-modal").classList.add("hidden");
+            }
         });
     }
 
@@ -1265,6 +1274,15 @@ function handleMiniChallenge(stageId, stageTitle, isReview = false) {
     feedbackBox.classList.add("hidden");
     feedbackBox.innerText = "";
 
+    // Reset challenge close button state
+    const challengeCloseBtn = document.getElementById("challenge-close-btn");
+    if (challengeCloseBtn) {
+        challengeCloseBtn.dataset.correctAction = "false";
+        const btnTextSpan = challengeCloseBtn.querySelector("span");
+        if (btnTextSpan) btnTextSpan.innerText = "Cerrar";
+        challengeCloseBtn.className = "btn btn-secondary";
+    }
+
     // Handle review motivational quote
     if (isReview && reviewQuoteEl) {
         const randIndex = Math.floor(Math.random() * REPETITION_QUOTES.length);
@@ -1302,16 +1320,23 @@ function handleMiniChallenge(stageId, stageTitle, isReview = false) {
                 feedbackBox.style.borderColor = "rgba(16, 185, 129, 0.2)";
                 feedbackBox.style.color = "#10b981";
                 
+                // Change Close button to "Continuar" and style as primary
+                if (challengeCloseBtn) {
+                    challengeCloseBtn.dataset.correctAction = "true";
+                    const btnTextSpan = challengeCloseBtn.querySelector("span");
+                    if (btnTextSpan) btnTextSpan.innerText = "Continuar ➜";
+                    challengeCloseBtn.className = "btn btn-primary";
+                }
+                
                 if (isReview) {
                     // Review mode transition (no duplicate XP)
-                    setTimeout(() => {
-                        modal.classList.add("hidden");
+                    app.onChallengeCorrect = () => {
                         showCelebrationModal(
                             "¡Excelente Repaso! 🔄", 
                             "La repetición constante graba el conocimiento en tu subconsciente. ¡Sigue repasando para alcanzar la maestría!",
                             [{ emoji: "🔄", name: "Repetición Diaria" }]
                         );
-                    }, 2000);
+                    };
                 } else {
                     // Add stage to completed
                     if (!app.state.completedStages.includes(stageId)) {
@@ -1319,15 +1344,14 @@ function handleMiniChallenge(stageId, stageTitle, isReview = false) {
                         app.addXP(20);
                     }
                     
-                    setTimeout(() => {
-                        modal.classList.add("hidden");
+                    app.onChallengeCorrect = () => {
                         showCelebrationModal(
                             "¡Etapa Completada! 🌟", 
                             `Has dominado el concepto clave de "${stageTitle}". Sumas +20 XP.`,
                             [{ emoji: "🎓", name: "Conceptos Claros" }]
                         );
                         renderRoadmap();
-                    }, 2000);
+                    };
                 }
             } else {
                 // Style error feedback
