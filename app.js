@@ -1175,7 +1175,26 @@ const REPETITION_QUOTES = [
     { text: "Cualquier cosa que practiques repetidamente se convertirá en un nuevo hábito de pensamiento y acción.", author: "Brian Tracy" },
     { text: "La clave para dominar cualquier habilidad es la repetición constante hasta que se convierta en una segunda naturaleza.", author: "Joe Girard" },
     { text: "La práctica no hace la perfección. Solo la práctica perfecta hace la perfección.", author: "Vince Lombardi" },
-    { text: "El conocimiento no es poder hasta que se aplica y se practica repetidamente.", author: "Dale Carnegie" }
+    { text: "El conocimiento no es poder hasta que se aplica y se practica repetidamente.", author: "Dale Carnegie" },
+    { text: "El éxito no es un suceso, es un proceso de repetición diaria.", author: "Hal Elrod" },
+    { text: "La maestría no se logra cuando no queda nada que añadir, sino cuando no queda nada que quitar.", author: "Antoine de Saint-Exupéry" },
+    { text: "No nos convertimos en grandes por hacer cosas extraordinarias, sino por hacer cosas ordinarias con una disciplina extraordinaria.", author: "Robin Sharma" },
+    { text: "La perseverancia es el trabajo duro que haces después de cansarte del trabajo duro que ya hiciste.", author: "Newt Gingrich" },
+    { text: "Haz de cada objeción una oportunidad para afilar tu espada comercial.", author: "Carlos Boss" },
+    { text: "El dolor de practicar es temporal, pero el orgullo de dominar un cierre es para siempre.", author: "Grant Cardone" },
+    { text: "Un cerrador de élite no nace en una demo exitosa, sino en las mil llamadas difíciles que nadie vio.", author: "Jordan Belfort" },
+    { text: "La disciplina es el puente entre tus metas de ventas y tus logros de facturación.", author: "Jim Rohn" },
+    { text: "La suerte es lo que sucede cuando la preparación extrema se encuentra con la oportunidad del cliente.", author: "Séneca" },
+    { text: "El único lugar donde el éxito viene antes que el trabajo es en el diccionario.", author: "Vidal Sassoon" },
+    { text: "La maestría es un camino, no un destino. Cada repaso afina tu puntería frente a objeciones.", author: "Zig Ziglar" },
+    { text: "Las ventas no son un juego de azar, son una ciencia de comportamiento humano repetible.", author: "Neil Rackham" },
+    { text: "Aprender sin practicar es como arar la tierra sin sembrar ninguna semilla.", author: "Richard Whately" },
+    { text: "Los aficionados practican hasta que les sale bien. Los profesionales practican hasta que no les puede salir mal.", author: "Harold Craxton" },
+    { text: "La excelencia no es un acto singular, sino un hábito diario de mejora continua y autocrítica.", author: "James Clear" },
+    { text: "El éxito en ventas radica en hacer preguntas correctas con una constancia de acero.", author: "Neil Rackham" },
+    { text: "Cada respuesta incorrecta es solo un paso más en el proceso de calibración de tu mentalidad de cierre.", author: "Brian Tracy" },
+    { text: "No hay atajos para la maestría. El entrenamiento constante es lo que separa al novato del Closer de Élite.", author: "Grant Cardone" },
+    { text: "La práctica deliberada y el reencuadre constante construyen imperios comerciales.", author: "Alex Hormozi" }
 ];
 
 // Action: Interactive Mini-challenges for roadmap exploration
@@ -1285,7 +1304,12 @@ function handleMiniChallenge(stageId, stageTitle, isReview = false) {
 
     // Handle review motivational quote
     if (isReview && reviewQuoteEl) {
-        const randIndex = Math.floor(Math.random() * REPETITION_QUOTES.length);
+        let randIndex;
+        do {
+            randIndex = Math.floor(Math.random() * REPETITION_QUOTES.length);
+        } while (randIndex === app.lastQuoteIndex && REPETITION_QUOTES.length > 1);
+        app.lastQuoteIndex = randIndex;
+
         const quote = REPETITION_QUOTES[randIndex];
         reviewQuoteEl.innerHTML = `<strong>💡 Repaso de Maestría:</strong> "${quote.text}" — <em>${quote.author}</em>`;
         reviewQuoteEl.classList.remove("hidden");
