@@ -308,6 +308,165 @@ const QUIZ_QUESTIONS = [
     }
 ];
 
+const SITUATIONAL_PROFILES = {
+    saas: [
+        {
+            id: "champion",
+            name: "El Champion Interno 🚀",
+            description: "Quiere comprar el software pero no es el decisor final. Le aterra quedar mal ante su directiva si el proyecto fracasa o si no lo aprueban. Desea justificar internamente la inversión de forma impecable.",
+            trigger: "Miedo a la aprobación de la directiva y a la responsabilidad del fracaso.",
+            palanca: "Facilitarle plantillas de propuesta de valor de negocio, resúmenes ejecutivos listos para enviar al CFO y métricas claras de ROI.",
+            tone: "colaborativo, interesado pero preocupado por la viabilidad interna"
+        },
+        {
+            id: "cfo_blocker",
+            name: "El CFO Bloqueador ⚖️",
+            description: "Solo le interesan los costes, la eficiencia del presupuesto y el retorno matemático de la inversión. No valora la experiencia de usuario ni la comodidad si no ve un ahorro real medible.",
+            trigger: "Foco exclusivo en costes, rentabilidad del presupuesto y corte de gastos superfluos.",
+            palanca: "Presentar un desglose matemático impecable que compare el coste de la inacción frente a los ahorros directos generados.",
+            tone: "escéptico, analítico, centrado en costes y desconfiado"
+        },
+        {
+            id: "bad_migration",
+            name: "Migración Traumática ⚠️",
+            description: "Tuvieron una experiencia nefasta en el pasado migrando a un software similar que rompió sus flujos de datos y paralizó el negocio durante semanas. Padece 'estrés postraumático corporativo'.",
+            trigger: "Miedo paralizante a que la migración de datos rompa el día a día operativo.",
+            palanca: "Ofrecer soporte de onboarding personalizado 1 a 1 sin coste, garantías de migración limpia por contrato y ejemplos de transiciones exitosas.",
+            tone: "asustado, precavido, defensivo frente a cambios"
+        }
+    ],
+    realestate: [
+        {
+            id: "life_event",
+            name: "El Cliente de Evento Vital ⏳",
+            description: "Comprador o vendedor motivado por un cambio vital drástico (embarazo, divorcio, fallecimiento, reubicación laboral). Su urgencia temporal es real y el peso emocional es altísimo.",
+            trigger: "Cambio drástico de vida con fecha límite y carga de estrés emocional alta.",
+            palanca: "Mostrar empatía profunda, ofrecer celeridad total en los trámites burocráticos y simplificar cada paso para quitarles carga mental.",
+            tone: "estresado, sensible, con prisa pero buscando comprensión"
+        },
+        {
+            id: "attached_seller",
+            name: "Vendedor con Apego Emocional 🏠",
+            description: "Vende su propiedad familiar pero tiene una vinculación emocional inmensa. Considera que el valor afectivo y los recuerdos del inmueble justifican un precio por encima del mercado real.",
+            trigger: "Vinculación afectiva y resistencia a aceptar el precio del mercado objetivo.",
+            palanca: "Validar y honrar los detalles del hogar, pero reconducir la valoración técnica basándose en datos reales comparativos de ventas recientes.",
+            tone: "orgulloso de su propiedad, nostálgico y reticente a rebajar"
+        },
+        {
+            id: "cold_investor",
+            name: "Inversor Frío y Calculador 📈",
+            description: "Busca rentabilidad limpia de alquiler o revalorización rápida. No tiene ningún interés emocional en la estética o los acabados del inmueble si la rentabilidad neta no encaja en sus métricas.",
+            trigger: "Maximización de la rentabilidad (TIR, ROI, Cashflow) y mitigación del riesgo de impago/okupación.",
+            palanca: "Presentar un análisis financiero objetivo con tasas de ocupación, costes de reforma estimados y rentabilidad neta anual demostrable.",
+            tone: "directo, analítico, sin rodeos y muy orientado a números"
+        }
+    ],
+    auto: [
+        {
+            id: "identity",
+            name: "El Cliente de Identidad ⭐",
+            description: "Compra el coche como una extensión de su estatus social y personalidad. Para él, el coche no es transporte funcional; es una declaración de éxito, estilo y valores personales.",
+            trigger: "Búsqueda de estatus, reconocimiento y validación social mediante el vehículo.",
+            palanca: "Hacerle sentir que la unidad encaja perfectamente con su estilo de vida premium y su identidad de pionero o persona exitosa.",
+            tone: "sofisticado, centrado en el diseño y los detalles exclusivos, sensible al estatus"
+        },
+        {
+            id: "infinite_test",
+            name: "El Comprador de Test Drive Infinito 🔄",
+            description: "Se enamora del proceso de compra. Prueba múltiples coches, compara hojas de cálculo exhaustivas y dilata la firma indefinidamente. Consume mucho tiempo comercial.",
+            trigger: "Parálisis por análisis y placer en la búsqueda del trato perfecto.",
+            palanca: "Crear urgencia real o percibida sobre la disponibilidad del modelo específico o las condiciones financieras de campaña.",
+            tone: "analítico extremo, indeciso, lleno de preguntas técnicas menores"
+        },
+        {
+            id: "trusted_used",
+            name: "El Comprador de Segunda Mano Seguro 🛡️",
+            description: "Solo compra vehículos usados si es en concesionario oficial. Su toma de decisión está dominada por el miedo absoluto a fraudes, averías ocultas o estafas mecánicas.",
+            trigger: "Pánico a vicios ocultos y costes imprevistos de reparación mecánica.",
+            palanca: "Destacar la certificación de más de 100 puntos oficiales, la garantía de 24 meses y el respaldo directo de la marca oficial.",
+            tone: "desconfiado, alerta ante ruidos o detalles estéticos, muy centrado en las garantías"
+        }
+    ],
+    b2b: [
+        {
+            id: "skeptical_expert",
+            name: "El Decisor Escéptico por Entrenamiento 🧠",
+            description: "Un directivo experimentado que ha recibido docenas de propuestas parecidas y está entrenado para detectar discursos de venta genéricos. Desconfía de discursos ensayados.",
+            trigger: "Resistencia innata a técnicas de venta tradicionales y discursos comerciales enlatados.",
+            palanca: "Conversar como un asesor experto de igual a igual (peer-to-peer), centrándose en el diagnóstico preciso antes de ofrecer ninguna solución.",
+            tone: "serio, calmado, crítico con la jerga comercial"
+        },
+        {
+            id: "technical_champion",
+            name: "El Champion Técnico / Integrador 🛠️",
+            description: "El responsable de IT o ingeniería que auditará la viabilidad del servicio. Su mayor preocupación es que la implementación no encaje con la arquitectura de sistemas existente.",
+            trigger: "Miedo a incompatibilidades técnicas, sobreesfuerzo de desarrollo y fallos de infraestructura.",
+            palanca: "Proporcionar documentación técnica profunda, APIs claras, protocolos de seguridad y casos de éxito de integraciones complejas.",
+            tone: "técnico, detallista, pragmático y escéptico"
+        },
+        {
+            id: "falses_promises",
+            name: "Escaldado por Falsas Promesas 💔",
+            description: "Contrataron un servicio o agencia similar en el pasado que prometió grandes resultados y desapareció con su presupuesto, dejándoles peor de lo que estaban.",
+            trigger: "Falta de confianza profunda por desengaño comercial previo.",
+            palanca: "Estructurar la colaboración en hitos de pago condicionados, ofrecer planes de acción semanales detallados y mantener transparencia total.",
+            tone: "defensivo, desconfiado, quejoso del sector en general"
+        }
+    ],
+    finance: [
+        {
+            id: "mortality",
+            name: "Cliente de Mortalidad Saliente 💔",
+            description: "Ha vivido recientemente un susto de salud propio o la pérdida inesperada de un ser querido, lo que ha despertado su necesidad urgente de proteger el futuro financiero de los suyos.",
+            trigger: "Toma de conciencia repentina de la fragilidad de la vida y el futuro de su familia.",
+            palanca: "Hablar con tono respetuoso y humano, enfocarse en la paz mental y la protección de los estudios/vida de su familia ante cualquier eventualidad.",
+            tone: "vulnerable, reflexivo, serio y buscando seguridad genuina"
+        },
+        {
+            id: "prior_claim",
+            name: "El Escaldado por Siniestro Previo ⚖️",
+            description: "Tuvo un siniestro grave en el pasado y su aseguradora anterior utilizó la letra pequeña del contrato para negarle la indemnización. Desconfía de la letra pequeña del sector.",
+            trigger: "Miedo al engaño y a la evasión de pagos por parte de la aseguradora en el momento de la verdad.",
+            palanca: "Desglosar la póliza de forma hipertransparente, destacando explícitamente qué cubre en letra grande y asignando un gestor directo.",
+            tone: "inquisitivo, detallista, busca contradicciones y exige aclaraciones contractuales"
+        },
+        {
+            id: "legal_obligation",
+            name: "Comprador por Obligación Legal 📄",
+            description: "Contrata el producto financiero o seguro únicamente porque se lo exige la ley, una licitación o su banco para aprobarle una hipoteca. Su único objetivo es pagar el mínimo posible para cumplir con el trámite.",
+            trigger: "Búsqueda del menor coste posible para satisfacer un requisito obligatorio.",
+            palanca: "Agilizar los trámites burocráticos para una emisión instantánea y ofrecer un paquete básico ultraajustado al presupuesto de mínimos.",
+            tone: "apresurado, centrado puramente en precio y desinteresado por las coberturas premium"
+        }
+    ],
+    luxury: [
+        {
+            id: "status_seeker",
+            name: "Buscador de Estatus e Identidad 💎",
+            description: "Busca piezas exclusivas y de alta gama como símbolo de pertenencia a una élite. Valora la exclusividad y la historia artesanal por encima de la utilidad básica.",
+            trigger: "Necesidad de reconocimiento social, distinción y prestigio.",
+            palanca: "Resaltar el número limitado de piezas producidas, la historia de la marca y la experiencia exclusiva de acceso al club de clientes.",
+            tone: "refinado, selectivo, valora los rituales de venta y la exclusividad"
+        },
+        {
+            id: "fomo_collector",
+            name: "Coleccionista Impulsivo (FOMO) ⏰",
+            description: "Es coleccionista apasionado o comprador compulsivo de ediciones limitadas. Le aterra perder la oportunidad de adquirir una pieza única que aumentará de valor o desaparecerá del mercado.",
+            trigger: "Miedo a perderse una oportunidad única y deseo de coleccionismo exclusivo.",
+            palanca: "Enfatizar la escasez física absoluta (ej. unidad 3 de 10) y la prioridad temporal que tienen los clientes preseleccionados.",
+            tone: "entusiasta, impaciente, sensible a la prisa y la escasez"
+        },
+        {
+            id: "wealth_investor",
+            name: "El Inversor Patrimonial 🏦",
+            description: "Considera los bienes de lujo de alta gama (relojes, arte, coches clásicos) como activos refugio estables contra la inflación y para diversificar su patrimonio familiar.",
+            trigger: "Preservación del capital, revalorización a largo plazo y liquidez del activo.",
+            palanca: "Presentar informes de revalorización histórica en subastas y datos sobre la solidez de la demanda en el mercado secundario internacional.",
+            tone: "analítico, serio, centrado en el valor del activo a futuro"
+        }
+    ]
+};
+
 // 2. Application State Class
 class SalesQuest {
     constructor() {
@@ -1638,6 +1797,9 @@ function updateActiveObjectionDisplay() {
     const errorEl = document.getElementById("vendedor-promedio-error-text");
     const alertContainer = document.getElementById("vendedor-promedio-alert-container");
 
+    const sectorProfileCard = document.getElementById("copilot-sector-profile-card");
+    if (sectorProfileCard) sectorProfileCard.classList.add("hidden");
+
     if (badgeEl) badgeEl.innerText = `${profileName} - ${approachName}`;
     if (whyEl) whyEl.innerText = why;
     
@@ -1999,8 +2161,17 @@ SalesQuest.prototype.generateAI = async function() {
         
         const objecionActual = obj.title;
 
+        const activeSectorProfiles = SITUATIONAL_PROFILES[this.state.sectorId] || [];
+        let sectorProfilesContext = "";
+        if (activeSectorProfiles.length > 0) {
+            sectorProfilesContext = `\nPara el sector de "${sector}", existen los siguientes perfiles situacionales de clientes específicos con dolores y detonantes concretos:
+${activeSectorProfiles.map(p => `- ${p.name}: Detonante/Miedo: ${p.trigger} | Palanca: ${p.palanca}`).join("\n")}
+`;
+        }
+
         const prompt = `Eres Carlos, un closer de ventas con 30 años de experiencia cerrando tratos comerciales de alto nivel.
 Analiza la siguiente objeción planteada por un prospecto en el sector de ${sector} para el producto "${this.state.productName || 'nuestro servicio'}" (lead tipo: ${temperatura}, historial de contactos: ${historialCompleto}).
+${sectorProfilesContext}
 
 Objeción del cliente: "${objecionActual}"
 
@@ -2021,6 +2192,7 @@ Tu misión:
 5. Proporciona el Radar de Empatía (qué piensa subconscientemente el prospecto).
 6. Proporciona el Consejo de Mentor.
 7. Explica qué error clásico cometería el Vendedor Promedio en esta situación específica.
+8. Compara la objeción actual con los perfiles situacionales del sector anteriores. Si consideras que la objeción encaja con alguno de estos dolores o detonantes sectoriales específicos de forma razonable, identifícalo en los campos "situational_profile", "situational_trigger" y "situational_palanca". Si no encaja claramente con ninguno de los arquetipos sectoriales específicos (o si son genéricos), coloca "Ninguno" en esos tres campos.
 
 Devuelve la respuesta en formato JSON estrictamente válido. No devuelvas ningún texto adicional, comentarios, ni formato Markdown (como \`\`\`json). El formato debe ser exactamente:
 {
@@ -2030,7 +2202,10 @@ Devuelve la respuesta en formato JSON estrictamente válido. No devuelvas ningú
   "script": "<El guión de respuesta exacto en español, sin comillas externas>",
   "radar": "<Lo que realmente piensa el cliente en su mente>",
   "wisdom": "<Sabiduría del mentor de ventas para el vendedor>",
-  "vendedor_promedio": "<El error del vendedor promedio que debe evitarse>"
+  "vendedor_promedio": "<El error del vendedor promedio que debe evitarse>",
+  "situational_profile": "<El nombre del arquetipo sectorial detectado con su emoji, o 'Ninguno'>",
+  "situational_trigger": "<El detonante o dolor oculto detectado de la lista anterior, o 'Ninguno'>",
+  "situational_palanca": "<La palanca persuasiva que el vendedor debe aplicar según la lista anterior, o 'Ninguno'>"
 }`;
 
         // Make Gemini API call
@@ -2090,6 +2265,21 @@ Devuelve la respuesta en formato JSON estrictamente válido. No devuelvas ningú
         
         if (errorEl) errorEl.innerText = evalData.vendedor_promedio || '';
         if (alertContainer) alertContainer.classList.remove("hidden");
+
+        // Update Sector-specific profile card in Copilot
+        const sectorProfileCard = document.getElementById("copilot-sector-profile-card");
+        const copilotSectorBadge = document.getElementById("copilot-detected-sector-badge");
+        const copilotSectorTrigger = document.getElementById("copilot-detected-sector-trigger");
+        const copilotSectorPalanca = document.getElementById("copilot-detected-sector-palanca");
+
+        if (evalData.situational_profile && evalData.situational_profile !== "Ninguno") {
+            if (copilotSectorBadge) copilotSectorBadge.innerText = evalData.situational_profile;
+            if (copilotSectorTrigger) copilotSectorTrigger.innerText = evalData.situational_trigger || '';
+            if (copilotSectorPalanca) copilotSectorPalanca.innerText = evalData.situational_palanca || '';
+            if (sectorProfileCard) sectorProfileCard.classList.remove("hidden");
+        } else {
+            if (sectorProfileCard) sectorProfileCard.classList.add("hidden");
+        }
 
     } catch (error) {
         console.error("Gemini API Error in Copilot:", error);
@@ -2186,7 +2376,8 @@ function initRoleplaySetup() {
         product: "",
         messages: [],
         isMuted: false,
-        businessContext: ""
+        businessContext: "",
+        situationalProfile: null
     };
 
     // Reset mute button visual state
@@ -2266,6 +2457,11 @@ function setupRoleplayEventListeners() {
             // Generate Random Customer Name
             const names = ["Felipe", "Sandra", "Carlos", "Marta", "Roberto", "Laura", "Andrés", "Julia"];
             app.roleplay.customerName = names[Math.floor(Math.random() * names.length)];
+
+            // Select a random sector situational trigger hidden under the hood
+            const sectorProfiles = SITUATIONAL_PROFILES[app.state.sectorId] || SITUATIONAL_PROFILES["saas"];
+            const randomProfile = sectorProfiles[Math.floor(Math.random() * sectorProfiles.length)];
+            app.roleplay.situationalProfile = randomProfile;
 
             // Generate Random Unique Business Context
             app.roleplay.businessContext = generateRandomBusinessContext(app.state.sectorId, app.roleplay.customerProfile);
@@ -2968,12 +3164,30 @@ async function generateCustomerResponse(isInitial = false) {
             profileTone = "cortante, directo, impaciente pero profesional";
         }
 
+        let situationalInstruction = "";
+        if (app.roleplay.situationalProfile) {
+            situationalInstruction = `
+DATOS ADICIONALES DE TU DOLOR Y DETONANTE DE COMPRA OCULTO (EL VENDEDOR NO LO SABE AL INICIO, DEBE PREGUNTAR CON PREGUNTAS ABIERTAS PARA DESCUBRIRLO):
+Arquetipo del Sector: ${app.roleplay.situationalProfile.name}
+Tu detonante oculto / situación real: ${app.roleplay.situationalProfile.description}
+Tu mayor temor o dolor real de decisión: ${app.roleplay.situationalProfile.trigger}
+Palanca que te hará ceder o comprar: ${app.roleplay.situationalProfile.palanca}
+Tono adicional de comportamiento: ${app.roleplay.situationalProfile.tone}
+
+INSTRUCCIÓN CRÍTICA DE FUSIÓN DE PERSONALIDADES:
+- Debes actuar con el temperamento y la personalidad de comportamiento principal (${app.roleplay.customerProfile}), pero tu motivación profunda de dolor, decisión y contexto real es la descrita en el detonante de compra oculto anterior.
+- No le digas al vendedor directamente cuál es tu detonante u objeción sectorial oculta al primer instante. El vendedor debe ganarse tu confianza con empatía táctica (Chris Voss) e indagar activamente con preguntas abiertas para que tú le vayas revelando este dolor o detonante oculto de forma natural.
+- Si el vendedor usa la palanca recomendada (${app.roleplay.situationalProfile.palanca}), debes mostrarte más abierto a avanzar y facilitarle el cierre.
+`;
+        }
+
         const baseSystem = `Instrucciones del Sistema para el Simulador de Ventas:
 Tu papel: Eres ${app.roleplay.customerName}, un cliente potencial real e independiente en una conversación telefónica con un vendedor.
 Contexto: El vendedor te está llamando para ofrecerte "${app.roleplay.product}" en el sector "${sectorName}".
 
 DATOS ÚNICOS DE TU SITUACIÓN (NUNCA TE DESVÍES DE ELLOS, ESTE ES TU NEGOCIO/VIDA):
 ${app.roleplay.businessContext}
+${situationalInstruction}
 
 Tu personalidad de comportamiento es: ${profileDescription}
 Tu tono de voz es: ${profileTone}
@@ -3075,6 +3289,21 @@ async function evaluateSimulation() {
             transcript += `${sender}: ${msg.text}\n`;
         });
 
+        let situationalEvaluationPrompt = "";
+        if (app.roleplay.situationalProfile) {
+            situationalEvaluationPrompt = `
+DETONANTE SITUACIONAL DEL SECTOR ACTIVO EN ESTA SIMULACIÓN (OCULTO PARA EL VENDEDOR):
+- Arquetipo: ${app.roleplay.situationalProfile.name}
+- Detonante oculto: ${app.roleplay.situationalProfile.description}
+- Mayor temor/dolor: ${app.roleplay.situationalProfile.trigger}
+- Palanca persuasiva exacta que debió aplicar: ${app.roleplay.situationalProfile.palanca}
+
+REGLA ADICIONAL DE EVALUACIÓN DE CARLOS:
+- Debes evaluar explícitamente cómo manejó el vendedor este detonante situacional del sector. ¿Logró identificar mediante preguntas abiertas y escucha activa este dolor oculto? ¿Aplicó la palanca persuasiva adecuada?
+- En tu crítica, revela explícitamente al vendedor cuál era este detonante situacional oculto del sector y califica cómo lo manejó, dándole feedback concreto (ej: "Bajo la superficie, el cliente tenía el dolor de... y tú lograste/no lograste abordarlo con...").
+`;
+        }
+
         const prompt = `Eres Carlos, un closer de ventas con 30 años de experiencia cerrando tratos comerciales de alto nivel. Eres directo, pragmático, sin rodeos, con un sentido del humor ácido pero sumamente profesional. Tu objetivo es auditar una transcripción de llamada de ventas simulada y evaluar el desempeño del vendedor de acuerdo con el SISTEMA DE ENTRENAMIENTO ÉLITE.
 
 Analiza minuciosamente el diálogo entre el Vendedor (User) y el Cliente (AI Customer) a continuación:
@@ -3082,6 +3311,7 @@ Analiza minuciosamente el diálogo entre el Vendedor (User) y el Cliente (AI Cus
 TRANSCRIPCIÓN DE LA LLAMADA:
 ${transcript}
 ---
+${situationalEvaluationPrompt}
 
 ${historyItems.length > 0 ? `
 HISTORIAL Y MEMORIA DE LLAMADAS PREVIAS DEL VENDEDOR:
@@ -3175,6 +3405,21 @@ INSTRUCCIONES DE AUDITORÍA (APLICA ESTRICTAMENTE EL ADN DEL CLOSER ÉLITE):
         document.getElementById("roleplay-score-value").innerText = evalData.score || 0;
         document.getElementById("roleplay-feedback-tag").innerText = evalData.titulo || "Evaluado";
         document.getElementById("roleplay-carlos-critique").innerText = `"${evalData.critica || ''}"`;
+
+        // Render Active Situational Profile in feedback screen
+        const activeProfileCard = document.getElementById("feedback-active-profile-card");
+        const activeProfileName = document.getElementById("feedback-active-profile-name");
+        const activeProfileTrigger = document.getElementById("feedback-active-profile-trigger");
+        const activeProfilePalanca = document.getElementById("feedback-active-profile-palanca");
+
+        if (app.roleplay && app.roleplay.situationalProfile) {
+            if (activeProfileName) activeProfileName.innerText = app.roleplay.situationalProfile.name;
+            if (activeProfileTrigger) activeProfileTrigger.innerText = app.roleplay.situationalProfile.trigger;
+            if (activeProfilePalanca) activeProfilePalanca.innerText = app.roleplay.situationalProfile.palanca;
+            if (activeProfileCard) activeProfileCard.classList.remove("hidden");
+        } else {
+            if (activeProfileCard) activeProfileCard.classList.add("hidden");
+        }
 
         // Update progress bars
         updateMetricProgress("empathy", evalData.empatia || 50);

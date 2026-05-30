@@ -471,6 +471,18 @@
                             </div>
                         </div>
 
+                        <!-- Sector-Specific Profile Card -->
+                        <div id="copilot-sector-profile-card" class="glass-panel hidden" style="margin-bottom: 20px; border-left: 4px solid var(--secondary); padding: 20px; background: rgba(255,255,255,0.01);">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+                                <span class="tag-status" style="background: rgba(236, 72, 153, 0.1); color: var(--secondary); font-size: 11px;">Perfil Sectorial & Detonante Detectado</span>
+                                <h4 id="copilot-detected-sector-badge" style="margin: 0; font-size: 15px; font-family: var(--font-display); color: #fff; text-shadow: 0 0 10px var(--secondary-glow);">-</h4>
+                            </div>
+                            <div style="font-size: 13px; line-height: 1.5; color: var(--text-muted); display: flex; flex-direction: column; gap: 8px;">
+                                <div><strong>Detonante:</strong> <span id="copilot-detected-sector-trigger">-</span></div>
+                                <div><strong>Palanca Recomendada:</strong> <span id="copilot-detected-sector-palanca" style="color: #10b981; font-weight: 600;">-</span></div>
+                            </div>
+                        </div>
+
                         <!-- Suggested Response Script -->
                         <div class="script-box">
                             <h4 style="margin: 0 0 10px 0; font-family: var(--font-display); font-size: 14px; color: var(--primary);">Guión Sugerido (Fórmula Élite)</h4>
@@ -891,6 +903,20 @@
                                         <div style="flex: 1;">
                                             <p id="roleplay-carlos-critique" style="color: var(--text-main); font-size: 13px; line-height: 1.5; margin: 0; font-style: italic;">"Mira, no lo has hecho mal del todo, pero has caído en la trampa de defender el precio de inmediato..."</p>
                                         </div>
+                                    </div>
+                                </div>
+
+                                <!-- Active Situational Profile Card -->
+                                <div id="feedback-active-profile-card" class="glass-panel hidden" style="padding: 16px; border-radius: 12px; margin-bottom: 24px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); display: flex; flex-direction: column; gap: 8px;">
+                                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                                        <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); font-weight: 600;">Dolor Oculto de la Simulación</span>
+                                        <span id="feedback-active-profile-name" class="tag-status" style="background: rgba(14,165,233,0.1); color: var(--primary); font-size: 11px;">-</span>
+                                    </div>
+                                    <div style="font-size: 13px; line-height: 1.5; color: var(--text-muted);">
+                                        <strong>Detonante:</strong> <span id="feedback-active-profile-trigger">-</span>
+                                    </div>
+                                    <div style="font-size: 13px; line-height: 1.5; color: var(--text-muted);">
+                                        <strong>Palanca Clave:</strong> <span id="feedback-active-profile-palanca" style="color: #10b981; font-weight: 600;">-</span>
                                     </div>
                                 </div>
 
