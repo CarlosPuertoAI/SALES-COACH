@@ -2120,6 +2120,11 @@ input[type="text"]:focus {
     box-shadow: 0 12px 30px rgba(14, 165, 233, 0.15);
 }
 
+#mode-path-history:hover {
+    border-color: rgba(245, 158, 11, 0.35) !important;
+    box-shadow: 0 12px 30px rgba(245, 158, 11, 0.15);
+}
+
 .upload-dropzone {
     transition: border-color 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
 }
@@ -2310,6 +2315,35 @@ input[type="text"]:focus {
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 10px;
     gap: 10px;
+}
+
+/* User Profile Button and Profile Modal Progress Bar */
+.profile-btn {
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.profile-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(168, 85, 247, 0.4);
+    transform: translateY(-1px);
+    box-shadow: 0 0 12px rgba(168, 85, 247, 0.15);
+}
+.profile-btn:active {
+    transform: translateY(0);
+}
+.profile-progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 

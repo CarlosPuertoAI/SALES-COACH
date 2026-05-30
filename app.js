@@ -325,7 +325,9 @@ class SalesQuest {
             quizIndex: 0,
             quizAnswers: [],
             customObjections: [],
-            detectedProfileId: ""
+            detectedProfileId: "",
+            username: "Invitado",
+            avatar: "🦈"
         };
         
         this.loadState();
@@ -385,7 +387,9 @@ class SalesQuest {
             quizIndex: 0,
             quizAnswers: [],
             customObjections: [],
-            detectedProfileId: ""
+            detectedProfileId: "",
+            username: "Invitado",
+            avatar: "🦈"
         };
         
         // Ocultar cabecera y menú de navegación
@@ -731,17 +735,15 @@ function navigateTo(viewId) {
 
 // Header Stats Renderer
 SalesQuest.prototype.updateHeaderStats = function() {
-    const xpCounter = document.getElementById("xp-counter");
-    const lvlIndicator = document.getElementById("level-indicator");
+    const headerAvatar = document.getElementById("header-user-avatar");
+    const headerName = document.getElementById("header-user-name");
     const headerSector = document.getElementById("header-sector");
     
-    if (xpCounter) xpCounter.innerText = this.state.xp;
-    if (lvlIndicator) {
-        let title = "Novato";
-        if (this.state.level >= 2) title = "Negociador";
-        if (this.state.level >= 3) title = "Cerrador Elite";
-        if (this.state.level >= 4) title = "Master de Ventas";
-        lvlIndicator.innerText = `Nivel ${this.state.level} (${title})`;
+    if (headerAvatar) {
+        headerAvatar.innerHTML = formatAvatar(this.state.avatar || "🦈", 20);
+    }
+    if (headerName) {
+        headerName.innerText = this.state.username || "Invitado";
     }
     if (headerSector && this.currentSector) {
         headerSector.innerText = `${this.currentSector.emoji} ${this.currentSector.name}`;
@@ -990,6 +992,15 @@ function setupEventListeners() {
             if (confirm("¿Estás seguro de que quieres reiniciar tu configuración? Se borrará tu producto, sector y progreso de XP.")) {
                 app.resetState();
             }
+        });
+    }
+
+    // User profile button action
+    const profileBtn = document.getElementById("user-profile-btn");
+    if (profileBtn) {
+        profileBtn.addEventListener("click", () => {
+            const uid = (auth && auth.currentUser) ? auth.currentUser.uid : "guest";
+            openUserProfile(uid);
         });
     }
 
@@ -2052,10 +2063,12 @@ function initRoleplaySetup() {
     const modeSelection = document.getElementById("roleplay-mode-selection");
     const simulatorWorkspace = document.getElementById("roleplay-simulator-workspace");
     const uploadWorkspace = document.getElementById("roleplay-upload-workspace");
+    const historyWorkspace = document.getElementById("roleplay-history-workspace");
 
     if (modeSelection) modeSelection.classList.remove("hidden");
     if (simulatorWorkspace) simulatorWorkspace.classList.add("hidden");
     if (uploadWorkspace) uploadWorkspace.classList.add("hidden");
+    if (historyWorkspace) historyWorkspace.classList.add("hidden");
 
     // Clear chat messages container UI
     const chatMessagesEl = document.getElementById("roleplay-chat-messages");
@@ -2625,6 +2638,10 @@ function setupRoleplayEventListeners() {
             uploadSubmitBtn.disabled = true;
             uploadSubmitBtn.innerHTML = `<span>Analizando Venta... 🔄</span>`;
 
+            // Cargar historial de prácticas y compilar prompt de memoria
+            const historyItems = await getUserHistory();
+            const historyPrompt = buildHistoryPromptString(historyItems);
+
             // Prompt de Auditoría Carlos
             const promptText = `Analiza detalladamente este archivo adjunto de una conversación de ventas real. 
 El sector comercial de la venta es: "${sectorText}".
@@ -2632,19 +2649,24 @@ El tipo de contacto / temperatura del lead es: "${leadTempText}".
 El producto o servicio que se vende es: "${product}".
 Contexto de la venta: "${context}".
 
+${historyItems.length > 0 ? `
+HISTORIAL Y MEMORIA DE LLAMADAS PREVIAS DEL VENDEDOR:
+${historyPrompt}
+` : ''}
+
 Tu papel: Eres Carlos, un mentor de ventas y cerrador implacable con más de 30 años de experiencia cerrando contratos millonarios. Tu estilo es asertivo, extremadamente honesto, pero profundamente constructivo y didáctico.
 Analiza la conversación (si es una imagen/chat, lee los textos; si es un audio, escucha el contenido de la conversación de voz).
 
 Tu objetivo es auditar el desempeño del vendedor y devolver un análisis estructurado en JSON válido. El JSON debe tener exactamente este formato:
 {
-  "conclusiones": "<Tu análisis del estado de la venta, diagnóstico de la psicología del prospecto y resumen general de 3-4 frases>",
+  "conclusiones": "<Tu análisis del estado de la venta, diagnóstico de la psicología del prospecto y resumen general de 3-4 frases, comentando también si el vendedor ha vuelto a caer en sus errores históricos o si ha mantenido sus fortalezas de forma motivadora>",
   "puntos_fuertes": [
     "<Punto fuerte 1 con justificación de por qué fue un hábito élite>",
     "<Punto fuerte 2>",
     "<Punto fuerte 3>"
   ],
   "puntos_debiles": [
-    "<Punto débil 1 explicando qué error clásico cometió el vendedor y por qué mató la llamada>",
+    "<Punto débil 1 explicando qué error clásico cometió el vendedor y por qué mató la llamada, comparándolo con fallos pasados si aplica>",
     "<Punto débil 2>",
     "<Punto débil 3>"
   ],
@@ -2702,6 +2724,19 @@ No incluyas markdown (como bloques \`\`\`json), comentarios, ni texto fuera del 
                 }
                 const report = JSON.parse(cleanJson);
 
+                // Guardar en el historial vitalicio
+                const newEntry = {
+                    type: 'audit',
+                    sectorId: sectorSelect ? sectorSelect.value : 'b2b',
+                    sectorName: sectorText || 'General',
+                    productName: product || 'Producto',
+                    critica: report.conclusiones || '',
+                    puntos_fuertes: report.puntos_fuertes || [],
+                    consejos: report.puntos_debiles || [], // Guardado unificado como consejos
+                    lecciones: report.lecciones || []
+                };
+                await savePracticeHistory(newEntry);
+
                 // Renderizar Resultados
                 document.getElementById("upload-conclusions").innerText = report.conclusiones || "";
 
@@ -2743,6 +2778,49 @@ No incluyas markdown (como bloques \`\`\`json), comentarios, ni texto fuera del 
                 uploadSubmitBtn.disabled = false;
                 uploadSubmitBtn.innerHTML = originalText;
             }
+        });
+    }
+
+    // Inicializar límites de paginación
+    app.historySimulationsLimit = 15;
+    app.historyAuditsLimit = 15;
+
+    // Camino 3: Click en Historial y Errores
+    const modePathHistory = document.getElementById("mode-path-history");
+    if (modePathHistory) {
+        modePathHistory.addEventListener("click", () => {
+            const modeSelection = document.getElementById("roleplay-mode-selection");
+            const historyWorkspace = document.getElementById("roleplay-history-workspace");
+            if (modeSelection) modeSelection.classList.add("hidden");
+            if (historyWorkspace) historyWorkspace.classList.remove("hidden");
+            app.historySimulationsLimit = 15;
+            app.historyAuditsLimit = 15;
+            loadAndRenderHistoryUI();
+        });
+    }
+
+    // Volver a Modos desde Historial
+    const historyBackBtn = document.getElementById("history-back-btn");
+    if (historyBackBtn) {
+        historyBackBtn.addEventListener("click", () => {
+            initRoleplaySetup();
+        });
+    }
+
+    // Botones de cargar más
+    const loadMoreSimsBtn = document.getElementById("history-load-more-simulations");
+    if (loadMoreSimsBtn) {
+        loadMoreSimsBtn.addEventListener("click", () => {
+            app.historySimulationsLimit += 15;
+            renderHistoryUI();
+        });
+    }
+
+    const loadMoreAuditsBtn = document.getElementById("history-load-more-audits");
+    if (loadMoreAuditsBtn) {
+        loadMoreAuditsBtn.addEventListener("click", () => {
+            app.historyAuditsLimit += 15;
+            renderHistoryUI();
         });
     }
 }
@@ -2800,6 +2878,10 @@ async function generateCustomerResponse(isInitial = false) {
     if (sendBtn) sendBtn.disabled = true;
 
     try {
+        // Cargar historial de prácticas y compilar prompt de memoria
+        const historyItems = await getUserHistory();
+        const historyPrompt = buildHistoryPromptString(historyItems);
+
         // Secure Serverless Proxy API used (no client-side API Key required)
         const activeSectorObj = SECTORS.find(s => s.id === app.state.sectorId);
         const sectorName = activeSectorObj ? activeSectorObj.name : "Ventas Generales";
@@ -2847,6 +2929,15 @@ ${app.roleplay.businessContext}
 
 Tu personalidad de comportamiento es: ${profileDescription}
 Tu tono de voz es: ${profileTone}
+
+${historyItems.length > 0 ? `
+HISTORIAL DEL VENDEDOR (MEMORIA DE ERRORES/FORTALEZAS):
+${historyPrompt}
+
+INSTRUCCIÓN ESPECIAL SOBRE LA MEMORIA DEL VENDEDOR:
+- Si el vendedor tiene Errores Recurrentes listados arriba (como monólogos, repetir la objeción o defender rápido el precio), debes ser sumamente estricto y firme. Pon a prueba estas debilidades. Si las vuelve a cometer, rechaza sus argumentos o pon objeciones más duras.
+- Si el vendedor demuestra aplicar buenos hábitos o fortalezas consolidadas que corrijan sus debilidades anteriores, sé receptivo y permítele avanzar de forma más fluida en la negociación como recompensa natural a su buen desempeño comercial.
+` : ''}
 
 REGLAS ABSOLUTAS DE COMPORTAMIENTO:
 1. Actúa al 100% como un ser humano real e independiente en una conversación fluida. NUNCA digas o insinúes que eres una IA, un modelo de lenguaje, una simulación o un bot.
@@ -2925,7 +3016,9 @@ async function evaluateSimulation() {
     }
 
     try {
-        // Secure Serverless Proxy API used (no client-side API Key required)
+        // Cargar historial de prácticas y compilar prompt de memoria
+        const historyItems = await getUserHistory();
+        const historyPrompt = buildHistoryPromptString(historyItems);
 
         // Compile Transcript
         let transcript = "";
@@ -2934,13 +3027,18 @@ async function evaluateSimulation() {
             transcript += `${sender}: ${msg.text}\n`;
         });
 
-                const prompt = `Eres Carlos, un closer de ventas con 30 años de experiencia cerrando tratos comerciales de alto nivel. Eres directo, pragmático, sin rodeos, con un sentido del humor ácido pero sumamente profesional. Tu objetivo es auditar una transcripción de llamada de ventas simulada y evaluar el desempeño del vendedor de acuerdo con el SISTEMA DE ENTRENAMIENTO ÉLITE.
+        const prompt = `Eres Carlos, un closer de ventas con 30 años de experiencia cerrando tratos comerciales de alto nivel. Eres directo, pragmático, sin rodeos, con un sentido del humor ácido pero sumamente profesional. Tu objetivo es auditar una transcripción de llamada de ventas simulada y evaluar el desempeño del vendedor de acuerdo con el SISTEMA DE ENTRENAMIENTO ÉLITE.
 
 Analiza minuciosamente el diálogo entre el Vendedor (User) y el Cliente (AI Customer) a continuación:
 ---
 TRANSCRIPCIÓN DE LA LLAMADA:
 ${transcript}
 ---
+
+${historyItems.length > 0 ? `
+HISTORIAL Y MEMORIA DE LLAMADAS PREVIAS DEL VENDEDOR:
+${historyPrompt}
+` : ''}
 
 INSTRUCCIONES DE AUDITORÍA (APLICA ESTRICTAMENTE EL ADN DEL CLOSER ÉLITE):
 1. Califica el desempeño global de 0 a 100. Sé sumamente exigente: un 90+ es para un cerrador de nivel mundial que usa empatía táctica y cierres parciales; un novato andará por los 50-60.
@@ -2949,7 +3047,10 @@ INSTRUCCIONES DE AUDITORÍA (APLICA ESTRICTAMENTE EL ADN DEL CLOSER ÉLITE):
    - Control del Diálogo (¿siguió la regla del 70/30 hablando solo el 30% y guio con preguntas correctas, o soltó monólogos e intentó convencer?).
    - Resolución de Objeciones (¿reencuadró el problema mostrando una nueva perspectiva o defendió el precio/producto con desesperación y frases robóticas? CRÍTICO: Si el vendedor cometió el error amateur de repetir o validar la objeción del cliente utilizando sus palabras clave —por ejemplo, diciendo "sé que es caro" o "entiendo que el coste es alto" ante una objeción de precio— penaliza fuertemente esta métrica restando al menos 25 puntos. Un cerrador tiburón NUNCA repite la objeción).
    - Cierre de Oro (¿consiguió micro-compromisos y Cierres Parciales -de Problema, Criterio, Valor y Lógica- durante toda la llamada, o esperó de forma pasiva al final para presionar de golpe?).
-3. Genera una crítica en tu estilo característico de Carlos. Sé directo y ácido. Si el vendedor cometió un error (como hablar demasiado, rellenar silencios, sonar falso/robótico, usar frases prohibidas, o cometer el error amateur de repetir los términos de la objeción del cliente en su respuesta), dilo claramente y cítalo: "Dijiste '[cita]' y eso mató la llamada porque repetiste la objeción como un novato. Debiste haber dicho...".
+3. Genera una crítica en tu estilo característico de Carlos. Sé directo y ácido, pero a la vez motivador (no lo desmotives).
+   ${historyItems.length > 0 ? `CRÍTICO (Memoria de Errores e Historial):
+   - Si el vendedor volvió a cometer en esta simulación alguno de sus Errores Recurrentes previos (ej: monólogos, repetir la objeción, defensa precipitada de precio), llámale la atención directamente en tu crítica de forma enérgica e irónica pero alentadora (ej: '¡Veo que has vuelto a cometer el error de..., que ya te había señalado en tus prácticas del pasado! Tienes que enfocarte en...').
+   - Si el vendedor aplicó aciertos previos o corrigió un error del historial, reconócelo explícitamente y felicítale de forma motivadora y cálida en la crítica para incentivarle (ej: 'Me alegra ver que has mantenido tu fortaleza en... / Has logrado superar tu error anterior de..., bien hecho.').` : ''}
 4. Devuelve la respuesta en formato JSON estrictamente válido. No incluyas markdown (como bloques de código \`\`\`json), comentarios, ni texto fuera del objeto JSON. El formato debe ser exactamente:
 {
   "score": <número>,
@@ -2958,8 +3059,9 @@ INSTRUCCIONES DE AUDITORÍA (APLICA ESTRICTAMENTE EL ADN DEL CLOSER ÉLITE):
   "resolucion": <número>,
   "cierre": <número>,
   "titulo": "<título de rango, ej. Novato de Cierre, Negociador Prometedor, Closer de Élite>",
-  "critica": "<tu crítica redactada en tu estilo de Carlos, citando partes del diálogo y auditando en base al ADN Élite>",
-  "consejos": ["<consejo 1 sobre Cierres Parciales/Hábitos Élite>", "<consejo 2>", "<consejo 3>"]
+  "critica": "<tu crítica redactada en tu estilo de Carlos, citando partes del diálogo y auditando en base al ADN Élite e incluyendo los comentarios sobre su historial>",
+  "consejos": ["<consejo/punto débil 1>", "<consejo/punto débil 2>", "<consejo/punto débil 3>"],
+  "puntos_fuertes": ["<punto fuerte 1>", "<punto fuerte 2>", "<punto fuerte 3>"]
 }`;
 
         const response = await fetch(`/api/gemini`, {
@@ -3001,6 +3103,21 @@ INSTRUCCIONES DE AUDITORÍA (APLICA ESTRICTAMENTE EL ADN DEL CLOSER ÉLITE):
         }
         
         const evalData = JSON.parse(cleanJson);
+
+        // Guardar en el historial vitalicio
+        const newEntry = {
+            type: 'simulation',
+            sectorId: app.state.sectorId || '',
+            sectorName: SECTORS.find(s => s.id === app.state.sectorId)?.name || 'General',
+            productName: app.roleplay.product || 'Software B2B',
+            score: evalData.score || 0,
+            titulo: evalData.titulo || 'Evaluado',
+            critica: evalData.critica || '',
+            consejos: evalData.consejos || [],
+            puntos_fuertes: evalData.puntos_fuertes || [],
+            transcript: app.roleplay.messages.map(m => ({ sender: m.sender, text: m.text }))
+        };
+        await savePracticeHistory(newEntry);
 
         // Transition screens
         if (chatScreen) chatScreen.classList.add("hidden");
@@ -3492,6 +3609,9 @@ function initAuth() {
         guestBtn.addEventListener("click", () => {
             localStorage.setItem("salesquest_is_guest", "true");
             app.isGuest = true;
+            app.state.username = "Invitado";
+            app.state.avatar = "🦈";
+            app.saveState();
             console.log("Entrando en modo invitado local.");
             checkAuthAndOnboarding();
         });
@@ -3580,6 +3700,8 @@ function initAuth() {
                 app.state.productName = "";
                 app.state.sectorId = "";
                 app.state.leadType = "";
+                app.state.username = username;
+                app.state.avatar = uploadedPhotoBase64 || selectedAvatar;
                 app.saveState();
 
                 alert("¡Perfil de ventas creado con éxito!");
@@ -3618,12 +3740,15 @@ function initAuth() {
                         app.state.productName = data.productName || "";
                         app.state.sectorId = data.sectorId || "";
                         app.state.leadType = data.leadType || "";
+                        app.state.username = data.username || user.email.split("@")[0];
+                        app.state.avatar = data.avatar || "🦈";
                         app.saveState();
                     } else {
                         // Backup if firestore document failed to initialize
+                        const defaultUsername = user.email.split("@")[0];
                         await db.collection("users").doc(user.uid).set({
                             uid: user.uid,
-                            username: user.email.split("@")[0],
+                            username: defaultUsername,
                             email: user.email,
                             avatar: "🦈",
                             xp: app.state.xp,
@@ -3634,6 +3759,9 @@ function initAuth() {
                             leadType: app.state.leadType,
                             lastActive: firebase.firestore.FieldValue.serverTimestamp()
                         }, { merge: true });
+                        app.state.username = defaultUsername;
+                        app.state.avatar = "🦈";
+                        app.saveState();
                     }
                     
                     // Update user connection geolocation coordinate fields
@@ -4101,38 +4229,87 @@ async function loadMapMarkers() {
             const querySnapshot = await db.collection("users").get();
             querySnapshot.forEach((doc) => {
                 const u = doc.data();
-                if (u.lat && u.lng) {
-                    const marker = L.marker([u.lat, u.lng], { icon: dotIcon }).addTo(leafletMap);
-                    const sectorName = u.sectorId ? (SECTORS.find(s => s.id === u.sectorId)?.name || u.sectorId) : "General";
-                    
-                    const content = `
-                        <div style="font-family: inherit; font-size: 12px; color: #fff; padding: 4px; min-width: 140px;">
-                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                                <span style="width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;">${formatAvatar(u.avatar, 26)}</span>
-                                <div>
-                                    <strong style="color: #a855f7; font-size: 13px;">${u.username || 'Vendedor'}</strong>
-                                    <br><span style="font-size: 9.5px; color: #8b8f9a;">Nivel ${u.level || 1}</span>
-                                </div>
-                            </div>
-                            <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 6px; margin-top: 6px; line-height: 1.4;">
-                                <strong>Sector:</strong> ${sectorName}
-                                <br><strong>Ubicación:</strong> ${u.city || 'Activo'}, ${u.country || 'Planeta Tierra'}
-                            </div>
-                            <button class="map-profile-btn" data-uid="${doc.id}" style="margin-top: 8px; width: 100%; padding: 6px; background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.3); color: #c084fc; font-size: 10px; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: inherit;">Ver Perfil / Amigos</button>
-                        </div>
-                    `;
-                    marker.bindPopup(content);
-                    marker.on('popupopen', (e) => {
-                        const popupEl = e.popup.getElement();
-                        const btn = popupEl.querySelector(".map-profile-btn");
-                        if (btn) {
-                            btn.addEventListener("click", () => {
-                                openUserProfile(btn.dataset.uid);
-                            });
-                        }
-                    });
-                    mapMarkers.push(marker);
+                let lat = u.lat;
+                let lng = u.lng;
+                let city = u.city;
+                let country = u.country;
+
+                if (!lat || !lng) {
+                    // Generar coordenadas deterministas basadas en el username o ID del documento
+                    const hashStr = u.username || doc.id;
+                    let hash = 0;
+                    for (let i = 0; i < hashStr.length; i++) {
+                        hash = hashStr.charCodeAt(i) + ((hash << 5) - hash);
+                    }
+                    hash = Math.abs(hash);
+
+                    const fallbackCities = [
+                        { city: "Madrid", country: "España", lat: 40.4167, lng: -3.7037 },
+                        { city: "Barcelona", country: "España", lat: 41.3851, lng: 2.1734 },
+                        { city: "Sevilla", country: "España", lat: 37.3891, lng: -5.9845 },
+                        { city: "Valencia", country: "España", lat: 39.4699, lng: -0.3763 },
+                        { city: "Bogotá", country: "Colombia", lat: 4.7110, lng: -74.0721 },
+                        { city: "Ciudad de México", country: "México", lat: 19.4326, lng: -99.1332 },
+                        { city: "Buenos Aires", country: "Argentina", lat: -34.6037, lng: -58.3816 },
+                        { city: "Santiago", country: "Chile", lat: -33.4489, lng: -70.6693 },
+                        { city: "Lima", country: "Perú", lat: -12.0464, lng: -77.0428 },
+                        { city: "Caracas", country: "Venezuela", lat: 10.4806, lng: -66.9036 },
+                        { city: "Miami", country: "EE.UU.", lat: 25.7617, lng: -80.1918 },
+                        { city: "San José", country: "Costa Rica", lat: 9.9281, lng: -84.0907 },
+                        { city: "Guadalajara", country: "México", lat: 20.6597, lng: -103.3496 },
+                        { city: "Medellín", country: "Colombia", lat: 6.2518, lng: -75.5636 }
+                    ];
+
+                    const index = hash % fallbackCities.length;
+                    const choice = fallbackCities[index];
+
+                    // Pequeña dispersión para evitar que se superpongan exactamente en el mismo pixel
+                    lat = choice.lat + ((hash % 100) / 1000 - 0.05);
+                    lng = choice.lng + (((hash >> 8) % 100) / 1000 - 0.05);
+                    city = choice.city;
+                    country = choice.country;
+
+                    // Actualizar en segundo plano si Firebase está disponible y no es invitado
+                    if (firebaseEnabled && auth && auth.currentUser && !app.isGuest) {
+                        db.collection("users").doc(doc.id).update({
+                            lat: lat,
+                            lng: lng,
+                            city: city,
+                            country: country
+                        }).catch(err => console.warn("Error actualizando coordenadas en background:", err));
+                    }
                 }
+
+                const marker = L.marker([lat, lng], { icon: dotIcon }).addTo(leafletMap);
+                const sectorName = u.sectorId ? (SECTORS.find(s => s.id === u.sectorId)?.name || u.sectorId) : "General";
+                
+                const content = `
+                    <div style="font-family: inherit; font-size: 12px; color: #fff; padding: 4px; min-width: 140px;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                            <span style="width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;">${formatAvatar(u.avatar, 26)}</span>
+                            <div>
+                                <strong style="color: #a855f7; font-size: 13px;">${u.username || 'Vendedor'}</strong>
+                                <br><span style="font-size: 9.5px; color: #8b8f9a;">Nivel ${u.level || 1}</span>
+                            </div>
+                        </div>
+                        <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 6px; margin-top: 6px; line-height: 1.4;">
+                            <strong>Sector:</strong> ${sectorName}
+                            <br><strong>Ubicación:</strong> ${city || 'Activo'}, ${country || 'Planeta Tierra'}
+                        </div>
+                        <button class="map-profile-btn" data-uid="${doc.id}" style="margin-top: 8px; width: 100%; padding: 6px; background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.3); color: #c084fc; font-size: 10px; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: inherit;">Ver Perfil / Amigos</button>
+                    </div>
+                `;
+                marker.bindPopup(content);
+                marker.on('popupopen', (e) => {
+                    const popupEl = e.popup.getElement();
+                    const btn = popupEl.querySelector(".map-profile-btn");
+                    if (btn) {
+                        btn.addEventListener("click", () => {
+                            openUserProfile(btn.dataset.uid);
+                        });
+                    }
+                });
+                mapMarkers.push(marker);
             });
         } catch (e) {
             console.error("Error al consultar usuarios geolocalizados:", e);
@@ -4575,6 +4752,13 @@ async function openUserProfile(userId) {
     document.getElementById("profile-modal-location").innerText = "Cargando...";
     document.getElementById("profile-modal-xp").innerText = "0 XP";
     
+    const progressTextEl = document.getElementById("profile-modal-progress-text");
+    const progressFillEl = document.getElementById("profile-modal-progress-fill");
+    if (progressTextEl && progressFillEl) {
+        progressTextEl.innerText = "0/10 Módulos";
+        progressFillEl.style.width = "0%";
+    }
+    
     const avatarEl = document.getElementById("profile-modal-avatar");
     if (avatarEl) avatarEl.innerHTML = "🦈";
     
@@ -4584,12 +4768,37 @@ async function openUserProfile(userId) {
     profileModal.classList.remove("hidden");
     
     let userData = null;
+    const isSelf = userId === "guest" || (auth && auth.currentUser && userId === auth.currentUser.uid);
+    
+    if (isSelf) {
+        userData = {
+            uid: userId,
+            username: app.state.username || "Invitado",
+            avatar: app.state.avatar || "🦈",
+            level: app.state.level || 1,
+            sectorId: app.state.sectorId || "saas",
+            city: "Local",
+            country: "Tú",
+            xp: app.state.xp || 0,
+            completedStages: app.state.completedStages || []
+        };
+    }
     
     if (firebaseEnabled) {
         try {
             const userDoc = await db.collection("users").doc(userId).get();
             if (userDoc.exists) {
                 userData = userDoc.data();
+                if (isSelf) {
+                    // Sync back to local state
+                    app.state.xp = userData.xp || 0;
+                    app.state.level = userData.level || 1;
+                    app.state.completedStages = userData.completedStages || [];
+                    app.state.username = userData.username || app.state.username;
+                    app.state.avatar = userData.avatar || app.state.avatar;
+                    app.saveState();
+                    app.updateHeaderStats();
+                }
             }
         } catch (e) {
             console.error("Error fetching user profile:", e);
@@ -4614,7 +4823,13 @@ async function openUserProfile(userId) {
     }
     
     document.getElementById("profile-modal-name").innerText = userData.username || "Vendedor";
-    document.getElementById("profile-modal-level").innerText = `Nivel ${userData.level || 1}`;
+    
+    let title = "Novato";
+    const lvl = userData.level || 1;
+    if (lvl >= 2) title = "Negociador";
+    if (lvl >= 3) title = "Cerrador Elite";
+    if (lvl >= 4) title = "Master de Ventas";
+    document.getElementById("profile-modal-level").innerText = `Nivel ${lvl} (${title})`;
     
     const sectorName = userData.sectorId ? (SECTORS.find(s => s.id === userData.sectorId)?.name || userData.sectorId) : "General";
     document.getElementById("profile-modal-sector").innerText = sectorName;
@@ -4626,6 +4841,13 @@ async function openUserProfile(userId) {
     
     if (avatarEl) {
         avatarEl.innerHTML = formatAvatar(userData.avatar, 72);
+    }
+    
+    if (progressTextEl && progressFillEl) {
+        const completedStagesList = userData.completedStages || [];
+        const modulesCompleted = completedStagesList.filter(s => s.startsWith("stage-")).length;
+        progressTextEl.innerText = `${modulesCompleted}/10 Módulos`;
+        progressFillEl.style.width = `${(modulesCompleted / 10) * 100}%`;
     }
     
     if (actionsContainer) {
@@ -4764,6 +4986,484 @@ function switchPrivateChat(friendId) {
         container.innerHTML = `<p style="text-align: center; color: var(--text-muted); font-size: 12px; margin-top: 40px;">El chat privado requiere Firebase habilitado.</p>`;
     }
 }
+
+// ==========================================================================
+// MÓDULO DE HISTORIAL Y MEMORIA DE ERRORES / FORTALEZAS (VITALICIO & PAGINADO)
+// ==========================================================================
+
+let globalHistoryItems = [];
+
+async function getUserHistory() {
+    let rawItems = [];
+    if (firebaseEnabled && auth && auth.currentUser && !app.isGuest) {
+        try {
+            const uid = auth.currentUser.uid;
+            // Intentar consultar con ordenamiento por timestamp
+            try {
+                const snapshot = await db.collection("practice_history")
+                    .where("uid", "==", uid)
+                    .orderBy("timestamp", "desc")
+                    .get();
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const ts = data.timestamp && typeof data.timestamp.toDate === 'function' ? data.timestamp.toDate().getTime() : (data.timestamp || Date.now());
+                    rawItems.push({ id: doc.id, ...data, timestamp: ts });
+                });
+            } catch (indexErr) {
+                console.warn("La consulta ordenada de Firestore requiere un índice, usando fallback de ordenamiento local:", indexErr);
+                const snapshot = await db.collection("practice_history")
+                    .where("uid", "==", uid)
+                    .get();
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const ts = data.timestamp && typeof data.timestamp.toDate === 'function' ? data.timestamp.toDate().getTime() : (data.timestamp || Date.now());
+                    rawItems.push({ id: doc.id, ...data, timestamp: ts });
+                });
+                rawItems.sort((a, b) => b.timestamp - a.timestamp);
+            }
+        } catch (err) {
+            console.error("Error al cargar el historial desde Firestore:", err);
+        }
+    } else {
+        // Cargar desde localStorage
+        try {
+            const localData = localStorage.getItem("salesquest_practice_history");
+            if (localData) {
+                rawItems = JSON.parse(localData);
+            }
+        } catch (err) {
+            console.error("Error al cargar el historial desde localStorage:", err);
+        }
+    }
+    return rawItems;
+}
+
+async function savePracticeHistory(entry) {
+    if (firebaseEnabled && auth && auth.currentUser && !app.isGuest) {
+        try {
+            const uid = auth.currentUser.uid;
+            const docData = {
+                ...entry,
+                uid: uid,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            await db.collection("practice_history").add(docData);
+            console.log("Historial de práctica guardado en Firestore.");
+        } catch (err) {
+            console.error("Error al guardar historial en Firestore, guardando en local como respaldo:", err);
+            savePracticeHistoryLocally(entry);
+        }
+    } else {
+        savePracticeHistoryLocally(entry);
+    }
+}
+
+function savePracticeHistoryLocally(entry) {
+    try {
+        let history = [];
+        const localData = localStorage.getItem("salesquest_practice_history");
+        if (localData) {
+            history = JSON.parse(localData);
+        }
+        const localEntry = {
+            ...entry,
+            id: 'local_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+            uid: 'guest',
+            timestamp: Date.now()
+        };
+        history.unshift(localEntry);
+        localStorage.setItem("salesquest_practice_history", JSON.stringify(history));
+        console.log("Historial de práctica guardado en localStorage.");
+    } catch (err) {
+        console.error("Error al guardar historial en localStorage:", err);
+    }
+}
+
+function getRecurrentStats(historyItems) {
+    const errorCounts = {};
+    const strengthCounts = {};
+
+    historyItems.forEach(item => {
+        const weaknesses = [];
+        if (item.consejos && Array.isArray(item.consejos)) {
+            weaknesses.push(...item.consejos);
+        }
+        if (item.puntos_debiles && Array.isArray(item.puntos_debiles)) {
+            weaknesses.push(...item.puntos_debiles);
+        }
+
+        weaknesses.forEach(w => {
+            const wText = w.toLowerCase();
+            let matchedCategory = null;
+
+            if (wText.includes("objeción") || wText.includes("repetir la ob") || wText.includes("validar la ob") || wText.includes("palabras clave") || wText.includes("repetir")) {
+                matchedCategory = "Repetir la Objeción del Cliente (validar en vez de reencuadrar) ❌";
+            } else if (wText.includes("70/30") || wText.includes("hablar") || wText.includes("monólogo") || wText.includes("demasiado") || wText.includes("explicar") || wText.includes("características")) {
+                matchedCategory = "Monólogos e Invasión del Diálogo (regla del 70/30 no cumplida) ❌";
+            } else if (wText.includes("precio") || wText.includes("defender el pr") || wText.includes("justificar el pr") || wText.includes("descuento")) {
+                matchedCategory = "Defensa Precipitada del Precio (sin establecer valor previo) ❌";
+            } else if (wText.includes("micro-compromiso") || wText.includes("cierres parciales") || wText.includes("cierre parcial")) {
+                matchedCategory = "Falta de Cierres Parciales (no cerrar de forma incremental) ❌";
+            } else if (wText.includes("robótico") || wText.includes("artificial") || wText.includes("guion") || wText.includes("falso") || wText.includes("emociones")) {
+                matchedCategory = "Tono Robótico o Etiquetado Emocional Rígido ❌";
+            } else if (wText.includes("presionar") || wText.includes("desesperación") || wText.includes("agresivo") || wText.includes("presionas")) {
+                matchedCategory = "Presión de Cierre Ansiosa (cerrar de golpe al final) ❌";
+            } else if (wText.includes("dolor") || wText.includes("coste de la inacción") || wText.includes("inacción") || wText.includes("indagar") || wText.includes("subyacente")) {
+                matchedCategory = "Indagación de Dolor Superficial (no tocar la herida) ❌";
+            }
+
+            if (matchedCategory) {
+                errorCounts[matchedCategory] = (errorCounts[matchedCategory] || 0) + 1;
+            }
+        });
+
+        const strengths = [];
+        if (item.puntos_fuertes && Array.isArray(item.puntos_fuertes)) {
+            strengths.push(...item.puntos_fuertes);
+        }
+
+        strengths.forEach(s => {
+            const sText = s.toLowerCase();
+            let matchedCategory = null;
+
+            if (sText.includes("empatía táctica") || sText.includes("etiquet") || sText.includes("emocional") || sText.includes("reencuadre") || sText.includes("dolor")) {
+                matchedCategory = "Empatía Táctica Sobresaliente (comprensión profunda del dolor) ✅";
+            } else if (sText.includes("70/30") || sText.includes("escucha") || sText.includes("tiempos") || sText.includes("dejar hablar")) {
+                matchedCategory = "Control de Tiempos y Escucha Activa (regla 70/30 dominada) ✅";
+            } else if (sText.includes("cierres parciales") || sText.includes("cierre parcial") || sText.includes("micro-compromiso") || sText.includes("acuerdo")) {
+                matchedCategory = "Dominio de Cierres Parciales (acuerdos incrementales) ✅";
+            } else if (sText.includes("silencio")) {
+                matchedCategory = "Uso del Silencio Estratégico (pausas incómodas deliberadas) ✅";
+            } else if (sText.includes("valor") || sText.includes("retorno") || sText.includes("inacción")) {
+                matchedCategory = "Reencuadre de Valor Élite (coste de la inacción) ✅";
+            } else if (sText.includes("tono") || sText.includes("natural") || sText.includes("cercano") || sText.includes("conversación")) {
+                matchedCategory = "Tono Conversacional Natural y Rapport ✅";
+            }
+
+            if (matchedCategory) {
+                strengthCounts[matchedCategory] = (strengthCounts[matchedCategory] || 0) + 1;
+            }
+        });
+    });
+
+    const recurrentErrors = Object.entries(errorCounts)
+        .map(([category, count]) => ({ category, count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 3);
+
+    const consolidatedStrengths = Object.entries(strengthCounts)
+        .map(([category, count]) => ({ category, count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 3);
+
+    return { recurrentErrors, consolidatedStrengths };
+}
+
+function buildHistoryPromptString(historyItems) {
+    if (!historyItems || historyItems.length === 0) {
+        return "";
+    }
+
+    const { recurrentErrors, consolidatedStrengths } = getRecurrentStats(historyItems);
+
+    let promptText = "HISTORIAL Y MEMORIA DEL VENDEDOR (PRÁCTICAS ANTERIORES):\n";
+    
+    if (recurrentErrors.length > 0) {
+        promptText += "- ERRORES RECURRENTES QUE SUELE COMETER (Evitar y vigilar en esta llamada):\n";
+        recurrentErrors.forEach(err => {
+            promptText += `  * ${err.category} (Frecuencia en sesiones pasadas: ${err.count} veces)\n`;
+        });
+    }
+
+    if (consolidatedStrengths.length > 0) {
+        promptText += "- FORTALEZAS CONSOLIDADAS (Hábitos positivos que el vendedor suele aplicar):\n";
+        consolidatedStrengths.forEach(str => {
+            promptText += `  * ${str.category} (Frecuencia en sesiones pasadas: ${str.count} veces)\n`;
+        });
+    }
+
+    promptText += "\nDETALLES DE LA ÚLTIMA SESIÓN DE PRÁCTICA:\n";
+    const lastItem = historyItems[0];
+    if (lastItem) {
+        const dateStr = new Date(lastItem.timestamp).toLocaleDateString();
+        promptText += `- Fecha: ${dateStr} - Tipo: ${lastItem.type === 'simulation' ? 'Simulación de Roleplay' : 'Auditoría de Conversación Real'} - Producto: ${lastItem.productName || 'General'}\n`;
+        promptText += `  - Crítica/Conclusión de Carlos: "${lastItem.critica || ''}"\n`;
+        if (lastItem.consejos && lastItem.consejos.length > 0) {
+            promptText += `  - Puntos débiles detectados: ${lastItem.consejos.join(", ")}\n`;
+        }
+        if (lastItem.puntos_fuertes && lastItem.puntos_fuertes.length > 0) {
+            promptText += `  - Puntos fuertes detectados: ${lastItem.puntos_fuertes.join(", ")}\n`;
+        }
+    }
+
+    return promptText;
+}
+
+async function loadAndRenderHistoryUI() {
+    const simsList = document.getElementById("history-simulations-list");
+    const auditsList = document.getElementById("history-audits-list");
+
+    if (simsList) simsList.innerHTML = `<p style="text-align: center; color: var(--text-muted); font-size: 13px; margin: 40px 0;">Cargando historial de simulaciones... ⏳</p>`;
+    if (auditsList) auditsList.innerHTML = `<p style="text-align: center; color: var(--text-muted); font-size: 13px; margin: 40px 0;">Cargando historial de auditorías... ⏳</p>`;
+
+    try {
+        globalHistoryItems = await getUserHistory();
+        renderHistoryUI();
+    } catch (err) {
+        console.error("Error al cargar y mostrar el historial:", err);
+        if (simsList) simsList.innerHTML = `<p style="text-align: center; color: #ef4444; font-size: 13px; margin: 40px 0;">Error al cargar el historial de simulaciones.</p>`;
+        if (auditsList) auditsList.innerHTML = `<p style="text-align: center; color: #ef4444; font-size: 13px; margin: 40px 0;">Error al cargar el historial de auditorías.</p>`;
+    }
+}
+
+function renderHistoryUI() {
+    const simsList = document.getElementById("history-simulations-list");
+    const auditsList = document.getElementById("history-audits-list");
+    const errorsList = document.getElementById("history-recurrent-errors");
+    const strengthsList = document.getElementById("history-consolidated-strengths");
+    const loadMoreSimsBtn = document.getElementById("history-load-more-simulations");
+    const loadMoreAuditsBtn = document.getElementById("history-load-more-audits");
+
+    // 1. Renderizar estadísticas recurrentes
+    const { recurrentErrors, consolidatedStrengths } = getRecurrentStats(globalHistoryItems);
+
+    if (errorsList) {
+        errorsList.innerHTML = "";
+        if (recurrentErrors.length === 0) {
+            errorsList.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; margin: 0; font-style: italic;">Realiza simulaciones o sube llamadas reales para analizar tus debilidades.</p>`;
+        } else {
+            recurrentErrors.forEach(err => {
+                const div = document.createElement("div");
+                div.style.cssText = "background: rgba(239,68,68,0.04); border: 1px solid rgba(239,68,68,0.12); padding: 10px 14px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 12.5px;";
+                div.innerHTML = `
+                    <span style="color: var(--text-main); font-weight: 500;">${err.category}</span>
+                    <span style="background: #ef4444; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; flex-shrink: 0; margin-left: 10px;">Cometido ${err.count} ${err.count === 1 ? 'vez' : 'veces'}</span>
+                `;
+                errorsList.appendChild(div);
+            });
+        }
+    }
+
+    if (strengthsList) {
+        strengthsList.innerHTML = "";
+        if (consolidatedStrengths.length === 0) {
+            strengthsList.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; margin: 0; font-style: italic;">Mantén tus aciertos constantes en las llamadas para consolidar tus fortalezas.</p>`;
+        } else {
+            consolidatedStrengths.forEach(str => {
+                const div = document.createElement("div");
+                div.style.cssText = "background: rgba(16,185,129,0.04); border: 1px solid rgba(16,185,129,0.12); padding: 10px 14px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 12.5px;";
+                div.innerHTML = `
+                    <span style="color: var(--text-main); font-weight: 500;">${str.category}</span>
+                    <span style="background: #10b981; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; flex-shrink: 0; margin-left: 10px;">Demostrado ${str.count} ${str.count === 1 ? 'vez' : 'veces'}</span>
+                `;
+                strengthsList.appendChild(div);
+            });
+        }
+    }
+
+    // 2. Renderizar listas
+    const simulations = globalHistoryItems.filter(item => item.type === 'simulation');
+    const audits = globalHistoryItems.filter(item => item.type === 'audit');
+
+    // Renderizar simulaciones
+    if (simsList) {
+        simsList.innerHTML = "";
+        if (simulations.length === 0) {
+            simsList.innerHTML = `<p style="text-align: center; color: var(--text-muted); font-size: 13px; margin: 40px 0;">No hay simulaciones registradas aún.</p>`;
+        } else {
+            const visibleSims = simulations.slice(0, app.historySimulationsLimit);
+            visibleSims.forEach(sim => {
+                const card = document.createElement("div");
+                card.className = "glass-panel";
+                card.style.cssText = "padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); background: rgba(255,255,255,0.01); display: flex; flex-direction: column; gap: 10px;";
+                
+                const scoreColor = sim.score >= 70 ? "#10b981" : "#ef4444";
+                const dateStr = new Date(sim.timestamp).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
+                
+                card.innerHTML = `
+                    <div class="history-card-header" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                        <div style="flex: 1; min-width: 0; padding-right: 12px;">
+                            <div style="font-size: 14px; font-weight: 600; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${sim.productName || 'Software de Gestión'}</div>
+                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Sector: ${sim.sectorName || 'General'} | ${dateStr}</div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                            <span style="font-size: 11px; font-weight: 700; color: ${scoreColor}; background: ${scoreColor}15; border: 1px solid ${scoreColor}30; padding: 2px 8px; border-radius: 6px;">${sim.score}/100</span>
+                            <span style="font-size: 11px; color: var(--text-muted); font-weight: 600;">${sim.titulo || 'Evaluado'}</span>
+                            <svg class="toggle-icon" viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: var(--text-muted); transition: transform 0.25s ease;"><path d="M7 10l5 5 5-5z"/></svg>
+                        </div>
+                    </div>
+                    <div class="history-card-body hidden" style="border-top: 1px solid rgba(255,255,255,0.04); padding-top: 12px; display: flex; flex-direction: column; gap: 12px; margin-top: 4px;">
+                        <!-- Crítica de Carlos -->
+                        <div style="padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 8px; position: relative;">
+                            <span style="position: absolute; top: -8px; left: 10px; background: #a855f7; color: var(--text-main); font-size: 8px; font-weight: 700; padding: 1px 4px; border-radius: 3px;">CRÍTICA DE CARLOS</span>
+                            <p style="margin: 0; font-size: 12px; line-height: 1.5; color: var(--text-main); font-style: italic; margin-top: 4px;">"${sim.critica || 'Sin comentarios.'}"</p>
+                        </div>
+
+                        <!-- Puntos fuertes y débiles -->
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            ${sim.puntos_fuertes && sim.puntos_fuertes.length > 0 ? `
+                            <div>
+                                <h5 style="margin: 0 0 4px 0; font-size: 11.5px; color: #10b981; font-weight: 600;">✅ Puntos Fuertes Detectados</h5>
+                                <ul style="margin: 0; padding-left: 16px; font-size: 11.5px; color: var(--text-muted); line-height: 1.4; display: flex; flex-direction: column; gap: 4px;">
+                                    ${sim.puntos_fuertes.map(pf => `<li>${pf}</li>`).join('')}
+                                </ul>
+                            </div>
+                            ` : ''}
+                            ${sim.consejos && sim.consejos.length > 0 ? `
+                            <div>
+                                <h5 style="margin: 0 0 4px 0; font-size: 11.5px; color: #ef4444; font-weight: 600;">❌ Puntos Débiles Detectados</h5>
+                                <ul style="margin: 0; padding-left: 16px; font-size: 11.5px; color: var(--text-muted); line-height: 1.4; display: flex; flex-direction: column; gap: 4px;">
+                                    ${sim.consejos.map(c => `<li>${c}</li>`).join('')}
+                                </ul>
+                            </div>
+                            ` : ''}
+                        </div>
+
+                        <!-- Botón y contenedor de transcripción -->
+                        ${sim.transcript && sim.transcript.length > 0 ? `
+                        <div style="border-top: 1px solid rgba(255,255,255,0.03); padding-top: 10px;">
+                            <button type="button" class="btn btn-secondary btn-block view-transcript-btn" style="padding: 6px 12px; font-size: 11px;">Ver Transcripción Completa 💬</button>
+                            <div class="transcript-container hidden" style="margin-top: 10px; background: rgba(9,12,22,0.3); border: 1px solid rgba(255,255,255,0.04); border-radius: 8px; padding: 12px; max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
+                                ${sim.transcript.map(m => {
+                                    const isUser = m.sender === 'user';
+                                    const senderLabel = isUser ? 'Vendedor' : 'Cliente';
+                                    const alignStyle = isUser ? 'text-align: right; align-self: flex-end; background: rgba(14,165,233,0.1); border: 1px solid rgba(14,165,233,0.15);' : 'text-align: left; align-self: flex-start; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);';
+                                    return `
+                                        <div style="padding: 6px 10px; border-radius: 8px; max-width: 85%; font-size: 11.5px; line-height: 1.4; ${alignStyle}">
+                                            <strong style="display: block; font-size: 9.5px; color: var(--text-muted); margin-bottom: 2px;">${senderLabel}</strong>
+                                            <span style="color: var(--text-main);">${m.text}</span>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+
+                // Manejador del acordeón
+                const header = card.querySelector(".history-card-header");
+                const body = card.querySelector(".history-card-body");
+                const arrow = card.querySelector(".toggle-icon");
+                header.addEventListener("click", () => {
+                    body.classList.toggle("hidden");
+                    if (body.classList.contains("hidden")) {
+                        arrow.style.transform = "rotate(0deg)";
+                    } else {
+                        arrow.style.transform = "rotate(180deg)";
+                    }
+                });
+
+                // Manejador de transcripción
+                const transcriptBtn = card.querySelector(".view-transcript-btn");
+                const transcriptContainer = card.querySelector(".transcript-container");
+                if (transcriptBtn && transcriptContainer) {
+                    transcriptBtn.addEventListener("click", () => {
+                        transcriptContainer.classList.toggle("hidden");
+                        transcriptBtn.innerText = transcriptContainer.classList.contains("hidden") 
+                            ? "Ver Transcripción Completa 💬" 
+                            : "Ocultar Transcripción 🙈";
+                    });
+                }
+
+                simsList.appendChild(card);
+            });
+        }
+
+        if (simulations.length > app.historySimulationsLimit) {
+            loadMoreSimsBtn.classList.remove("hidden");
+        } else {
+            loadMoreSimsBtn.classList.add("hidden");
+        }
+    }
+
+    // Renderizar auditorías
+    if (auditsList) {
+        auditsList.innerHTML = "";
+        if (audits.length === 0) {
+            auditsList.innerHTML = `<p style="text-align: center; color: var(--text-muted); font-size: 13px; margin: 40px 0;">No hay llamadas auditadas aún.</p>`;
+        } else {
+            const visibleAudits = audits.slice(0, app.historyAuditsLimit);
+            visibleAudits.forEach(audit => {
+                const card = document.createElement("div");
+                card.className = "glass-panel";
+                card.style.cssText = "padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); background: rgba(255,255,255,0.01); display: flex; flex-direction: column; gap: 10px;";
+                
+                const dateStr = new Date(audit.timestamp).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
+                
+                card.innerHTML = `
+                    <div class="history-card-header" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                        <div style="flex: 1; min-width: 0; padding-right: 12px;">
+                            <div style="font-size: 14px; font-weight: 600; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${audit.productName || 'Venta Real'}</div>
+                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Sector: ${audit.sectorName || 'General'} | ${dateStr}</div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                            <span style="font-size: 11px; font-weight: 700; color: #a855f7; background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.2); padding: 2px 8px; border-radius: 6px;">Auditoría Real 🎙️</span>
+                            <svg class="toggle-icon" viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: var(--text-muted); transition: transform 0.25s ease;"><path d="M7 10l5 5 5-5z"/></svg>
+                        </div>
+                    </div>
+                    <div class="history-card-body hidden" style="border-top: 1px solid rgba(255,255,255,0.04); padding-top: 12px; display: flex; flex-direction: column; gap: 12px; margin-top: 4px;">
+                        <!-- Diagnóstico -->
+                        <div style="padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 8px; position: relative;">
+                            <span style="position: absolute; top: -8px; left: 10px; background: #ec4899; color: var(--text-main); font-size: 8px; font-weight: 700; padding: 1px 4px; border-radius: 3px;">DIAGNÓSTICO COMERCIAL</span>
+                            <p style="margin: 0; font-size: 12px; line-height: 1.5; color: var(--text-main); margin-top: 4px;">${audit.critica || 'Sin comentarios.'}</p>
+                        </div>
+
+                        <!-- Puntos fuertes, débiles y lecciones -->
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            ${audit.puntos_fuertes && audit.puntos_fuertes.length > 0 ? `
+                            <div>
+                                <h5 style="margin: 0 0 4px 0; font-size: 11.5px; color: #10b981; font-weight: 600;">✅ Puntos Fuertes</h5>
+                                <ul style="margin: 0; padding-left: 16px; font-size: 11.5px; color: var(--text-muted); line-height: 1.4; display: flex; flex-direction: column; gap: 4px;">
+                                    ${audit.puntos_fuertes.map(pf => `<li>${pf}</li>`).join('')}
+                                </ul>
+                            </div>
+                            ` : ''}
+                            ${audit.consejos && audit.consejos.length > 0 ? `
+                            <div>
+                                <h5 style="margin: 0 0 4px 0; font-size: 11.5px; color: #ef4444; font-weight: 600;">❌ Puntos Débiles</h5>
+                                <ul style="margin: 0; padding-left: 16px; font-size: 11.5px; color: var(--text-muted); line-height: 1.4; display: flex; flex-direction: column; gap: 4px;">
+                                    ${audit.consejos.map(pd => `<li>${pd}</li>`).join('')}
+                                </ul>
+                            </div>
+                            ` : ''}
+                            ${audit.lecciones && audit.lecciones.length > 0 ? `
+                            <div>
+                                <h5 style="margin: 0 0 4px 0; font-size: 11.5px; color: #f59e0b; font-weight: 600;">💡 Lecciones Clave</h5>
+                                <ul style="margin: 0; padding-left: 16px; font-size: 11.5px; color: var(--text-muted); line-height: 1.4; display: flex; flex-direction: column; gap: 4px;">
+                                    ${audit.lecciones.map(l => `<li>${l}</li>`).join('')}
+                                </ul>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+
+                // Manejador del acordeón
+                const header = card.querySelector(".history-card-header");
+                const body = card.querySelector(".history-card-body");
+                const arrow = card.querySelector(".toggle-icon");
+                header.addEventListener("click", () => {
+                    body.classList.toggle("hidden");
+                    if (body.classList.contains("hidden")) {
+                        arrow.style.transform = "rotate(0deg)";
+                    } else {
+                        arrow.style.transform = "rotate(180deg)";
+                    }
+                });
+
+                auditsList.appendChild(card);
+            });
+        }
+
+        if (audits.length > app.historyAuditsLimit) {
+            loadMoreAuditsBtn.classList.remove("hidden");
+        } else {
+            loadMoreAuditsBtn.classList.add("hidden");
+        }
+    }
+}
+
 
 
 

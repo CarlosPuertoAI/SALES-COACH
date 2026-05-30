@@ -35,14 +35,10 @@
                 </div>
             </div>
             <div class="header-right">
-                <div class="stat-badge xp-badge">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    <span id="xp-counter">0</span> <span class="xp-unit">XP</span>
-                </div>
-                <div class="stat-badge level-badge">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M12 22c5.52 0 10-4.48 10-10S17.52 2 12 2 2 6.48 2 12s4.48 10 10 10zM12 6l4 4h-3v6h-2v-6H8l4-4z"/></svg>
-                    <span id="level-indicator">Nivel 1</span>
-                </div>
+                <button id="user-profile-btn" class="stat-badge profile-btn" title="Ver Perfil y Progreso">
+                    <span id="header-user-avatar" style="width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 50%;">🦈</span>
+                    <span id="header-user-name" style="margin-left: 2px;">Perfil</span>
+                </button>
                 <button id="reset-profile-btn" class="stat-badge reset-btn" title="Reiniciar Perfil y Sector">
                     <svg class="icon" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.48.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87a.49.49 0 0 0 .12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.49.49 0 0 0-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
                 </button>
@@ -644,7 +640,7 @@
                         <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px; line-height: 1.6;">Conviértete en el mayor tiburón de las ventas practicando con clientes de IA o auditando tus propias llamadas y conversaciones reales.</p>
                     </div>
                     
-                    <div class="mode-selection-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; width: 100%; max-width: 800px; margin-top: 10px;">
+                    <div class="mode-selection-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; width: 100%; max-width: 1000px; margin-top: 10px;">
                         <!-- Path 1: Audit real sale -->
                         <div class="mode-card glass-panel" id="mode-path-upload" style="padding: 32px; border-radius: 16px; cursor: pointer; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 16px; transition: var(--transition-smooth); background: rgba(13,17,29,0.5); border: 1px solid rgba(255,255,255,0.08);">
                             <div class="mode-icon" style="font-size: 48px; background: linear-gradient(135deg, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 10px rgba(168,85,247,0.3));">🎙️</div>
@@ -659,6 +655,14 @@
                             <h3 style="font-family: var(--font-display); font-size: 20px; color: var(--text-main); margin: 0;">2. Simulador de Práctica</h3>
                             <p style="color: var(--text-muted); font-size: 12.5px; line-height: 1.5; margin: 0;">Enfréntate cara a cara en un roleplay en vivo con clientes difíciles generados por IA. Domina las objeciones y entrena tu empatía táctica.</p>
                             <button class="btn btn-primary" style="margin-top: 10px; pointer-events: none; background: linear-gradient(135deg, #0ea5e9, #10b981); border: none; box-shadow: 0 4px 12px rgba(14,165,233,0.25);">Chatear en Vivo 📞</button>
+                        </div>
+
+                        <!-- Path 3: History & Errors -->
+                        <div class="mode-card glass-panel" id="mode-path-history" style="padding: 32px; border-radius: 16px; cursor: pointer; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 16px; transition: var(--transition-smooth); background: rgba(13,17,29,0.5); border: 1px solid rgba(255,255,255,0.08);">
+                            <div class="mode-icon" style="font-size: 48px; background: linear-gradient(135deg, #f59e0b, #ef4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 10px rgba(245,158,11,0.3));">📜</div>
+                            <h3 style="font-family: var(--font-display); font-size: 20px; color: var(--text-main); margin: 0;">3. Historial y Errores</h3>
+                            <p style="color: var(--text-muted); font-size: 12.5px; line-height: 1.5; margin: 0;">Revisa tu registro vitalicio de simulaciones y auditorías. Analiza tus debilidades recurrentes y haz un seguimiento de tus fortalezas consolidadas.</p>
+                            <button class="btn btn-primary" style="margin-top: 10px; pointer-events: none; background: linear-gradient(135deg, #f59e0b, #ef4444); border: none; box-shadow: 0 4px 12px rgba(245,158,11,0.25);">Ver Historial 📜</button>
                         </div>
                     </div>
                     
@@ -1042,6 +1046,77 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- HISTORY WORKSPACE (Path 3) -->
+                <div id="roleplay-history-workspace" class="roleplay-history-workspace hidden" style="display: flex; flex-direction: column; gap: 24px; width: 100%; animation: fadeIn 0.4s ease-out; margin-bottom: 20px;">
+                    <!-- Header with title and return button -->
+                    <div class="glass-panel" style="padding: 24px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.06); background: rgba(13,17,29,0.5); gap: 16px;">
+                        <div>
+                            <span class="tag-status" style="background: rgba(245,158,11,0.1); color: #f59e0b; border: 1px solid rgba(245,158,11,0.2); font-size: 11px;">MESA DE ANÁLISIS E HISTORIAL</span>
+                            <h2 style="font-family: var(--font-display); font-size: 24px; margin: 8px 0 0 0; color: var(--text-main);">Registro de Prácticas y Errores</h2>
+                            <p style="color: var(--text-muted); font-size: 13px; margin: 4px 0 0 0; line-height: 1.4;">Compara tu desempeño vitalicio, revisa tus errores recurrentes y mantén tus hábitos élite.</p>
+                        </div>
+                        <button type="button" id="history-back-btn" class="btn btn-secondary" style="padding: 10px 20px; font-size: 13px; flex-shrink: 0;">
+                            <span>Volver a Modos</span>
+                        </button>
+                    </div>
+
+                    <!-- Top Summary Grid (Errors and Strengths) -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; width: 100%;">
+                        <!-- Weaknesses (Errors) -->
+                        <div class="glass-panel" style="padding: 24px; border-radius: 16px; border: 1px solid rgba(239,68,68,0.15); background: rgba(239,68,68,0.02); border-left: 6px solid #ef4444; position: relative;">
+                            <span style="position: absolute; top: -10px; left: 16px; background: #ef4444; color: var(--text-main); font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.5px;">⚠️ CORREGIR INMEDIATAMENTE</span>
+                            <h3 style="font-family: var(--font-display); font-size: 16px; color: #ef4444; margin: 8px 0 12px 0; display: flex; align-items: center; gap: 8px;">
+                                <span>❌ Errores Recurrentes (Puntos Débiles)</span>
+                            </h3>
+                            <div id="history-recurrent-errors" style="display: flex; flex-direction: column; gap: 10px;">
+                                <p style="color: var(--text-muted); font-size: 13px; margin: 0; font-style: italic;">Realiza simulaciones o sube llamadas reales para analizar tus debilidades.</p>
+                            </div>
+                        </div>
+
+                        <!-- Strengths -->
+                        <div class="glass-panel" style="padding: 24px; border-radius: 16px; border: 1px solid rgba(16,185,129,0.15); background: rgba(16,185,129,0.02); border-left: 6px solid #10b981; position: relative;">
+                            <span style="position: absolute; top: -10px; left: 16px; background: #10b981; color: var(--text-main); font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.5px;">🏆 SEGUIR HACIENDO</span>
+                            <h3 style="font-family: var(--font-display); font-size: 16px; color: #10b981; margin: 8px 0 12px 0; display: flex; align-items: center; gap: 8px;">
+                                <span>✅ Fortalezas Consolidadas (Puntos Fuertes)</span>
+                            </h3>
+                            <div id="history-consolidated-strengths" style="display: flex; flex-direction: column; gap: 10px;">
+                                <p style="color: var(--text-muted); font-size: 13px; margin: 0; font-style: italic;">Mantén tus aciertos constantes en las llamadas para consolidar tus fortalezas.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lists Row (Simulations vs Audits) -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; width: 100%;">
+                        <!-- Left Column: Simulator history -->
+                        <div class="glass-panel" style="padding: 24px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.06); background: rgba(13,17,29,0.4); display: flex; flex-direction: column; gap: 16px; min-height: 400px;">
+                            <h3 style="font-family: var(--font-display); font-size: 18px; color: var(--text-main); margin: 0; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 12px;">
+                                <span style="font-size: 20px;">⚔️</span>
+                                <span>Simulaciones de Roleplay</span>
+                            </h3>
+                            <div id="history-simulations-list" style="display: flex; flex-direction: column; gap: 14px; overflow-y: auto; max-height: 500px; padding-right: 6px;">
+                                <p style="text-align: center; color: var(--text-muted); font-size: 13px; margin: 40px 0;">No hay simulaciones registradas aún.</p>
+                            </div>
+                            <button type="button" id="history-load-more-simulations" class="btn btn-secondary btn-block hidden" style="font-size: 12.5px; padding: 10px; margin-top: auto;">
+                                <span>Cargar más simulaciones ⬇️</span>
+                            </button>
+                        </div>
+
+                        <!-- Right Column: Audit history -->
+                        <div class="glass-panel" style="padding: 24px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.06); background: rgba(13,17,29,0.4); display: flex; flex-direction: column; gap: 16px; min-height: 400px;">
+                            <h3 style="font-family: var(--font-display); font-size: 18px; color: var(--text-main); margin: 0; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 12px;">
+                                <span style="font-size: 20px;">🎙️</span>
+                                <span>Auditorías de Ventas Reales</span>
+                            </h3>
+                            <div id="history-audits-list" style="display: flex; flex-direction: column; gap: 14px; overflow-y: auto; max-height: 500px; padding-right: 6px;">
+                                <p style="text-align: center; color: var(--text-muted); font-size: 13px; margin: 40px 0;">No hay llamadas auditadas aún.</p>
+                            </div>
+                            <button type="button" id="history-load-more-audits" class="btn btn-secondary btn-block hidden" style="font-size: 12.5px; padding: 10px; margin-top: auto;">
+                                <span>Cargar más auditorías ⬇️</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </section>
         </main>
 
@@ -1169,6 +1244,15 @@
                 <div><strong style="color: var(--text-muted);">Sector de Ventas:</strong> <span id="profile-modal-sector" style="color: var(--text-main);">Cargando...</span></div>
                 <div><strong style="color: var(--text-muted);">Ubicación:</strong> <span id="profile-modal-location" style="color: var(--text-main);">Cargando...</span></div>
                 <div id="profile-modal-xp-row"><strong style="color: var(--text-muted);">Experiencia:</strong> <span id="profile-modal-xp" style="color: var(--text-main);">0 XP</span></div>
+                <div id="profile-modal-progress-container" style="margin-top: 6px; display: flex; flex-direction: column; gap: 4px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <strong style="color: var(--text-muted);">Progreso de Ruta:</strong>
+                        <span id="profile-modal-progress-text" style="color: var(--primary); font-weight: 700;">0/10 Módulos</span>
+                    </div>
+                    <div class="profile-progress-bar" style="width: 100%; height: 6px; background: rgba(255,255,255,0.06); border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
+                        <div id="profile-modal-progress-fill" style="height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%); border-radius: 10px; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);"></div>
+                    </div>
+                </div>
             </div>
             
             <div id="profile-modal-actions" style="display: flex; flex-direction: column; gap: 10px;">
@@ -1183,10 +1267,10 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <!-- Firebase Custom Config -->
-    <script src="firebase-config.js?v=8"></script>
+    <script src="firebase-config.js?v=11"></script>
     <!-- Leaflet Map JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <!-- Main JS Application Logic -->
-    <script src="app.js?v=8"></script>
+    <script src="app.js?v=11"></script>
 </body>
 </html>
